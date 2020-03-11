@@ -73,10 +73,16 @@
             <?php if(isset($options["epp_code_manage"]) && $options["epp_code_manage"]): ?>
                 <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(this, 'guvenlik')" data-tab="security"><i class="fa fa-shield" aria-hidden="true"></i> <?php echo __("website/account_products/security-manager"); ?></a></li>
 
+                <?php if($proanse["status"] == "active" && $ctoc_service_transfer): ?>
+                    <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(this, 'transfer-service')" data-tab="transfer-service"><i class="fa fa-exchange" aria-hidden="true"></i> <?php echo __("website/account_products/transfer-service"); ?></a></li>
+                <?php endif; ?>
+
                 <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(this, 'transfer')" data-tab="transfer"><i class="fa fa-random" aria-hidden="true"></i> <?php echo __("website/account_products/transfer-manager"); ?></a></li>
             <?php endif; ?>
-
         <?php endif; ?>
+
+        <div class="orderidno"><span><?php echo __("website/account_products/table-ordernum"); ?></span><strong>#<?php echo $proanse["id"]; ?></strong></div>
+
     </ul>
 
 
@@ -151,8 +157,14 @@
                 <tr>
                     <td colspan="2" bgcolor="#ebebeb">
                         <strong style="float: left;"><?php echo __("website/account_products/general-info"); ?></strong>
-
-                        <span style="float: right"><?php echo __("website/account_products/table-ordernum"); ?>: #<?php echo $proanse["id"]; ?></span>
+                        <?php
+                            if(isset($invoice) && $invoice)
+                            {
+                                ?>
+                                <span style="float:right;"><?php echo __("website/account_invoices/invoice-num"); ?> <a href="<?php echo $invoice["detail_link"]; ?>" target="_blank"><strong>#<?php echo $invoice["id"]; ?></strong></a></span>
+                                <?php
+                            }
+                        ?>
                     </td>
                 </tr>
                 <tr>
@@ -534,6 +546,180 @@
             </div>
         </div>
     <?php } ?>
+
+    <?php if($proanse["status"] == "active" && $ctoc_service_transfer): ?>
+        <div id="transfer-service" class="tabcontent">
+            <div class="tabcontentcon">
+                <div class="blue-info" style="margin-bottom:20px;">
+                    <div class="padding15">
+                        <i class="fa fa-info-circle" aria-hidden="true"></i>
+                        <p><?php echo __("website/account_products/transfer-service-desc"); ?></p>
+                    </div>
+                </div>
+
+                <?php
+                    if(isset($ctoc_limit) && strlen($ctoc_limit) > 0){
+                        ?>
+                        <div class="clear"></div>
+                        <div class="green-info" style="width: 20%; text-align: center;">
+                            <div class="padding10">
+                                <?php
+                                    echo __("website/account_products/limit-info",[
+                                        '{used}'    => ($ctoc_limit - $ctoc_used),
+                                        '{limit}'   => $ctoc_limit,
+                                    ]);
+                                ?>
+                            </div>
+                        </div>
+                        <div class="clear"></div>
+                        <?php
+                    }
+                ?>
+
+                <div id="TransferService_wrap" style="<?php echo $ctoc_has_expired ? 'display:none;' : ''; ?>">
+
+                    <form action="<?php echo $links["controller"]; ?>" method="post" id="TransferService">
+                        <input type="hidden" name="operation" value="transfer_service">
+
+                        <input type="text" name="email" placeholder="<?php echo __("website/account_products/transfer-service-client-email"); ?>">
+
+                        <input type="password" name="password" placeholder="<?php echo __("website/account_products/transfer-service-your-account-password"); ?>">
+
+                        <a href="javascript:void(0);" class="yesilbtn gonderbtn mio-ajax-submit" mio-ajax-options='{"result":"TransferService_handle","waiting_text":"<?php echo addslashes(__("website/others/button5-pending")); ?>"}'><?php echo __("website/account_products/transfer-button"); ?></a>
+                        <div class="clear"></div>
+                    </form>
+
+
+                    <h4 style="margin-bottom:7px;    font-size: 18px;"><strong><?php echo __("website/account_products/transfer-service-pending-list"); ?></strong></h4>
+
+                    <table id="ctoc_s_t_list" width="100%" border="0" style="<?php echo isset($ctoc_s_t_list) && is_array($ctoc_s_t_list) && sizeof($ctoc_s_t_list)>0 ? '' : 'display:none;'; ?>">
+                        <thead style="background:#ebebeb;">
+                        <tr>
+                            <th align="left"><?php echo __("website/account_products/transfer-service-list-th-user"); ?></th>
+                            <th align="center"><?php echo __("website/account_products/transfer-service-list-th-email"); ?></th>
+                            <th align="center"><?php echo __("website/account_products/transfer-service-list-th-date"); ?></th>
+                            <th align="center"> </th>
+                        </tr>
+                        </thead>
+
+                        <tbody align="center" style="border-top:none;">
+                        <?php
+                            if(isset($ctoc_s_t_list) && is_array($ctoc_s_t_list) && sizeof($ctoc_s_t_list)>0){
+                                foreach($ctoc_s_t_list AS $ctoc_s_t_r){
+                                    $ctoc_s_t_r["data"]     = Utility::jdecode($ctoc_s_t_r["data"],true);
+                                    $evt_data               = $ctoc_s_t_r["data"];
+                                    $full_name              = $evt_data["to_full_name"];
+                                    $name_length            = Utility::strlen($full_name);
+                                    $name_length            -= 2;
+                                    $full_name              = Utility::substr($full_name,0,2).str_repeat("*",$name_length);
+                                    ?>
+                                    <tr style="background:none;" id="ctoc_s_t_<?php echo $ctoc_s_t_r["id"]; ?>">
+                                        <td align="left"><?php echo $full_name; ?></td>
+                                        <td align="center"><?php echo $evt_data["to_email"]; ?></td>
+                                        <td align="center"><?php echo DateManager::format("d/m/Y H:i",$ctoc_s_t_r["cdate"]); ?></td>
+                                        <td align="center" width="140">
+                                            <a href="javascript:void 0;" onclick="remove_ctoc_s_t(<?php echo $ctoc_s_t_r["id"]; ?>,this);" class="sbtn red" data-tooltip="<?php echo ___("needs/button-delete"); ?>"><i class="fa fa-times"></i></a>
+                                        </td>
+                                    </tr>
+                                    <?php
+                                }
+                            }
+                        ?>
+                        </tbody>
+                    </table>
+                    <div id="ctoc_s_t_no_list" class="error" style="<?php echo !(isset($ctoc_s_t_list) && is_array($ctoc_s_t_list) && sizeof($ctoc_s_t_list)>0) ? '' : 'display:none;' ?>"><?php echo __("website/account_products/transfer-service-no-list"); ?></div>
+
+
+                </div>
+                <div id="TransferService_success" style="display: none;">
+                    <div style="margin-top:30px;margin-bottom:70px;text-align:center;">
+                        <i style="font-size:80px;" class="fa fa-check"></i>
+                        <h4><?php echo __("website/account_products/transfer-service-successful"); ?></h4>
+                        <br>
+                    </div>
+                </div>
+                <script type="text/javascript">
+                    function TransferService_handle(result){
+                        if(result != ''){
+                            var solve = getJson(result);
+                            if(solve !== false){
+                                if(solve.status == "error"){
+                                    if(solve.for != undefined && solve.for != ''){
+                                        $("#TransferService "+solve.for).focus();
+                                        $("#TransferService "+solve.for).attr("style","border-bottom:2px solid red; color:red;");
+                                        $("#TransferService "+solve.for).change(function(){
+                                            $(this).removeAttr("style");
+                                        });
+                                    }
+                                    if(solve.message != undefined && solve.message != '')
+                                        alert_error(solve.message,{timer:3000});
+                                }else if(solve.status == "successful"){
+                                    $("#TransferService_wrap").fadeOut(400,function(){
+                                        $("#TransferService_success").fadeIn(400);
+                                        $("html,body").animate({scrollTop:200},600);
+                                    });
+                                    if(solve.reload !== undefined){
+                                        setTimeout(function(){
+                                            location.href = '<?php echo $links["controller"]; ?>?tab=transfer-service';
+                                        },3000);
+                                    }
+                                }
+                            }else
+                                console.log(result);
+                        }
+                    }
+                    function remove_ctoc_s_t(id,btn){
+                        swal({
+                            title: '<?php echo ___("needs/delete-are-you-sure"); ?>',
+                            text: "",
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: '<?php echo __("website/others/notification-confirm"); ?>',
+                            cancelButtonText: '<?php echo __("website/others/notification-cancel"); ?>',
+                        }).then(function(value){
+                            if(value){
+                                var request = MioAjax({
+                                    waiting_text: '<i style="-webkit-animation:fa-spin 2s infinite linear;animation: fa-spin 2s infinite linear;" class="fa fa-spinner" aria-hidden="true"></i>',
+                                    button_element: btn,
+                                    action: "<?php echo $links["controller"]; ?>",
+                                    method: "POST",
+                                    data:{
+                                        operation: "remove_transfer_service",
+                                        id: id
+                                    },
+                                },true,true);
+                                request.done(function(result){
+                                    if(result !== ''){
+                                        var solve = getJson(result);
+                                        if(solve.status === 'error')
+                                            Swal.fire(
+                                                '<?php echo __("website/others/notification-error"); ?>',
+                                                solve.message,
+                                                'error'
+                                            );
+                                        else if(solve.status === 'successful'){
+                                            swal(
+                                                '<?php echo __("website/others/notification-success"); ?>',
+                                                solve.message,
+                                                'success'
+                                            );
+                                            $(btn).parent().parent().remove();
+                                            if($("#ctoc_s_t_list tbody tr").length < 1){
+                                                $("#ctoc_s_t_list").css("display","none");
+                                                $("#ctoc_s_t_no_list").css("display","block");
+                                            }
+                                        }
+                                    }
+                                });
+                            }
+                        });
+                    }
+                </script>
+            </div>
+        </div>
+    <?php endif; ?>
 
     <?php
         if(isset($options["epp_code_manage"]) && $options["epp_code_manage"]){

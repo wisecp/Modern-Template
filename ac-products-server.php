@@ -63,11 +63,11 @@
                                 <strong><?php echo $row["name"]; ?></strong><br>
                                 <?php if(isset($row["options"]["hostname"]) && $row["options"]["hostname"]): ?>
                                     <?php echo $row["options"]["hostname"]; ?>
-
                                     <?php if(isset($row["options"]["ip"]) && $row["options"]["ip"]): ?>
                                         - <?php echo $row["options"]["ip"]; ?>
                                     <?php endif; ?>
-
+                                <?php elseif(isset($row["options"]["ip"]) && $row["options"]["ip"]): ?>
+                                    <?php echo $row["options"]["ip"]; ?>
                                 <?php endif; ?>
                             </td>
                             <td align="center">

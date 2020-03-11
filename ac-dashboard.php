@@ -102,18 +102,23 @@
                                             <?php
                                                 if(isset($row["options"]["domain"])){
                                                     echo $row["options"]["domain"];
-                                                }elseif($row["type"] == "sms"){
+                                                }
+                                                elseif($row["type"] == "sms"){
                                                     echo $row["options"]["name"]." - ".$row["options"]["identity"];
-                                                }elseif($row["type"] == "special"){
+                                                }
+                                                elseif($row["type"] == "special"){
                                                     if(isset($row["options"]["category_name"]) && $row["options"]["category_name"])
                                                         echo $row["options"]["category_name"];
                                                     else
                                                         echo $row["options"]["group_name"];
-                                                }elseif(isset($row["options"]["hostname"]) && $row["options"]["hostname"]){
+                                                }
+                                                elseif(isset($row["options"]["hostname"]) && $row["options"]["hostname"]){
                                                     echo $row["options"]["hostname"];
                                                     if(isset($row["options"]["ip"]) && $row["options"]["ip"])
                                                         echo " - ".$row["options"]["ip"];
                                                 }
+                                                elseif(isset($row["options"]["ip"]) && $row["options"]["ip"])
+                                                    echo $row["options"]["ip"];
                                             ?>
                                         </span>
                                     </td>

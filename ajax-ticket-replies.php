@@ -15,6 +15,16 @@
                         </div><div class="clear"></div>
                         <div class="reply-message"><?php echo $message; ?>
                             <div class="clear"></div>
+
+                            <?php
+                                if($reply["encrypted"])
+                                {
+                                    ?>
+                                    <div class="securemsj"><i title="<?php echo __("website/account_tickets/encrypt-message-3"); ?>" class="fa fa-shield" aria-hidden="true"></i></div>
+                                    <?php
+                                }
+                            ?>
+
                             <div class="ticket-attachment-file">
                                 <?php
                                     if($reply["attachments"] && is_array($reply["attachments"])){
@@ -45,6 +55,14 @@
                         </div><div class="clear"></div>
                         <div class="reply-message"><?php echo $message; ?>
                             <div class="clear"></div>
+                            <?php
+                                if($reply["encrypted"])
+                                {
+                                    ?>
+                                    <div class="securemsj"><i title="<?php echo __("website/account_tickets/encrypt-message-3"); ?>" class="fa fa-shield" aria-hidden="true"></i></div>
+                                    <?php
+                                }
+                            ?>
                             <div class="ticket-attachment-file">
                                 <?php if(isset($reply["attachments"]) && $reply["attachments"]): ?>
                                     <a class="ticket-attachment-file"><i class="fa fa-cloud-download" aria-hidden="true"></i> <?php echo __("website/account_tickets/file-attached"); ?></a>

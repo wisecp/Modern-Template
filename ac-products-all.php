@@ -85,7 +85,9 @@
                                         - <?php echo $row["options"]["ip"]; ?>
                                     <?php endif; ?>
 
-                                <?php endif; ?>
+                            <?php elseif(isset($row["options"]["ip"]) && $row["options"]["ip"]): ?>
+                                <?php echo "<br>".$row["options"]["ip"]; ?>
+                            <?php endif; ?>
                             </td>
                             <td align="center">
                                 <?php echo $amount; ?> <?php echo $period; ?>

@@ -8,7 +8,23 @@
     if(isset($module) && $module && isset($proanse["hide_module_details"]) && $proanse["hide_module_details"]) $module = false;
 
 ?>
-<style type="text/css"></style>
+<div id="template-loader" style="display: none;">
+    <div id="block_module_loader">
+        <div class="load-wrapp">
+            <p style="margin-bottom:20px;font-size:17px;"><strong><?php echo ___("needs/processing"); ?>...</strong><br><?php echo ___("needs/please-wait"); ?></p>
+            <div class="load-7">
+                <div class="square-holder">
+                    <div class="square"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style type="text/css">
+    .hostbtn{width:150px;padding:10px 20px;background:#eee;display:inline-block;margin:5px;vertical-align:top;border-radius:3px}
+    .hostbtn:hover {background:#dbdbdb;}
+</style>
 <script type="text/javascript">
     function openTab(evt, tabName) {
         var gtab,dtab,link,tab;
@@ -39,19 +55,72 @@
     if(isset($module) && $module){
         ?>
         <script type="text/javascript">
+            function run_transaction(btn_k,btn_el,post_fields){
+                var data1   = {action: "use_method",method:btn_k};
+                var data2   = $(btn_el).data("fields");
+                if(typeof data2 !== 'object' && data2 !== undefined && data2.length > 0) data2 = getJson(data2);
+                if(typeof data2 !== 'object' || data2 === undefined || data2 === false) data2 = {};
+                var data3   = post_fields === undefined || post_fields === false ? {} : post_fields;
+                var _data   = {...data1,...data2,...data3};
+
+                var request = MioAjax({
+                    button_element:btn_el,
+                    waiting_text: '<?php echo __("website/others/button1-pending"); ?>',
+                    action:"<?php echo $links["controller"]; ?>",
+                    method:"POST",
+                    data:_data,
+                },true,true);
+                request.done(t_form_handle);
+            }
+            function reload_module_content(page){
+                if(page === undefined) page = "<?php echo isset($m_page) ? $m_page : false; ?>";
+                else $("#block_module_details_con").html($("#template-loader").html());
+
+                if(page !== ''){
+                    window.history.pushState("object or string", $("title").html(),'<?php echo $links["controller"]; ?>?m_page='+page);
+                }
+
+                var request = MioAjax({
+                    action:"<?php echo $links["controller"]; ?>",
+                    method:"POST",
+                    data:{
+                        action:        "get_details",
+                        m_page:     page,
+                    },
+                },true,true);
+
+                request.done(function(result){
+                    if(result !== ''){
+                        $("#block_module_details_con").html(result);
+                    }
+                });
+            }
+            function t_form_handle(result){
+                if(result !== ''){
+                    var solve = getJson(result);
+                    if(solve !== false){
+                        if(solve.status === "error"){
+                            alert_error(solve.message,{timer:3000});
+                        }
+                        else if(solve.status === "successful"){
+                            alert_success(solve.message,{timer:3000});
+                        }
+                        if(solve.timeRedirect !== undefined){
+                            setTimeout(function(){
+                                window.location.href = solve.timeRedirect.url === undefined ? location.href : solve.timeRedirect.url;
+                            },solve.timeRedirect.duration);
+                        }
+                        else if(solve.redirect !== undefined){
+                            window.location.href = solve.redirect;
+                        }
+                    }else
+                        console.log(result);
+                }
+            }
+
             $(document).ready(function(){
-                setTimeout(function(){
-                    var request = MioAjax({
-                        action:"<?php echo $links["controller"]; ?>",
-                        method:"POST",
-                        data:{action:"get_details"},
-                    },true,true);
-
-                    request.done(function(result){
-                        $("#get_details_module_content").html(result);
-                    });
-
-                },500);
+                $("#block_module_details_con").html($("#template-loader").html());
+                setTimeout(reload_module_content,500);
             });
         </script>
         <?php
@@ -80,11 +149,15 @@
             <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(this, 'upgrade')" data-tab="upgrade"><i class="ion-speedometer" aria-hidden="true"></i> <?php echo __("website/account_products/special-tab-upgrade"); ?></a></li>
         <?php endif; ?>
 
-
+        <?php if($proanse["status"] == "active" && $ctoc_service_transfer): ?>
+            <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(this, 'transfer-service')" data-tab="transfer-service"><i class="fa fa-exchange" aria-hidden="true"></i> <?php echo __("website/account_products/transfer-service"); ?></a></li>
+        <?php endif; ?>
 
         <?php if($proanse["status"] == "active" && $proanse["period"] != "none"): ?>
             <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(this, 'iptaltalebi')" data-tab="cancellation"><i class="fa fa-ban" aria-hidden="true"></i> <?php echo __("website/account_products/cancellation-request"); ?></a></li>
         <?php endif; ?>
+
+        <div class="orderidno"><span><?php echo __("website/account_products/table-ordernum"); ?></span><strong>#<?php echo $proanse["id"]; ?></strong></div>
     </ul>
 
 
@@ -200,8 +273,14 @@
                 <tr>
                     <td colspan="2" bgcolor="#ebebeb">
                         <strong style="float: left;"><?php echo __("website/account_products/general-info"); ?></strong>
-
-                        <span style="float: right"><?php echo __("website/account_products/table-ordernum"); ?>: #<?php echo $proanse["id"]; ?></span>
+                        <?php
+                            if(isset($invoice) && $invoice)
+                            {
+                                ?>
+                                <span style="float:right;"><?php echo __("website/account_invoices/invoice-num"); ?> <a href="<?php echo $invoice["detail_link"]; ?>" target="_blank"><strong>#<?php echo $invoice["id"]; ?></strong></a></span>
+                                <?php
+                            }
+                        ?>
                     </td>
                 </tr>
 
@@ -248,20 +327,12 @@
             if(isset($module) && $module){
                 ?>
                 <div class="clear"></div>
+
                 <div class="block_module_details" id="get_details_module_content">
-                    <div class="hizmetblok" id="block_module_details_con">
-                        <div id="block_module_loader">
-                            <div class="load-wrapp">
-                                <p style="margin-bottom:20px;font-size:17px;"><strong><?php echo ___("needs/processing"); ?>...</strong><br><?php echo ___("needs/please-wait"); ?></p>
-                                <div class="load-7">
-                                    <div class="square-holder">
-                                        <div class="square"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <div class="hizmetblok" id="block_module_details_con"></div>
                 </div>
+
+                <div class="clear"></div>
                 <?php
             }
         ?>
@@ -667,6 +738,172 @@
 
             </div>
 
+        </div>
+    <?php endif; ?>
+
+    <?php if($proanse["status"] == "active" && $ctoc_service_transfer): ?>
+        <div id="transfer-service" class="tabcontent">
+            <div class="tabcontentcon">
+                <div class="blue-info" style="margin-bottom:20px;">
+                    <div class="padding15">
+                        <i class="fa fa-info-circle" aria-hidden="true"></i>
+                        <p><?php echo __("website/account_products/transfer-service-desc"); ?></p>
+                    </div>
+                </div>
+
+                <?php
+                    if(isset($ctoc_limit) && strlen($ctoc_limit) > 0){
+                        ?>
+                        <div class="formcon">
+                            <div class="yuzde30"><?php echo __("website/account_products/limit-info"); ?></div>
+                            <div class="yuzde70" style="color: #F44336;"><?php echo ($ctoc_limit - $ctoc_used); ?></div>
+                        </div>
+                        <?php
+                    }
+                ?>
+
+                <div id="TransferService_wrap" style="<?php echo $ctoc_has_expired ? 'display:none;' : ''; ?>">
+
+                    <form action="<?php echo $links["controller"]; ?>" method="post" id="TransferService">
+                        <input type="hidden" name="operation" value="transfer_service">
+
+                        <input type="text" name="email" placeholder="<?php echo __("website/account_products/transfer-service-client-email"); ?>">
+
+                        <input type="password" name="password" placeholder="<?php echo __("website/account_products/transfer-service-your-account-password"); ?>">
+
+                        <a href="javascript:void(0);" class="yesilbtn gonderbtn mio-ajax-submit" mio-ajax-options='{"result":"TransferService_handle","waiting_text":"<?php echo addslashes(__("website/others/button5-pending")); ?>"}'><?php echo __("website/account_products/transfer-button"); ?></a>
+                        <div class="clear"></div>
+                    </form>
+
+
+                    <h4 style="margin-bottom:7px;    font-size: 18px;"><strong><?php echo __("website/account_products/transfer-service-pending-list"); ?></strong></h4>
+
+                    <table id="ctoc_s_t_list" width="100%" border="0" style="<?php echo isset($ctoc_s_t_list) && is_array($ctoc_s_t_list) && sizeof($ctoc_s_t_list)>0 ? '' : 'display:none;'; ?>">
+                        <thead>
+                        <tr>
+                            <th align="left"><?php echo __("website/account_products/transfer-service-list-th-user"); ?></th>
+                            <th align="center"><?php echo __("website/account_products/transfer-service-list-th-email"); ?></th>
+                            <th align="center"><?php echo __("website/account_products/transfer-service-list-th-date"); ?></th>
+                            <th align="center"> </th>
+                        </tr>
+                        </thead>
+
+                        <tbody align="center" style="border-top:none;">
+                        <?php
+                            if(isset($ctoc_s_t_list) && is_array($ctoc_s_t_list) && sizeof($ctoc_s_t_list)>0){
+                                foreach($ctoc_s_t_list AS $ctoc_s_t_r){
+                                    $ctoc_s_t_r["data"]     = Utility::jdecode($ctoc_s_t_r["data"],true);
+                                    $evt_data               = $ctoc_s_t_r["data"];
+                                    $full_name              = $evt_data["to_full_name"];
+                                    $name_length            = Utility::strlen($full_name);
+                                    $name_length            -= 2;
+                                    $full_name              = Utility::substr($full_name,0,2).str_repeat("*",$name_length);
+                                    ?>
+                                    <tr style="background:none;" id="ctoc_s_t_<?php echo $ctoc_s_t_r["id"]; ?>">
+                                        <td align="left"><?php echo $full_name; ?></td>
+                                        <td align="center"><?php echo $evt_data["to_email"]; ?></td>
+                                        <td align="center"><?php echo DateManager::format("d/m/Y H:i",$ctoc_s_t_r["cdate"]); ?></td>
+                                        <td align="center" width="140">
+                                            <a href="javascript:void 0;" onclick="remove_ctoc_s_t(<?php echo $ctoc_s_t_r["id"]; ?>,this);" class="sbtn red" data-tooltip="<?php echo ___("needs/button-delete"); ?>"><i class="fa fa-times"></i></a>
+                                        </td>
+                                    </tr>
+                                    <?php
+                                }
+                            }
+                        ?>
+                        </tbody>
+                    </table>
+                    <div id="ctoc_s_t_no_list" class="error" style="<?php echo !(isset($ctoc_s_t_list) && is_array($ctoc_s_t_list) && sizeof($ctoc_s_t_list)>0) ? '' : 'display:none;' ?>"><?php echo __("website/account_products/transfer-service-no-list"); ?></div>
+
+
+                </div>
+                <div id="TransferService_success" style="display: none;">
+                    <div style="margin-top:30px;margin-bottom:70px;text-align:center;">
+                        <i style="font-size:80px;" class="fa fa-check"></i>
+                        <h4><?php echo __("website/account_products/transfer-service-successful"); ?></h4>
+                        <br>
+                    </div>
+                </div>
+                <script type="text/javascript">
+                    function TransferService_handle(result){
+                        if(result != ''){
+                            var solve = getJson(result);
+                            if(solve !== false){
+                                if(solve.status == "error"){
+                                    if(solve.for != undefined && solve.for != ''){
+                                        $("#TransferService "+solve.for).focus();
+                                        $("#TransferService "+solve.for).attr("style","border-bottom:2px solid red; color:red;");
+                                        $("#TransferService "+solve.for).change(function(){
+                                            $(this).removeAttr("style");
+                                        });
+                                    }
+                                    if(solve.message != undefined && solve.message != '')
+                                        alert_error(solve.message,{timer:3000});
+                                }else if(solve.status == "successful"){
+                                    $("#TransferService_wrap").fadeOut(400,function(){
+                                        $("#TransferService_success").fadeIn(400);
+                                        $("html,body").animate({scrollTop:200},600);
+                                    });
+                                    if(solve.reload !== undefined){
+                                        setTimeout(function(){
+                                            location.href = '<?php echo $links["controller"]; ?>?tab=transfer-service';
+                                        },3000);
+                                    }
+                                }
+                            }else
+                                console.log(result);
+                        }
+                    }
+                    function remove_ctoc_s_t(id,btn){
+                        swal({
+                            title: '<?php echo ___("needs/delete-are-you-sure"); ?>',
+                            text: "",
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: '<?php echo __("website/others/notification-confirm"); ?>',
+                            cancelButtonText: '<?php echo __("website/others/notification-cancel"); ?>',
+                        }).then(function(value){
+                            if(value){
+                                var request = MioAjax({
+                                    waiting_text: '<i style="-webkit-animation:fa-spin 2s infinite linear;animation: fa-spin 2s infinite linear;" class="fa fa-spinner" aria-hidden="true"></i>',
+                                    button_element: btn,
+                                    action: "<?php echo $links["controller"]; ?>",
+                                    method: "POST",
+                                    data:{
+                                        operation: "remove_transfer_service",
+                                        id: id
+                                    },
+                                },true,true);
+                                request.done(function(result){
+                                    if(result !== ''){
+                                        var solve = getJson(result);
+                                        if(solve.status === 'error')
+                                            Swal.fire(
+                                                '<?php echo __("website/others/notification-error"); ?>',
+                                                solve.message,
+                                                'error'
+                                            );
+                                        else if(solve.status === 'successful'){
+                                            swal(
+                                                '<?php echo __("website/others/notification-success"); ?>',
+                                                solve.message,
+                                                'success'
+                                            );
+                                            $(btn).parent().parent().remove();
+                                            if($("#ctoc_s_t_list tbody tr").length < 1){
+                                                $("#ctoc_s_t_list").css("display","none");
+                                                $("#ctoc_s_t_no_list").css("display","block");
+                                            }
+                                        }
+                                    }
+                                });
+                            }
+                        });
+                    }
+                </script>
+            </div>
         </div>
     <?php endif; ?>
 

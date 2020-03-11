@@ -12,6 +12,18 @@
 <link rel="canonical" href="<?php echo $canonical_link;?>" />
 <link rel="icon" type="image/x-icon" href="<?php echo $favicon_link;?>" />
 <meta name="theme-color" content="<?php echo $meta_color; ?>">
+
+<?php
+    if(isset($lang_list) && $lang_list){
+        foreach($lang_list AS $l_row){
+            $l_link = $l_row["link"];
+            $l_link = str_replace(["?chl=true","&chl=true"],"",$l_link);
+            ?><link rel="alternate" hreflang="<?php echo $l_row["key"]; ?>" href="<?php echo $l_link; ?>" /><?php
+            echo EOL;
+        }
+    }
+?>
+
 <!-- Meta Tags -->
 
 <!-- Css -->

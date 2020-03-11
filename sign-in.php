@@ -1,6 +1,9 @@
 <?php defined('CORE_FOLDER') OR exit('You can not get in here!');
     $master_content_none = true;
     $connectionButtons = Hook::run("ClientAreaConnectionButtons","login");
+
+    if(Config::get("options/crtacwshop")) $sign_up = false;
+
 ?>
 <!DOCTYPE html>
 <html>

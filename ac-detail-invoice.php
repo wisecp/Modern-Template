@@ -206,6 +206,8 @@
                         echo "<br>";
                         echo $phone ? censored('phone',$phone)." - " : '';
                         echo censored('email',$invoice["user_data"]["email"]);
+                        echo  "<br>";
+                        echo __("website/account_invoices/user-id").": ".$invoice["user_id"];
                     ?>
 
             </span>
@@ -287,7 +289,7 @@
                             $cid    = isset($item["currency"]) ? $item["currency"] : $item["cid"];
                             ?>
                             <div class="formcon">
-                                <div class="yuzde70"><span><?php echo nl2br($item["description"]); ?></span></div>
+                                <div class="yuzde70"><div class="padding10"><?php echo implode("<br>- ",explode(EOL,$item["description"])); ?></div></div>
                                 <div class="yuzde30"><span><?php echo Money::formatter_symbol($amount,$cid); ?></span></div>
                             </div>
                             <?php
@@ -425,7 +427,11 @@
                     });
 
                     setTimeout(function(){
+                        <?php if(isset($payment_screen)): ?>
+                        reload_selection_result('<?php echo $selected_pmethod; ?>',<?php echo $selected_sendbta; ?>);
+                        <?php else: ?>
                         reload_selection_result();
+                        <?php endif; ?>
                     },200);
 
                     $("#accordion").on("change","input",function(){
@@ -433,65 +439,27 @@
                     });
 
                     $("#continue_button").click(function(){
+                        $(this).html('<?php echo __("website/others/button2-pending"); ?>');
+
                         var selected_pmethod = $("#payment_methods input[name=pmethod]:checked").val();
                         var selected_sendbta = $("#selected_sendbta").prop("checked");
 
-                        var request = MioAjax({
-                            button_element:this,
-                            waiting_text: '<?php echo __("website/others/button2-pending"); ?>',
-                            action:"<?php echo $links["controller"]; ?>",
-                            method:"POST",
-                            data:{
-                                operation:"payment-screen",
-                                sendbta:selected_sendbta ? 1 : 0,
-                                pmethod:selected_pmethod,
-                            },
-                        },true,true);
+                        $("#payment_screen_redirect input[name=sendbta]").val(selected_sendbta ? 1 : 0);
+                        $("#payment_screen_redirect input[name=pmethod]").val(selected_pmethod);
 
-                        request.done(function(result){
-                            if(result != ''){
-                                var solve = getJson(result);
-                                if(solve !== false){
-                                    if(solve.status == "error"){
-                                        if(solve.for != undefined && solve.for != ''){
-                                            $("#detailForm "+solve.for).focus();
-                                            $("#detailForm "+solve.for).attr("style","border-bottom:2px solid red; color:red;");
-                                            $("#detailForm "+solve.for).change(function(){
-                                                $(this).removeAttr("style");
-                                            });
-                                        }
-                                        if(solve.message != undefined && solve.message != '')
-                                            alert_error(solve.message,{timer:5000});
-                                    }else if(solve.status == "successful"){
-
-                                        if(solve.content != undefined){
-                                            $("#payment-screen-content").html(solve.content);
-                                            $("#selection-methods").fadeOut(500,function () {
-                                                $("#payment-screen").fadeIn(500);
-                                            });
-                                        }
-
-                                        if(solve.message != undefined) alert_success(solve.message,{timer:4000});
-                                        if(solve.redirect != undefined && solve.redirect != ''){
-                                            setTimeout(function(){
-                                                window.location.href = solve.redirect;
-                                            },4000);
-                                        }
-                                    }
-                                }else
-                                    console.log(result);
-                            }
-                        });
+                        $("#payment_screen_redirect").submit();
 
                     });
 
                 });
-
-                function reload_selection_result(){
+                function reload_selection_result(x_selected_pmethod,x_selected_sendbta){
                     $("#pmethods_loader").fadeOut(200);
 
                     var selected_pmethod = $("#payment_methods input[name=pmethod]:checked").val();
                     var selected_sendbta = $("#selected_sendbta").prop("checked");
+
+                    if(x_selected_pmethod !== undefined) selected_pmethod = x_selected_pmethod;
+                    if(x_selected_sendbta !== undefined) selected_sendbta = x_selected_sendbta;
 
                     var request         = MioAjax({
                         action: "<?php echo $links["controller"]; ?>",
@@ -578,21 +546,17 @@
                         }
                     });
                 }
-
-                function turnBack(){
-                    $("#payment-screen").fadeOut(500,function(){
-                        $("#selection-methods").fadeIn(500);
-                    });
-                }
             </script>
 
-            <div id="payment-screen" style="display: none;">
-                <div id="payment-screen-content"></div>
+            <div id="payment-screen" style="<?php echo isset($payment_screen) ? '' : 'display: none;'; ?>">
+                <div id="payment-screen-content">
+                    <?php echo isset($payment_screen) ? $payment_screen['content'] : ''; ?>
+                </div>
                 <div class="clear"></div>
-                <a class="lbtn" href="javascript:turnBack();void 0;"><?php echo __("website/account_invoices/payment-turn-back"); ?></a>
+                <a class="lbtn" href="<?php echo $links["controller"]; ?>"><?php echo __("website/account_invoices/payment-turn-back"); ?></a>
             </div>
 
-            <div id="selection-methods" class="tabcontentcon" style="width:100%;">
+            <div id="selection-methods" class="tabcontentcon" style="width:100%;<?php echo isset($payment_screen) ? ' display:none;' : ''; ?>">
                 <div class="clear"></div>
                 <div id="accordion">
 
@@ -622,6 +586,11 @@
 
                         </div>
                         <div class="line"></div>
+                        <form id="payment_screen_redirect" action="<?php echo $links["controller"]; ?>" method="post">
+                            <input type="hidden" name="operation" value="payment-screen">
+                            <input type="hidden" name="sendbta" value="<?php echo isset($selected_sendbta) ? $selected_sendbta : 0; ?>">
+                            <input type="hidden" name="pmethod" value="<?php echo isset($selected_pmethod) ? $selected_pmethod : 'none'; ?>">
+                        </form>
                         <a href="javascript:void(0);" id="continue_button" class="yesilbtn gonderbtn"><?php echo __("website/account_invoices/continue-button"); ?></a>
                         <div class="clear"></div>
                     </div>

@@ -611,7 +611,7 @@
 
                                             <div id="zipcode" class="yuzde15">
                                                 <strong><?php echo __("website/account_info/zipcode"); ?></strong>
-                                                <input name="zipcode" type="text" placeholder="<?php echo __("website/account_info/zipcode-placeholder"); ?>" onkeypress="return event.charCode>= 48 &amp;&amp;event.charCode<= 57">
+                                                <input name="zipcode" type="text" placeholder="<?php echo __("website/account_info/zipcode-placeholder"); ?>">
                                             </div>
 
                                             <div id="address" style="width:100%;margin-top:15px;">

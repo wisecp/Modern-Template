@@ -39,7 +39,7 @@
                                 <a href="<?php echo $software["buy_link"]; ?>" title="<?php echo __("website/index/add-basket"); ?>" class="sbtn"><i class="fa fa-shopping-cart" aria-hidden="true"></i></a>
                             </div>
                             <?php
-                                $amount     = Money::formatter_symbol($software["price"]["amount"],$software["price"]["cid"],!$software["override_usrcurrency"]);
+                                $amount        = Money::formatter_symbol($software["price"]["amount"],$software["price"]["cid"],!$software["override_usrcurrency"]);
 
                                 $split_amount       = explode(" ",$amount);
                                 $symbol             = '';
@@ -103,6 +103,13 @@
 
             <div class="clear"></div>
             <?php echo (isset($pagination)) ? $pagination : false; ?>
+        </div>
+
+        <div style="float: left;width: 23%;margin-top: 15px;">
+            <form action="<?php echo $link; ?>" method="get" id="searchForm">
+                <input type="search" id="SearchTerm" value="<?php echo isset($search_term) ? $search_term : ''; ?>" placeholder="<?php echo __("website/softwares/search-placeholder"); ?>" class="yuzde80" name="search_term">
+                <a href="javascript:void 0;" onclick="$('#searchForm').submit();" class="sbtn yuzde20"><i class="fa fa-search" aria-hidden="true"></i></a>
+            </form>
         </div>
 
         <?php if(is_array($categories) && sizeof($categories)>0): ?>

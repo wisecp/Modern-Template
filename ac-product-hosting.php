@@ -3,7 +3,7 @@
     $supported      = isset($module_config["supported"]) ? $module_config["supported"] : [];
     $wide_content   = true;
     $proanse_amount = $amount;
-    $panel_type     = isset($options["panel_type"]) ? $options["panel_type"] : false;
+    $panel_type     = isset($p_options["panel_type"]) ? $p_options["panel_type"] : (isset($options["panel_type"]) ? $options["panel_type"] : false);
     $disk_limit     = isset($options["disk_limit"]) ? Filter::numbers($options["disk_limit"]) : false;
     $bandwidth_limit = isset($options["bandwidth_limit"]) ? Filter::numbers($options["bandwidth_limit"]) : false;
     $email_limit     = isset($options["email_limit"]) ? Filter::numbers($options["email_limit"]) : false;
@@ -14,7 +14,7 @@
     $park_limit      = isset($options["park_limit"]) ? Filter::numbers($options["park_limit"]) : false;
     $max_email_per_hour = isset($options["max_email_per_hour"]) ? Filter::numbers($options["max_email_per_hour"]) : false;
     $cpu_limit = isset($options["cpu_limit"]) ? Filter::html_clear($options["cpu_limit"]) : false;
-    $server_features = isset($options["server_features"]) ? $options["server_features"] : [];
+    $server_features = isset($p_options["server_features"]) ? $p_options["server_features"] : (isset($options["server_features"]) ? $options["server_features"] : false);
     $dns             = isset($options["dns"]) ? $options["dns"] : [];
     $ftp_raw         = isset($options["ftp_raw"]) ? nl2br($options["ftp_raw"]) : NULL;
     $ftp_info        = isset($options["ftp_info"]) && $options["ftp_info"] ? $options["ftp_info"] : [];
@@ -68,7 +68,9 @@
     elseif($panel_name == "DirectAdmin" && $buttons){
         $panel_logo = $tadress."images/directadmin.png";
         if(isset($buttons["panel"])) $buttons["panel"]['class'] = "mavibtn";
-    }else{
+        if(isset($buttons["mail"])) $buttons["mail"]['class'] = "yesilbtn";
+    }
+    else{
         if(isset($buttons["panel"])) $buttons["panel"]['class'] = "mavibtn";
         if(isset($buttons["mail"])) $buttons["mail"]['class'] = "yesilbtn";
     }
@@ -76,9 +78,10 @@
     include $tpath."common-needs.php";
     $hoptions = ["datatables","jquery-ui"];
 ?>
-
 <link rel="stylesheet" type="text/css" href="<?php echo $sadress; ?>assets/style/progress-circle.css">
 <style type="text/css">
+    .hostbtn{width:150px;padding:10px 20px;background:#eee;display:inline-block;margin:5px;vertical-align:top;border-radius:3px}
+    .hostbtn:hover {background:#dbdbdb;}
     #nserverinfo {
         font-size: 15px;
         padding: 12px;
@@ -238,91 +241,163 @@
             collapsible: true,
         });
 
-        setTimeout(function(){
-            var request = MioAjax({
-                action:"<?php echo $links["controller"]; ?>",
-                method:"POST",
-                data:{inc:"get_hosting_informations"},
-            },true,true);
-
-            request.done(function(result){
-                if(result != ''){
-                    var solve = getJson(result);
-                    if(solve !== false){
-                        if(solve.usage != undefined && solve.usage){
-                            var bar_wrap;
-
-                            if(solve.usage.disk_used_percent != undefined){
-                                $("#disk_used_percent").html(solve.usage.disk_used_percent);
-                                $("#disk_bar .bar-loading").replaceWith('{used} / {limit}');
-                                bar_wrap     = $("#disk_bar").html();
-                                bar_wrap     = bar_wrap.replace("{percent}",solve.usage.disk_used_percent);
-                                bar_wrap     = bar_wrap.replace("{used}",solve.usage.disk_used_format);
-                                bar_wrap     = bar_wrap.replace("{limit}",solve.usage.disk_limit_format);
-                                $("#disk_bar").html(bar_wrap);
-                            }
-
-                            if(solve.usage.bandwidth_used_percent != undefined){
-                                $("#bandwidth_bar .bar-loading").replaceWith('{used} / {limit}');
-                                $("#bandwidth_used_percent").html(solve.usage.bandwidth_used_percent);
-                                bar_wrap     = $("#bandwidth_bar").html();
-
-                                bar_wrap     = bar_wrap.replace("{percent}",solve.usage.bandwidth_used_percent);
-                                bar_wrap     = bar_wrap.replace("{used}",solve.usage.bandwidth_used_format);
-                                bar_wrap     = bar_wrap.replace("{limit}",solve.usage.bandwidth_limit_format);
-                                $("#bandwidth_bar").html(bar_wrap);
-                            }
-                        }else
-                            $(".use-progressbar").css("display","none");
-
-                        if(solve.mail_domains != undefined){
-                            $(".mailDomains").html('');
-                            $(solve.mail_domains).each(function(k,v){
-                                $(".mailDomains").append('<option value="'+v+'">'+v+'</option>');
-                            });
-                        }
-
-                        if(solve.emails != undefined){
-                            emails_table.clear().draw();
-                            $(solve.emails).each(function(k,v){
-
-                                var limit = v.limit == "unlimited" ? unlimited_text : v.limit;
-                                var quota = v.limit_mb == "unlimited" ? '' : v.limit_mb;
-
-                                emails_table.row.add([
-                                    k,
-                                    v.email+
-                                    '<div id="editEmail_'+k+'">'+
-                                    '<input type="hidden" name="email" value="'+v.email+'" >'+
-                                    '<input type="hidden" name="quota" value="'+quota+'" >'+
-                                    '</div>',
-                                    v.used+"  / "+limit,
-                                    '<a href="javascript:editEmail('+k+');void 0;" title="<?php echo __("website/account_products/hosting-emails-table-manage"); ?>" class="incelebtn"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a> <a href="javascript:void 0;" onclick="deleteEmail(\''+v.email+'\');" style="margin-left:5px;" title="<?php echo __("website/account_products/hosting-emails-table-delete"); ?>" class="incelebtn"><i class="fa fa-trash" aria-hidden="true"></i></a>',
-                                ]).draw();
-                            });
-                        }
-
-                        if(solve.forwards != undefined){
-                            forwards_table.clear().draw();
-                            $(solve.forwards).each(function(k,v){
-                                forwards_table.row.add([
-                                    k,
-                                    v.dest,
-                                    v.forward,
-                                    '<a href="javascript:void(0);" onclick="deleteForward(\''+v.dest+'\',\''+v.forward+'\');" style="margin-left:5px;" title="<?php echo __("website/account_products/hosting-emails-table-delete"); ?>" class="incelebtn"><i class="fa fa-trash" aria-hidden="true"></i></a>'
-                                ]).draw();
-                            });
-                        }
-
-                    }else
-                        console.log(result);
-                }
-            });
-
-        },10);
+        <?php if(isset($server) && $server): ?>
+        reload_module_content();
+        <?php endif; ?>
 
     });
+
+    function run_transaction(btn_k,btn_el,post_fields){
+        var data1   = {inc: "use_method",method:btn_k};
+        var data2   = $(btn_el).data("fields");
+        if(typeof data2 !== 'object' && data2 !== undefined && data2.length > 0) data2 = getJson(data2);
+        if(typeof data2 !== 'object' || data2 === undefined || data2 === false) data2 = {};
+        var data3   = post_fields === undefined || post_fields === false ? {} : post_fields;
+        var _data   = {...data1,...data2,...data3};
+
+        var request = MioAjax({
+            button_element:btn_el,
+            waiting_text: '<?php echo __("website/others/button1-pending"); ?>',
+            action:"<?php echo $links["controller"]; ?>",
+            method:"POST",
+            data:_data,
+        },true,true);
+        request.done(t_form_handle);
+    }
+    function reload_module_content(page){
+        if(page === undefined) page = "<?php echo isset($m_page) ? $m_page : false; ?>";
+        else{
+            $("#block_module_details_con").html($("#template-loader").html());
+        }
+
+        if(page !== ''){
+            window.history.pushState("object or string", $("title").html(),'<?php echo $links["controller"]; ?>?m_page='+page);
+        }
+
+        var request = MioAjax({
+            action:"<?php echo $links["controller"]; ?>",
+            method:"POST",
+            data:{
+                inc:        "get_hosting_informations",
+                m_page:     page,
+            },
+        },true,true);
+
+        request.done(function(result){
+            if(result != ''){
+                var solve = getJson(result);
+                if(solve !== false){
+
+                    if(solve.usage != undefined && solve.usage){
+                        var bar_wrap;
+
+                        if(solve.usage.disk_used_percent != undefined){
+                            $("#disk_used_percent").html(solve.usage.disk_used_percent);
+                            $("#disk_bar .bar-loading").replaceWith('{used} / {limit}');
+                            bar_wrap     = $("#disk_bar").html();
+                            bar_wrap     = bar_wrap.replace("{percent}",solve.usage.disk_used_percent);
+                            bar_wrap     = bar_wrap.replace("{used}",solve.usage.disk_used_format);
+                            bar_wrap     = bar_wrap.replace("{limit}",solve.usage.disk_limit_format);
+                            $("#disk_bar").html(bar_wrap);
+                        }
+
+                        if(solve.usage.bandwidth_used_percent != undefined){
+                            $("#bandwidth_bar .bar-loading").replaceWith('{used} / {limit}');
+                            $("#bandwidth_used_percent").html(solve.usage.bandwidth_used_percent);
+                            bar_wrap     = $("#bandwidth_bar").html();
+
+                            bar_wrap     = bar_wrap.replace("{percent}",solve.usage.bandwidth_used_percent);
+                            bar_wrap     = bar_wrap.replace("{used}",solve.usage.bandwidth_used_format);
+                            bar_wrap     = bar_wrap.replace("{limit}",solve.usage.bandwidth_limit_format);
+                            $("#bandwidth_bar").html(bar_wrap);
+                        }
+                    }
+                    else
+                        $(".use-progressbar").css("display","none");
+
+                    if(solve.mail_domains != undefined){
+                        $(".mailDomains").html('');
+                        $(solve.mail_domains).each(function(k,v){
+                            $(".mailDomains").append('<option value="'+v+'">'+v+'</option>');
+                        });
+                    }
+
+                    if(solve.emails != undefined){
+                        emails_table.clear().draw();
+                        $(solve.emails).each(function(k,v){
+
+                            var limit = v.limit == "unlimited" ? unlimited_text : v.limit;
+                            var quota = v.limit_mb == "unlimited" ? '' : v.limit_mb;
+
+                            emails_table.row.add([
+                                k,
+                                v.email+
+                                '<div id="editEmail_'+k+'">'+
+                                '<input type="hidden" name="email" value="'+v.email+'" >'+
+                                '<input type="hidden" name="quota" value="'+quota+'" >'+
+                                '</div>',
+                                v.used+"  / "+limit,
+                                '<a href="javascript:editEmail('+k+');void 0;" title="<?php echo __("website/account_products/hosting-emails-table-manage"); ?>" class="incelebtn"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a> <a href="javascript:void 0;" onclick="deleteEmail(\''+v.email+'\');" style="margin-left:5px;" title="<?php echo __("website/account_products/hosting-emails-table-delete"); ?>" class="incelebtn"><i class="fa fa-trash" aria-hidden="true"></i></a>',
+                            ]).draw();
+                        });
+                    }
+
+                    if(solve.forwards != undefined){
+                        forwards_table.clear().draw();
+                        $(solve.forwards).each(function(k,v){
+                            forwards_table.row.add([
+                                k,
+                                v.dest,
+                                v.forward,
+                                '<a href="javascript:void(0);" onclick="deleteForward(\''+v.dest+'\',\''+v.forward+'\');" style="margin-left:5px;" title="<?php echo __("website/account_products/hosting-emails-table-delete"); ?>" class="incelebtn"><i class="fa fa-trash" aria-hidden="true"></i></a>'
+                            ]).draw();
+                        });
+                    }
+
+                    if(solve.panel !== undefined) $("#block_module_details_con").html(solve.panel);
+                }else
+                    console.log(result);
+            }
+        });
+    }
+    function t_form_handle(result){
+        if(result !== ''){
+            var solve = getJson(result);
+            if(solve !== false){
+                if(solve.status === "error"){
+                    alert_error(solve.message,{timer:3000});
+                }
+                else if(solve.status === "successful"){
+                    alert_success(solve.message,{timer:3000});
+                }
+                if(solve.timeRedirect !== undefined){
+                    setTimeout(function(){
+                        window.location.href = solve.timeRedirect.url === undefined ? location.href : solve.timeRedirect.url;
+                    },solve.timeRedirect.duration);
+                }
+                else if(solve.redirect !== undefined){
+                    window.location.href = solve.redirect;
+                }
+            }else
+                console.log(result);
+        }
+    }
+
 </script>
+
+<div id="template-loader" style="display: none;">
+    <div id="block_module_loader">
+        <div class="load-wrapp">
+            <p style="margin-bottom:20px;font-size:17px;"><strong><?php echo ___("needs/processing"); ?>...</strong><br><?php echo ___("needs/please-wait"); ?></p>
+            <div class="load-7">
+                <div class="square-holder">
+                    <div class="square"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div id="EmailManage_modal" style="display: none;" data-izimodal-title="<span id='EmailManage-email'>?</span> - <?php echo __("website/account_products/hosting-emails-table-manage"); ?>">
     <div class="padding20">
 
@@ -453,9 +528,14 @@
             <?php endif; ?>
         <?php endif; ?>
 
+        <?php if($proanse["status"] == "active" && $ctoc_service_transfer): ?>
+            <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(this, 'transfer-service')" data-tab="transfer-service"><i class="fa fa-exchange" aria-hidden="true"></i> <?php echo __("website/account_products/transfer-service"); ?></a></li>
+        <?php endif; ?>
         <?php if($proanse["status"] == "active" && $proanse["period"] != "none"): ?>
             <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(this, 'iptaltalebi')" data-tab="cancellation"><i class="fa fa-ban" aria-hidden="true"></i> <?php echo __("website/account_products/cancellation-request"); ?></a></li>
         <?php endif; ?>
+
+        <div class="orderidno"><span><?php echo __("website/account_products/table-ordernum"); ?></span><strong>#<?php echo $proanse["id"]; ?></strong></div>
 
     </ul>
 
@@ -486,6 +566,56 @@
                             <a target="_blank" href="<?php echo $b_value["url"]; ?>" class="<?php echo isset($b_value["class"]) ? $b_value["class"].' ' : ''; ?>gonderbtn"><?php echo $b_value["name"]; ?></a><br>
                             <?php
                         }
+                    }
+
+                    if(isset($product) && $product && $proanse["period"] != "none" && ($proanse["status"] == "active" || $proanse["status"] == "suspended") && !isset($proanse["disable_renewal"])){
+                        ?>
+                        <div class="clear"></div>
+                        <div id="renewal_list" style="display:none;">
+                            <select id="selection_renewal">
+                                <option value=""><?php echo __("website/account_products/renewal-list-option"); ?></option>
+                                <?php
+                                    if(isset($product["price"])){
+                                        foreach($product["price"] AS $k=>$v){
+                                            ?>
+                                            <option value="<?php echo $k; ?>"><?php
+                                                    echo View::period($v["time"],$v["period"]);
+                                                    echo " ";
+                                                    echo Money::formatter_symbol($v["amount"],$v["cid"],true);
+                                                ?></option>
+                                            <?php
+                                        }
+                                    }
+                                ?>
+                            </select>
+                            <script type="text/javascript">
+                                $(document).ready(function () {
+                                    $("#selection_renewal").change(function () {
+                                        var selection = $(this).val();
+                                        if (selection != '') {
+                                            var result = MioAjax({
+                                                action: "<?php echo $links["controller"]; ?>",
+                                                method: "POST",
+                                                data: {operation: "order_renewal", period: selection}
+                                            }, true);
+
+                                            if (result) {
+                                                var solve = getJson(result);
+                                                if (solve) {
+                                                    if (solve.status == "successful") {
+                                                        window.location.href = solve.redirect;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    });
+                                });
+                            </script>
+                        </div>
+                        <a href="javascript:$('#renewal_list').slideToggle(400);void 0;"
+                           class="mavibtn gonderbtn"><?php echo __("website/account_products/renewal-now-button"); ?></a>
+                        <div class="clear"></div>
+                        <?php
                     }
                 ?>
             </div>
@@ -521,13 +651,29 @@
         <?php endif; ?>
 
 
+        <?php if(isset($server) && $proanse["status"] == "active"): ?>
+            <div class="clear"></div>
+
+            <div class="block_module_details" id="get_details_module_content">
+                <div class="hizmetblok" id="block_module_details_con"></div>
+            </div>
+
+            <div class="clear"></div>
+        <?php endif; ?>
+
         <div class="hizmetblok">
             <table width="100%" border="0">
                 <tr>
                     <td colspan="2" bgcolor="#ebebeb">
                         <strong style="float: left;"><?php echo __("website/account_products/general-info"); ?></strong>
-
-                        <span style="float: right"><?php echo __("website/account_products/table-ordernum"); ?>: #<?php echo $proanse["id"]; ?></span>
+                        <?php
+                            if(isset($invoice) && $invoice)
+                            {
+                                ?>
+                                <span style="float:right;"><?php echo __("website/account_invoices/invoice-num"); ?> <a href="<?php echo $invoice["detail_link"]; ?>" target="_blank"><strong>#<?php echo $invoice["id"]; ?></strong></a></span>
+                                <?php
+                            }
+                        ?>
                     </td>
                 </tr>
                 <tr>
@@ -567,7 +713,6 @@
                 </tr>
             </table>
         </div>
-
 
         <div class="hizmetblok">
             <table width="100%" border="0">
@@ -1475,6 +1620,180 @@
                             }else
                                 console.log(result);
                         }
+                    }
+                </script>
+            </div>
+        </div>
+    <?php endif; ?>
+
+    <?php if($proanse["status"] == "active" && $ctoc_service_transfer): ?>
+        <div id="transfer-service" class="tabcontent">
+            <div class="tabcontentcon">
+                <div class="blue-info" style="margin-bottom:20px;">
+                    <div class="padding15">
+                        <i class="fa fa-info-circle" aria-hidden="true"></i>
+                        <p><?php echo __("website/account_products/transfer-service-desc"); ?></p>
+                    </div>
+                </div>
+
+                <?php
+                    if(isset($ctoc_limit) && strlen($ctoc_limit) > 0){
+                        ?>
+                        <div class="clear"></div>
+                        <div class="green-info" style="width: 20%; text-align: center;">
+                            <div class="padding10">
+                                <?php
+                                    echo __("website/account_products/limit-info",[
+                                        '{used}'    => ($ctoc_limit - $ctoc_used),
+                                        '{limit}'   => $ctoc_limit,
+                                    ]);
+                                ?>
+                            </div>
+                        </div>
+                        <div class="clear"></div>
+                        <?php
+                    }
+                ?>
+
+                <div id="TransferService_wrap" style="<?php echo $ctoc_has_expired ? 'display:none;' : ''; ?>">
+
+                    <form action="<?php echo $links["controller"]; ?>" method="post" id="TransferService">
+                        <input type="hidden" name="operation" value="transfer_service">
+
+                        <input type="text" name="email" placeholder="<?php echo __("website/account_products/transfer-service-client-email"); ?>">
+
+                        <input type="password" name="password" placeholder="<?php echo __("website/account_products/transfer-service-your-account-password"); ?>">
+
+                        <a href="javascript:void(0);" class="yesilbtn gonderbtn mio-ajax-submit" mio-ajax-options='{"result":"TransferService_handle","waiting_text":"<?php echo addslashes(__("website/others/button5-pending")); ?>"}'><?php echo __("website/account_products/transfer-button"); ?></a>
+                        <div class="clear"></div>
+                    </form>
+
+
+                    <h4 style="margin-bottom:7px;    font-size: 18px;"><strong><?php echo __("website/account_products/transfer-service-pending-list"); ?></strong></h4>
+
+                    <table id="ctoc_s_t_list" width="100%" border="0" style="<?php echo isset($ctoc_s_t_list) && is_array($ctoc_s_t_list) && sizeof($ctoc_s_t_list)>0 ? '' : 'display:none;'; ?>">
+                            <thead style="background:#ebebeb;">
+                            <tr>
+                                <th align="left"><?php echo __("website/account_products/transfer-service-list-th-user"); ?></th>
+                                <th align="center"><?php echo __("website/account_products/transfer-service-list-th-email"); ?></th>
+                                <th align="center"><?php echo __("website/account_products/transfer-service-list-th-date"); ?></th>
+                                <th align="center"> </th>
+                            </tr>
+                            </thead>
+
+                            <tbody align="center" style="border-top:none;">
+                            <?php
+                                if(isset($ctoc_s_t_list) && is_array($ctoc_s_t_list) && sizeof($ctoc_s_t_list)>0){
+                                    foreach($ctoc_s_t_list AS $ctoc_s_t_r){
+                                        $ctoc_s_t_r["data"]     = Utility::jdecode($ctoc_s_t_r["data"],true);
+                                        $evt_data               = $ctoc_s_t_r["data"];
+                                        $full_name              = $evt_data["to_full_name"];
+                                        $name_length            = Utility::strlen($full_name);
+                                        $name_length            -= 2;
+                                        $full_name              = Utility::substr($full_name,0,2).str_repeat("*",$name_length);
+                                        ?>
+                                        <tr style="background:none;" id="ctoc_s_t_<?php echo $ctoc_s_t_r["id"]; ?>">
+                                            <td align="left"><?php echo $full_name; ?></td>
+                                            <td align="center"><?php echo $evt_data["to_email"]; ?></td>
+                                            <td align="center"><?php echo DateManager::format("d/m/Y H:i",$ctoc_s_t_r["cdate"]); ?></td>
+                                            <td align="center" width="140">
+                                                <a href="javascript:void 0;" onclick="remove_ctoc_s_t(<?php echo $ctoc_s_t_r["id"]; ?>,this);" class="sbtn red" data-tooltip="<?php echo ___("needs/button-delete"); ?>"><i class="fa fa-times"></i></a>
+                                            </td>
+                                        </tr>
+                                        <?php
+                                    }
+                                }
+                            ?>
+                            </tbody>
+                        </table>
+                    <div id="ctoc_s_t_no_list" class="error" style="<?php echo !(isset($ctoc_s_t_list) && is_array($ctoc_s_t_list) && sizeof($ctoc_s_t_list)>0) ? '' : 'display:none;' ?>"><?php echo __("website/account_products/transfer-service-no-list"); ?></div>
+
+
+                </div>
+                <div id="TransferService_success" style="display: none;">
+                    <div style="margin-top:30px;margin-bottom:70px;text-align:center;">
+                        <i style="font-size:80px;" class="fa fa-check"></i>
+                        <h4><?php echo __("website/account_products/transfer-service-successful"); ?></h4>
+                        <br>
+                    </div>
+                </div>
+                <script type="text/javascript">
+                    function TransferService_handle(result){
+                        if(result != ''){
+                            var solve = getJson(result);
+                            if(solve !== false){
+                                if(solve.status == "error"){
+                                    if(solve.for != undefined && solve.for != ''){
+                                        $("#TransferService "+solve.for).focus();
+                                        $("#TransferService "+solve.for).attr("style","border-bottom:2px solid red; color:red;");
+                                        $("#TransferService "+solve.for).change(function(){
+                                            $(this).removeAttr("style");
+                                        });
+                                    }
+                                    if(solve.message != undefined && solve.message != '')
+                                        alert_error(solve.message,{timer:3000});
+                                }else if(solve.status == "successful"){
+                                    $("#TransferService_wrap").fadeOut(400,function(){
+                                        $("#TransferService_success").fadeIn(400);
+                                        $("html,body").animate({scrollTop:200},600);
+                                    });
+                                    if(solve.reload !== undefined){
+                                        setTimeout(function(){
+                                            location.href = '<?php echo $links["controller"]; ?>?tab=transfer-service';
+                                        },3000);
+                                    }
+                                }
+                            }else
+                                console.log(result);
+                        }
+                    }
+                    function remove_ctoc_s_t(id,btn){
+                        swal({
+                            title: '<?php echo ___("needs/delete-are-you-sure"); ?>',
+                            text: "",
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: '<?php echo __("website/others/notification-confirm"); ?>',
+                            cancelButtonText: '<?php echo __("website/others/notification-cancel"); ?>',
+                        }).then(function(value){
+                            if(value){
+                                var request = MioAjax({
+                                    waiting_text: '<i style="-webkit-animation:fa-spin 2s infinite linear;animation: fa-spin 2s infinite linear;" class="fa fa-spinner" aria-hidden="true"></i>',
+                                    button_element: btn,
+                                    action: "<?php echo $links["controller"]; ?>",
+                                    method: "POST",
+                                    data:{
+                                        operation: "remove_transfer_service",
+                                        id: id
+                                    },
+                                },true,true);
+                                request.done(function(result){
+                                    if(result !== ''){
+                                        var solve = getJson(result);
+                                        if(solve.status === 'error')
+                                            Swal.fire(
+                                                '<?php echo __("website/others/notification-error"); ?>',
+                                                solve.message,
+                                                'error'
+                                            );
+                                        else if(solve.status === 'successful'){
+                                            swal(
+                                                '<?php echo __("website/others/notification-success"); ?>',
+                                                solve.message,
+                                                'success'
+                                            );
+                                            $(btn).parent().parent().remove();
+                                            if($("#ctoc_s_t_list tbody tr").length < 1){
+                                                $("#ctoc_s_t_list").css("display","none");
+                                                $("#ctoc_s_t_no_list").css("display","block");
+                                            }
+                                        }
+                                    }
+                                });
+                            }
+                        });
                     }
                 </script>
             </div>

@@ -20,7 +20,7 @@
                         <?php if($sign_in): ?>
                             <a href="<?php echo $login_link; ?>"><i class="fa fa-sign-in"></i> <?php echo __("website/sign/in");?></a>
                         <?php endif; ?>
-                        <?php if($sign_up): ?>
+                        <?php if($sign_up && !Config::get("options/crtacwshop")): ?>
                             <a class="borderedbtn" href="<?php echo $register_link; ?>"><i class="fa fa-user-plus" aria-hidden="true"></i> <?php echo __("website/sign/up");?></a>
                         <?php endif; ?>
                     <?php } ?>
@@ -32,9 +32,17 @@
                 <?php endif; ?>
 
                 <?php
-                    if($lang_count>1 || $currencies_count>1){
+                    if($currencies_count>1){
                         ?>
-                        <a title="<?php echo __("website/index/select-your-language"); ?>" id="headicon" href="javascript:open_modal('selectLangCurrency',{overlayColor: 'rgba(0, 0, 0, 0.85)'}); void 0;"><i class="fa fa-globe" aria-hidden="true"></i></a>
+                        <a class="scurrencyicon" href="javascript:open_modal('selectCurrency',{overlayColor: 'rgba(0, 0, 0, 0.85)'}); void 0;" title="<?php echo __("website/index/select-your-currency"); ?>"><?php echo $selected_c['code']; ?></a>
+                        <?php
+                    }
+
+                    if($lang_count>1){
+                        ?>
+                        <a class="langflagicon" href="javascript:open_modal('selectLang',{overlayColor: 'rgba(0, 0, 0, 0.85)'}); void 0;" title="<?php echo __("website/index/select-your-language"); ?>">
+                            <img title="<?php echo $selected_l["cname"]." (".$selected_l["name"].")"; ?>" alt="<?php echo $selected_l["cname"]." (".$selected_l["name"].")"; ?>" src="<?php echo $selected_l["flag-img"]; ?>">
+                        </a>
                         <?php
                     }
                 ?>
@@ -93,7 +101,7 @@
 
                             if(isset($opt["span"])) echo '<span>';
 
-                            echo ($menu["icon"]) ? '<i class="'.$menu["icon"].'" aria-hidden="true"></i>' : '';
+                            echo ($menu["icon"]) ? '<i class="'.$menu["icon"].'" aria-hidden="true"></i> ' : '';
                             echo $menu["title"];
 
                             if($menu["children"] || $mega) echo ' <i class="fa fa-caret-down" aria-hidden="true"></i>';
@@ -160,7 +168,7 @@
                     <?php if($sign_in): ?>
                         <a href="<?php echo $login_link; ?>"><i class="fa fa-sign-in"></i> <?php echo __("website/sign/in");?></a>
                     <?php endif; ?>
-                    <?php if($sign_up): ?>
+                    <?php if($sign_up && !Config::get("options/crtacwshop")): ?>
                         <a href="<?php echo $register_link; ?>"><i class="fa fa-user-plus" aria-hidden="true"></i> <?php echo __("website/sign/up");?></a>
                     <?php endif; ?>
                 <?php } ?>
@@ -173,26 +181,28 @@
 
         </div>
 
-        <?php
-            if(!Config::get("theme/only-panel")){
-                ?>
-                <ul>
-                    <?php
-                        header_menu_walk($header_menus,false,[
-                            'mobile'            => true,
-                            'span'              => true,
-                            'template_address'  => $tadress,
-                            'header_type'       => $header_type,
-                        ]);
+        <div id="mobmenu_wrap">
+            <?php
+                if(!Config::get("theme/only-panel")){
                     ?>
-                </ul>
-                <?php
-            }
-        ?>
+                    <ul>
+                        <?php
+                            header_menu_walk($mobile_menus ? $mobile_menus : $header_menus,false,[
+                                'mobile'            => true,
+                                'span'              => true,
+                                'template_address'  => $tadress,
+                                'header_type'       => $header_type,
+                            ]);
+                        ?>
+                    </ul>
+                    <?php
+                }
+            ?>
+        </div>
     </div>
     <script>
         $(document).ready(function(){
-            $('.toggle').click(function(e) {
+            $('#mobmenu_wrap .toggle').click(function(e){
                 e.preventDefault();
 
                 var $this = $(this);

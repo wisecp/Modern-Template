@@ -6,6 +6,7 @@
 </head>
 
 <body id="<?php echo $clientArea_type == 1 ? "modernpanel" : "muspanel"; ?>">
+<?php if($h_contents = Hook::run("ClientAreaBeginBody")) foreach($h_contents AS $h_content) if($h_content) echo $h_content; ?>
 
 <?php
     include __DIR__.DS."inc".DS."demo-views.php";
@@ -106,11 +107,6 @@
 
 <?php View::footer_codes(); ?>
 
-<?php
-    include __DIR__.DS."inc".DS."dealership-modal.php";
-
-?>
-
 <script src="<?php echo $tadress;?>js/aos.js"></script>
 <script type="text/javascript">
     AOS.init({
@@ -120,6 +116,8 @@
 </script>
 
 <a href="#0" class="cd-top">Top</a>
+
+<?php if($h_contents = Hook::run("ClientAreaEndBody")) foreach($h_contents AS $h_content) if($h_content) echo $h_content; ?>
 
 </body>
 </html>

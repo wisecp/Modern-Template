@@ -2,6 +2,8 @@
     $hoptions = [
         'page' => "order-steps-sms",
         'jquery-ui',
+        'ion.rangeSlider',
+        'intlTelInput',
     ];
 ?>
 <script>

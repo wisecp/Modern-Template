@@ -4,8 +4,6 @@
     if(isset($list) && $list){
         foreach($list AS $i=>$row){
             $amount = $row["total"];
-            if($row["status"] == "unpaid") $amount = $row["subtotal"];
-
             $item = [];
             array_push($item,$row["id"]);
             array_push($item,$row["creation_date"]);

@@ -1,5 +1,5 @@
 <?php defined('CORE_FOLDER') OR exit('You can not get in here!'); ?><!DOCTYPE html>
-<html>
+<html lang="<?php echo ___("package/code"); ?>">
 <head>
     <?php
         $wClient = Config::get("theme/only-panel") && $clientArea_type == 1;
@@ -17,6 +17,8 @@
     }else{
         ?><body><?php
     }
+
+    if($h_contents = Hook::run("ClientAreaBeginBody")) foreach($h_contents AS $h_content) if($h_content) echo $h_content;
 
     echo EOL;
     include __DIR__.DS."inc".DS."demo-views.php";
@@ -91,8 +93,6 @@
 
         <?php
 
-        include __DIR__.DS."inc".DS."dealership-modal.php";
-
     }
     else{
 
@@ -116,6 +116,8 @@
 </script>
 
 <a href="#0" class="cd-top">Top</a>
+
+<?php if($h_contents = Hook::run("ClientAreaEndBody")) foreach($h_contents AS $h_content) if($h_content) echo $h_content; ?>
 
 </body>
 </html>

@@ -19,6 +19,11 @@
         <form action="<?php echo $links["controller"]; ?>" method="post" id="CreateRequestForm" enctype="multipart/form-data">
             <?php echo Validation::get_csrf_token('account'); ?>
 
+            <?php
+                if($h_contents = Hook::run("TicketClientAreaViewCreate"))
+                    foreach($h_contents AS $h_content) if($h_content) echo  $h_content;
+            ?>
+
             <div class="ticketinfos">
 
                 <input name="title" type="text" placeholder="<?php echo __("website/account_tickets/creq-title"); ?>">
@@ -164,9 +169,25 @@
 
                 <div class="destekdosyaeki">
                     <label><?php echo __("website/account_tickets/upload-attachment"); ?>: <input name="attachments[]" multiple type="file"><br>
-                        <span style="font-size:13px;"><?php echo __("website/account_tickets/attachment-allowed-extensions",['{extensions}' => $atachment_extensions]); ?></span></label></div>
+                        <span style="font-size:13px;"><?php echo __("website/account_tickets/attachment-allowed-extensions",['{extensions}' => $atachment_extensions]); ?></span></label>
+                    </div>
 
-                <a class="yesilbtn gonderbtn" id="SubmitTicketBtn" href="javascript:void(0);"><?php echo __("website/account_tickets/creg-button"); ?></a>
+                <style type="text/css">
+                    #encrypt_message_wrap .checkbox-custom+.checkbox-custom-label:before,.radio-custom+.radio-custom-label:before{content:'\f13e';font-family:'FontAwesome';padding:0px;font-size: 17px;border:none;margin-right: 3px;opacity: .3;}
+                    #encrypt_message_wrap .checkbox-custom:checked+.checkbox-custom-label:before{content:"\f023";font-family:'FontAwesome';color:#8BC34A;font-size:17px;background:none;border:none;opacity: 1;}
+                </style>
+
+                <div class="ticketsendbtn" style="float:right;text-align:right;">
+                    <div id="encrypt_message_wrap">
+                        <input id="EncryptMessage" class="checkbox-custom" name="encrypt_message" value="1" type="checkbox">
+                        <label for="EncryptMessage" class="checkbox-custom-label">
+                            <span class="checktext"><strong><?php echo __("website/account_tickets/encrypt-message-1"); ?></strong></span><br><span class="kinfo"><?php echo __("website/account_tickets/encrypt-message-2"); ?></span></label>
+                    </div>
+
+                    <div class="clear"></div>
+                    <a style="width:80%;text-align:center;" class="yesilbtn gonderbtn" id="SubmitTicketBtn" href="javascript:void(0);"><?php echo __("website/account_tickets/creg-button"); ?></a>
+
+                </div>
 
             </div>
 

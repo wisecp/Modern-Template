@@ -14,6 +14,7 @@
         'suspended' => '<div class="listingstatus"><span>'.__("website/account_products/status-suspended").'</span></div>',
         'active' => '<div class="listingstatus"><span class="active">'.__("website/account_products/status-active").'</span></div>',
         'inactive' => '<span> '.__("website/account_products/status-inactive").'</span>',
+        'completed' => '<span> '.__("website/account_products/status-completed").'</span>',
     ];
 
     $origin_situations = [
@@ -36,9 +37,26 @@
         'paid' => '<div class="listingstatus"><span class="active">'.__("website/account_invoices/status-paid").'</span></div>',
     ];
 
+    $affiliate_transaction  = [
+        'approved'          => '<span class="active">'.__("website/account/affiliate-tx49").'</span>',
+        'completed'         => '<span class="active">'.__("website/account/affiliate-tx49").'</span>',
+        'invalid'           => '<span class="wait">'.__("website/account/affiliate-tx50").'</span>',
+        'invalid-another'   => '<span class="wait">'.__("website/account/affiliate-tx50").'</span>',
+        'cancelled'         => '<span class="wait">'.__("website/account/affiliate-tx63").'</span>',
+    ];
+
+    $affiliate_withdrawal  = [
+        'awaiting'          => '<span class="wait">'.__("website/account/affiliate-tx61").'</span>',
+        'process'           => '<span class="process">'.__("website/account/affiliate-tx74").'</span>',
+        'completed'         => '<span class="active">'.__("website/account/affiliate-tx62").'</span>',
+        'cancelled'         => '<span>'.__("website/account/affiliate-tx63").'</span>',
+    ];
+
     return [
         'ticket'  => $ticket_situations,
         'product' => $product_situations,
         'origin' => $origin_situations,
         'invoice' => $invoice_situations,
+        'affiliate_transaction' => $affiliate_transaction,
+        'affiliate_withdrawal' => $affiliate_withdrawal,
     ];

@@ -27,8 +27,14 @@
 
     </div>
 
-
     <div class="desteksistemi">
+
+        <div class="clear"></div>
+        <?php
+            if($h_contents = Hook::run("TicketClientAreaViewList"))
+                foreach($h_contents AS $h_content) if($h_content) echo  $h_content;
+        ?>
+        <div class="clear"></div>
 
         <table width="100%" id="tickets">
             <thead style="background:#ebebeb;">

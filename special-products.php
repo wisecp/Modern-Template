@@ -1,4 +1,5 @@
 <?php defined('CORE_FOLDER') OR exit('You can not get in here!');
+
     $hoptions = [
         'page' => "special-products",
         'jquery-ui',
@@ -25,6 +26,7 @@
                 <div class="tablopaketler" style="background: none;" id="category_<?php echo $cat["id"]; ?>">
                     <?php
                         foreach($list AS $product){
+                            $optl               = $product["options_lang"];
                             $popular            = false;
                             $product_amount     = 0;
                             $product_period     = '';
@@ -107,10 +109,9 @@
                                 ?>
 
                                 <?php if($product["buy_link"] != ''): ?>
-
                                     <?php if($product["haveStock"]){ ?>
                                         <a class="gonderbtn" href="<?php echo $product["buy_link"]; ?>">
-                                            <?php echo isset($product["optionsl"]["buy_button_name"]) && $product["optionsl"]["buy_button_name"] ? $product["optionsl"]["buy_button_name"] : __("website/index/add-basket-button"); ?>
+                                            <?php echo isset($optl["buy_button_name"]) && $optl["buy_button_name"] ? $optl["buy_button_name"] : __("website/index/add-basket-button"); ?>
                                         </a>
                                     <?php }else{ ?>
                                         <a id="sunucutukenbtn" class="gonderbtn"><i class="fa fa-ban" aria-hidden="true"></i> <?php echo __("website/products/out-of-stock"); ?></a>
@@ -156,6 +157,7 @@
                                 foreach($list AS $k=>$product):
                                     $opt  = $product["options"];
                                     $optl = $product["options_lang"];
+                                    $prices     = (!isset($product["prices"])) ? [] : $product["prices"];
                                     ?>
                                     <tr>
                                         <td align="center"><?php echo $k; ?></td>
@@ -184,9 +186,8 @@
                                             }
                                         ?>
 
-                                        <td align="center" valign="middle">
+                                        <td align="center" valign="middle" data-order="<?php echo $prices[0]["amount"]; ?>">
                                             <?php
-                                                $prices     = (!isset($product["prices"])) ? [] : $product["prices"];
                                                 if(isset($prices[0]) && $prices[0]["amount"]){
                                                     $period = View::period($prices[0]["time"],$prices[0]["period"]);
                                                     $price      = Money::formatter_symbol($prices[0]["amount"],$prices[0]["cid"],!$product["override_usrcurrency"]);

@@ -167,6 +167,7 @@ video{position:fixed;top:50%;left:50%;min-width:100%;min-height:100%;width:auto;
 .uyeolgirisslogan{text-align:center}
 .uyeolgirisslogan h4{width:90%;font-size:17px;margin:auto;margin-top:25px}
 }
+#gsm {width: 100%;padding-left:90px;}
 </style>
 
 
@@ -269,7 +270,7 @@ video{position:fixed;top:50%;left:50%;min-width:100%;min-height:100%;width:auto;
                                 ?>
                                 <tr>
                                     <td>
-                                        <input style="width: 100%;padding-left:90px;" id="gsm" type="text"<?php echo ($gsm_required) ? ' required' : '' ?> placeholder="<?php echo __("website/sign/up-form-gsm"); echo ($sms_verify_status) ? " ".__("website/sign/up-form-gsm-verify") : ''; ?>" onkeypress="return event.charCode>= 48 &amp;&amp;event.charCode<= 57">
+                                        <input id="gsm" type="text"<?php echo ($gsm_required) ? ' required' : '' ?> placeholder="<?php echo __("website/sign/up-form-gsm"); echo ($sms_verify_status) ? " ".__("website/sign/up-form-gsm-verify") : ''; ?>" onkeypress="return event.charCode>= 48 &amp;&amp;event.charCode<= 57">
                                     </td>
                                 </tr>
                                 <?php endif; ?>

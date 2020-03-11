@@ -4,6 +4,7 @@
         'page' => "order-steps-server",
         'jquery-ui',
         'ion.rangeSlider',
+        'intlTelInput',
     ];
 ?>
 <script type="text/javascript">
@@ -138,57 +139,60 @@
 
                 <div<?php echo $addons ? ' class="sungenbil"' : ''; ?>>
 
-                    <div class="skonfiginfo" id="configInfo">
-                        <div style="padding:20px;">
-                            <h4><?php echo __("website/osteps/server-set-informations"); ?></h4>
-                            <table width="100%" border="0">
+                    <?php if(Config::get("options/hidsein")): ?>
+                        <div class="skonfiginfo" id="configInfo">
+                            <div style="padding:20px;">
+                                <h4><?php echo __("website/osteps/server-set-informations"); ?></h4>
+                                <table width="100%" border="0">
 
-                                <tr>
-                                    <td width="30%">
-                                        <label for="hostname">
-                                            <?php echo __("website/osteps/hostname"); ?>
-                                        </label>
-                                    </td>
-                                    <td width="70%">
-                                        <input type="text" name="hostname" id="hostname" placeholder="<?php echo __("website/osteps/ex-placeholder"); ?>: server.example.com">
-                                    </td>
-                                </tr>
+                                    <tr>
+                                        <td width="30%">
+                                            <label for="hostname">
+                                                <?php echo __("website/osteps/hostname"); ?>
+                                            </label>
+                                        </td>
+                                        <td width="70%">
+                                            <input type="text" name="hostname" id="hostname" placeholder="<?php echo __("website/osteps/ex-placeholder"); ?>: server.example.com">
+                                        </td>
+                                    </tr>
 
-                                <tr>
-                                    <td width="30%">
-                                        <label for="ns1">
-                                            <?php echo __("website/osteps/server-ns1"); ?>
-                                        </label>
-                                    </td>
-                                    <td width="70%">
-                                        <input type="text" name="ns1" id="ns1" placeholder="<?php echo __("website/osteps/ex-placeholder"); ?>: ns1.example.com">
-                                    </td>
-                                </tr>
+                                    <tr>
+                                        <td width="30%">
+                                            <label for="ns1">
+                                                <?php echo __("website/osteps/server-ns1"); ?>
+                                            </label>
+                                        </td>
+                                        <td width="70%">
+                                            <input type="text" name="ns1" id="ns1" placeholder="<?php echo __("website/osteps/ex-placeholder"); ?>: ns1.example.com">
+                                        </td>
+                                    </tr>
 
-                                <tr>
-                                    <td width="30%">
-                                        <label for="ns2">
-                                            <?php echo __("website/osteps/server-ns2"); ?>
-                                        </label>
-                                    </td>
-                                    <td width="70%">
-                                        <input type="text" name="ns2" id="ns2" placeholder="<?php echo __("website/osteps/ex-placeholder"); ?>: ns2.example.com">
-                                    </td>
-                                </tr>
+                                    <tr>
+                                        <td width="30%">
+                                            <label for="ns2">
+                                                <?php echo __("website/osteps/server-ns2"); ?>
+                                            </label>
+                                        </td>
+                                        <td width="70%">
+                                            <input type="text" name="ns2" id="ns2" placeholder="<?php echo __("website/osteps/ex-placeholder"); ?>: ns2.example.com">
+                                        </td>
+                                    </tr>
 
-                                <tr>
-                                    <td width="30%">
-                                        <label for="password">
-                                            <?php echo __("website/osteps/server-password"); ?>
-                                        </label>
-                                    </td>
-                                    <td width="70%">
-                                        <input type="text" name="password" id="password" placeholder="<?php echo __("website/osteps/server-password-info"); ?>">
-                                    </td>
-                                </tr>
-                            </table>
+                                    <tr>
+                                        <td width="30%">
+                                            <label for="password">
+                                                <?php echo __("website/osteps/server-password"); ?>
+                                            </label>
+                                        </td>
+                                        <td width="70%">
+                                            <input type="text" name="password" id="password" placeholder="<?php echo __("website/osteps/server-password-info"); ?>">
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
                         </div>
-                    </div>
+                    <?php endif; ?>
+
 
                     <?php if($addons): ?>
                         <div class="skonfiginfo" style="margin-top:20px;">

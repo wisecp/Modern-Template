@@ -38,7 +38,7 @@
                 if($first_price){
                     $first_price_symbol_position    = '';
                     $split_amount                   = explode(" ",$first_price);
-                    $first_pricet_symbol            = '';
+                    $first_price_symbol             = '';
                     if(in_array(current($split_amount),$currency_symbols)){
                         $first_price_symbol_position = "left";
                         $first_price_symbol  = current($split_amount);

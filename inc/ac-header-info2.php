@@ -42,7 +42,7 @@
                 <?php
                     if(isset($acheader_info["dealership"]["status"]) && $acheader_info["dealership"]["status"] == "active"){
                         ?>
-                        <a id="resellertooltip" class="tooltip-right" data-tooltip="<?php echo __("website/account/active-reseller"); ?>" href="javascript:open_modal('resellerinfo',{zindex:1200});void 0;"><img class="resellericon" height="25" src="<?php echo $tadress; ?>images/dealership.svg"></a>
+                        <a id="resellertooltip" class="tooltip-right" data-tooltip="<?php echo __("website/account/active-reseller"); ?>" href="<?php echo Controllers::$init->CRLink("reseller"); ?>"><img class="resellericon" height="25" src="<?php echo $tadress; ?>images/dealership.svg"></a>
                         <?php
                     }
                 ?>

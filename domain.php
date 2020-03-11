@@ -658,7 +658,7 @@
                                     <?php endif; ?>
                                 </td>
                                 <?php
-                                    if($row["promo_register_price"]){
+                                    if($row["promo_register_price"] > 0){
                                         ?>
                                         <td align="center"><div style="text-decoration:line-through;"><?php echo Money::formatter_symbol($row["reg_price"]["amount"],$row["reg_price"]["cid"],!$override_usrcurrency); ?></div><div style="font-weight:bold;color: #8BC34A;font-size: 18px;"><?php echo Money::formatter_symbol($row["promo_register_price"],$row["currency"],!$override_usrcurrency); ?></div></td>
                                         <?php
@@ -672,7 +672,7 @@
                                 <td align="center"><?php echo Money::formatter_symbol($row["ren_price"]["amount"],$row["ren_price"]["cid"],!$override_usrcurrency); ?></td>
 
                                 <?php
-                                    if($row["promo_transfer_price"]){
+                                    if($row["promo_transfer_price"] > 0){
                                         ?>
                                         <td align="center"><div style="text-decoration:line-through;"><?php echo Money::formatter_symbol($row["tra_price"]["amount"],$row["tra_price"]["cid"],!$override_usrcurrency); ?></div><div style="font-weight:bold;color: #8BC34A;font-size: 18px;"><?php echo Money::formatter_symbol($row["promo_transfer_price"],$row["currency"],!$override_usrcurrency); ?></div></td>
                                         <?php

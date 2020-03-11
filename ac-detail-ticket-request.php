@@ -41,6 +41,7 @@
 
     }
     function get_replies(){
+        if(windowActive !== "on") return false;
         var request = MioAjax({
             action:"<?php echo $links["controller"];?>",
             method:"POST",
@@ -66,7 +67,8 @@
                         if(last_reply_id > 0){
                             $("#detailTicketReplies").prepend(solve.content);
                             $("html, body").animate({ scrollTop: $("#detailTicketReplies").offset().top - 300},1000);
-                        }else{
+                        }
+                        else{
                             $("#detailTicketReplies").animate({opacity:0}, 500,function(){
                                 $("#detailTicketReplies").html(solve.content);
                                 $("#detailTicketReplies").animate({opacity: 1}, 500);
@@ -156,6 +158,13 @@
         </h4>
     </div>
 
+    <div class="clear"></div>
+    <?php
+        if($h_contents = Hook::run("TicketClientAreaViewDetailTop",$ticket))
+            foreach($h_contents AS $h_content) if($h_content) echo  $h_content;
+    ?>
+    <div class="clear"></div>
+
     <div class="ticketinfos"<?php echo $ticket["locked"] ? ' id="ticketfixed"' : ''; ?>>
         <div align="center">
             <div class="destekinfo">
@@ -209,12 +218,25 @@
 
                 <textarea style="width:100%;border-top:1px solid #ebebeb;" name="message" cols="" rows="7" placeholder="<?php echo __("website/account_tickets/message-placeholder"); ?>"></textarea>
                 <div class="autosave"> <span id="auto_saved" style="display: none;"><?php echo __("website/account_tickets/auto-saved"); ?></span></div>
+
                 <div id="result" style="display: none;    float: left;    margin-bottom: 10px;    width: 100%;" class="error"></div>
                 <div class="destekdosyaeki">
                     <label><?php echo __("website/account_tickets/upload-attachment"); ?>: <input name="attachments[]" type="file" multiple id="attachment_files"><span style="font-size:13px;"><?php echo __("website/account_tickets/attachment-allowed-extensions",['{extensions}' => $atachment_extensions]); ?></span></label></div>
 
 
                 <div style="float:right;" class="yuzde40" class="guncellebtn yuzde30">
+
+                    <style type="text/css">
+                        #encrypt_message_wrap .checkbox-custom+.checkbox-custom-label:before,.radio-custom+.radio-custom-label:before{content:'\f13e';font-family:'FontAwesome';padding:0px;font-size: 17px;border:none;margin-right: 3px;opacity: .3;}
+                        #encrypt_message_wrap .checkbox-custom:checked+.checkbox-custom-label:before{content:"\f023";font-family:'FontAwesome';color:#8BC34A;font-size:17px;background:none;border:none;opacity: 1;}
+                    </style>
+
+                    <div id="encrypt_message_wrap" style="text-align:right;">
+                        <input id="EncryptMessage" class="checkbox-custom" name="encrypt_message" value="1" type="checkbox">
+                        <label for="EncryptMessage" class="checkbox-custom-label">
+                            <span class="checktext"><strong><?php echo __("website/account_tickets/encrypt-message-1"); ?></strong></span><br><span class="kinfo"><?php echo __("website/account_tickets/encrypt-message-2"); ?></span></label>
+                    </div>
+
                    
                     <a style="width:100%;" class="yesilbtn gonderbtn mio-ajax-submit" mio-ajax-options='{"result":"ReplyForm_submit","waiting_text":"<?php echo addslashes(__("website/others/button1-pending")); ?>","progress_text":"<?php echo addslashes(__("website/others/button1-upload")); ?>"}' href="javascript:void(0);"><?php echo __("website/account_tickets/reply-button"); ?></a>
                 </div>
@@ -233,6 +255,11 @@
             <br>
         </div>
     </div>
+
+    <?php
+        if($h_contents = Hook::run("TicketClientAreaViewDetail",$ticket))
+            foreach($h_contents AS $h_content) if($h_content) echo  $h_content;
+    ?>
 
     <div class="destekdetayleft" id="detailTicketReplies">
 

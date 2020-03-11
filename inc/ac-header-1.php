@@ -61,9 +61,9 @@
                         '{full_name}' => $acheader_info["full_name"],
                     ]); ?></span>
                 <?php
-                if(isset($acheader_info["dealership"]["status"]) && $acheader_info["dealership"]["status"] == "active"){
+                if(Config::get("options/dealership/status") && isset($acheader_info["dealership"]["status"]) && $acheader_info["dealership"]["status"] == "active"){
                     ?>
-                    <a id="resellertooltip" class="tooltip-right" data-tooltip="<?php echo __("website/account/active-reseller"); ?>" href="javascript:open_modal('resellerinfo',{zindex:1200});void 0;"><img class="resellericon" height="25" src="<?php echo $tadress; ?>images/dealership.svg"></a>
+                    <a id="resellertooltip" class="tooltip-right" data-tooltip="<?php echo __("website/account/active-reseller"); ?>" href="<?php echo Controllers::$init->CRLink("reseller"); ?>"><img class="resellericon" height="25" src="<?php echo $tadress; ?>images/dealership.svg"></a>
                     <?php
                 }
                 ?>
@@ -73,6 +73,23 @@
 
         <div class="headbutonlar">
 
+
+            <?php
+
+                if($lang_count>1){
+                    ?>
+                    <a class="langflagicon" style="float: left;" href="javascript:open_modal('selectLang',{overlayColor: 'rgba(0, 0, 0, 0.85)'}); void 0;" title="<?php echo __("website/index/select-your-language"); ?>">
+                        <img title="<?php echo $selected_l["cname"]." (".$selected_l["name"].")"; ?>" alt="<?php echo $selected_l["cname"]." (".$selected_l["name"].")"; ?>" src="<?php echo $selected_l["flag-img"]; ?>">
+                    </a>
+                    <?php
+                }
+
+                if($currencies_count>1){
+                    ?>
+                    <a class="scurrencyicon" style="float: left;" href="javascript:open_modal('selectCurrency',{overlayColor: 'rgba(0, 0, 0, 0.85)'}); void 0;" title="<?php echo __("website/index/select-your-currency"); ?>"><?php echo $selected_c['code']; ?></a>
+                    <?php
+                }
+            ?>
 
             <?php if($visibility_basket): ?>
                 <a title="<?php echo __("website/checkout/basket-name");?>" id="sepeticon" href="<?php echo $basket_link; ?>"><i class="fa fa-shopping-cart" aria-hidden="true"></i><span class="basket-count"><?php echo $basket_count; ?></span></a>
@@ -196,7 +213,8 @@
                         </div>
                     </div>
                     <?php
-                }elseif($sign_in || $sign_up){
+                }
+                elseif($sign_in || ($sign_up && !Config::get("options/crtacwshop"))){
                     ?>
                     <div class="wclientnotifi">
                         <a class="wnotifitibtn" href="javascript:void 0;"><i class="fa fa-user" aria-hidden="true"></i></a>
@@ -221,7 +239,7 @@
                                         </div>
                                     <?php endif; ?>
 
-                                    <?php if($sign_up): ?>
+                                    <?php if($sign_up && !Config::get("options/crtacwshop")): ?>
                                         <div class="wnotifilist">
                                             <div class="wnotifilisticon"><i class="fa fa-user-plus" aria-hidden="true"></i></div>
                                             <div class="wnotifilistcon"><h5><a href="<?php echo $register_link; ?>"><strong><?php echo __("website/sign/up");?></strong></a></h5></div>
@@ -239,17 +257,6 @@
 
                 }
             ?>
-
-            <?php
-
-                if($lang_count>1 || $currencies_count>1){
-                    ?>
-                    <a href="javascript:open_modal('selectLangCurrency',{overlayColor: 'rgba(0, 0, 0, 0.85)'}); void 0;" title="<?php echo __("website/index/select-your-language"); ?>" style="float: left;"><i class="fa fa-globe" aria-hidden="true"></i></a>
-                    <?php
-                }
-            ?>
-
-
 
         </div>
 

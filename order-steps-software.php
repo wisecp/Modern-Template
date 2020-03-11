@@ -3,6 +3,7 @@
         'page' => "order-steps-software",
         'jquery-ui',
         'ion.rangeSlider',
+        'intlTelInput',
     ];
 ?>
 <script>
@@ -152,7 +153,7 @@
                                                 <input type="hidden" name="from" value="order_steps">
                                                 <input type="hidden" name="product_type" value="<?php echo $product["type"]; ?>">
                                                 <input type="hidden" name="product_id" value="<?php echo $product["id"]; ?>">
-                                                <input type="hidden" name="selected_period" value="<?php echo isset($selected_period) ? $selected_period : 0; ?>">
+                                                <input type="hidden" name="selected_period" value="<?php echo isset($selected_period) ? $selected_period["id"] : 0; ?>">
                                                 <input  id="domainInput" name="domain" type="text" placeholder="<?php echo __("website/osteps/domain-placeholder"); ?>">
                                                 <a href="javascript:void(0);" class="gonderbtn mio-ajax-submit" mio-ajax-options='{"result":"DomainCheckSubmit","before_function":"DomainCheckBefore","waiting_text":"<?php echo addslashes(__("website/others/button1-pending")); ?>"}' id="button1"><?php echo __("website/osteps/check-it-button"); ?></a>
 
@@ -828,6 +829,7 @@
             }
         </script>
     <?php endif; ?>
+
 </div>
 
 <div class="clear"></div>

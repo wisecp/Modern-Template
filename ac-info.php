@@ -53,7 +53,7 @@
 ?>
 <link rel="stylesheet" href="<?php echo $sadress;?>assets/plugins/phone-cc/css/intlTelInput.css">
 <script src="<?php echo $sadress;?>assets/plugins/phone-cc/js/intlTelInput.js"></script>
-<script>
+<script type="text/javascript">
     var default_country,city_request = false,counti_request=false;
     $(document).ready(function(){
 
@@ -94,7 +94,8 @@
         if(tab == '' || tab == undefined){
             var tab_eq = 0;
             $(".tablinks:eq("+tab_eq+")").click();
-        }else{
+        }
+        else{
             var tab_eq = tab-1;
             $(".tablinks").removeAttr("id");
             $(".tablinks:eq("+tab_eq+")").click();
@@ -131,6 +132,15 @@
         });
 
         $("input[name='kind']").trigger("change");
+
+        <?php
+            if(isset($requiredFields) && $requiredFields){
+
+            }
+            elseif($remainingVerifications["force"] > 0){
+                ?>$('.tab .tablinks:eq(4)').click();<?php
+            }
+        ?>
 
     });
 
@@ -383,7 +393,7 @@
             </div>
             <div id="zipcode" class="yuzde25">
                 <strong><?php echo __("website/account_info/zipcode"); ?></strong>
-                <input name="zipcode" type="text" placeholder="<?php echo __("admin/users/create-zipcode-placeholder"); ?>" onkeypress="return event.charCode>= 48 &amp;&amp;event.charCode<= 57">
+                <input name="zipcode" type="text" placeholder="<?php echo __("admin/users/create-zipcode-placeholder"); ?>">
             </div>
             <div id="address" class="yuzde100" style="margin-top:20px;">
                 <strong><?php echo __("website/account_info/address"); ?></strong>
@@ -428,6 +438,7 @@
         <li><a href="javascript:void(0)" class="tablinks" data-rank="2" onclick="openTab(this, 'faturabilgilerim')"><i class="fa fa-file-text-o" aria-hidden="true"></i> <?php echo __("website/account_info/info-tab2"); ?></a></li>
         <li><a href="javascript:void(0)" class="tablinks" data-rank="3" onclick="openTab(this, 'tercihler')"><i class="fa fa-star-o" aria-hidden="true"></i> <?php echo __("website/account_info/info-tab3"); ?></a></li>
         <li><a href="javascript:void(0)" class="tablinks" data-rank="4" onclick="openTab(this, 'sifredegistir')"><i class="fa fa-key" aria-hidden="true"></i> <?php echo __("website/account_info/info-tab4"); ?></a></li>
+        <li><a href="javascript:void(0)" class="tablinks" data-rank="5" onclick="openTab(this, 'verification')"><i class="fa fa-check" aria-hidden="true"></i> <?php echo __("website/account_info/info-tab5"); ?></a></li>
     </ul>
 
 
@@ -435,177 +446,31 @@
         <div class="tabcontentcon" style="margin-top:25px;">
 
 
-            <?php if(isset($requiredFields) && $requiredFields): ?>
-                <div class="red-info">
-                    <div class="padding15">
-                        <i class="fa fa-info-circle" aria-hidden="true" style="    font-size: 92px;
+            <?php
+                if(isset($requiredFields) && $requiredFields){
+                    ?>
+                    <div class="red-info">
+                        <div class="padding15">
+                            <i class="fa fa-info-circle" aria-hidden="true" style="    font-size: 92px;
     float: left;
     margin-right: 30px;
     margin-left: 20px;
     margin-top: 5px;"></i>
-                        <div class="required-field-info">
-                            <h5><strong><?php echo __("website/account_info/required-field-title"); ?></strong></h5>
-                            <p><?php echo __("website/account_info/required-field"); ?></p>
-                            <?php
-                                foreach($requiredFields AS $key => $name){
-                                    if(strstr($key,"field_"))
-                                        $id = "#c" . $key;
-                                    elseif($key == "gsm" || $key == "identity" || $key == "birthday")
-                                        $id = "#".$key;
-                                    elseif($key == "verified-email")
-                                        $id = "#email_verify_code";
-                                    elseif($key == "verified-gsm")
-                                        $id = "#gsm_verify_code";
-                                    elseif($key == "company_name" || $key == "company_tax_number" || $key == "company_tax_office")
-                                        $id = "#".$key;
-                                    else
-                                        $id= "#empty";
+                            <div class="required-field-info">
+                                <h5><strong><?php echo __("website/account_info/required-field-title"); ?></strong></h5>
+                                <p><?php echo __("website/account_info/required-field"); ?></p>
+                                <?php
+                                    foreach($requiredFields AS $key => $name){
+                                        if(strstr($key,"field_"))
+                                            $id = "#c" . $key;
+                                        elseif($key == "gsm" || $key == "identity" || $key == "birthday")
+                                            $id = "#".$key;
+                                        elseif($key == "company_name" || $key == "company_tax_number" || $key == "company_tax_office")
+                                            $id = "#".$key;
+                                        else
+                                            $id= "#empty";
 
-                                    if($key == "verified-email"){
-                                        $sendBlocked = User::CheckBlocked("verify-code-send-email",$udata["id"],[
-                                            'ip' => UserManager::GetIP(),
-                                            'email' => $udata["email"],
-                                        ]);
                                         ?>
-                                        <form action="<?php echo $operation_link; ?>" method="post" id="verifyEmail">
-                                            <?php echo Validation::get_csrf_token('account'); ?>
-                                            <input type="hidden" name="operation" value="verifyEmail">
-                                            <input type="hidden" name="send" value="0">
-
-                                            <div class="mailgsmverify">
-                                                <strong>- <?php echo __("website/account_info/please-verify-your-email"); ?></strong>
-                                                <input name="code" id="email_verify_code" type="text" class="yuzde20" placeholder="<?php echo __("website/account_info/verify-code-input-label"); ?>" style="border-bottom:2px solid red; color:red;">
-                                                <a style="margin-right:5px;" href="javascript:verifyCodeCheckEmail();void 0;" id="verify-code-check-email" class="lbtn"><i class="fa fa-check" aria-hidden="true"></i> <?php echo __("website/account_info/verify-button"); ?></a>
-                                                <a<?php echo $sendBlocked ? ' style="display:none;"' : ''; ?> href="javascript:verifyCodeSendEmail();void 0;" id="verify-code-send-email" class="lbtn"><i class="fa fa-refresh" aria-hidden="true"></i> <?php echo __("website/account_info/verify-code-send"); ?></a>
-                                                <a style="opacity: 0.3;background: none;color: #777;<?php echo !$sendBlocked ? 'display:none;' : ''; ?>" id="verifyEmailSendBlockedButton" class="lbtn"><i class="fa fa-refresh" aria-hidden="true"></i> <?php echo __("website/account_info/verify-code-send"); ?></a>
-
-                                                <div class="clear"></div>
-                                                <div id="verify_email_result" class="error" style="display: none;     margin-top: 5px; margin-bottom:5px; font-size: 14px;font-weight:normal;"></div>
-
-                                            </div>
-                                        </form>
-                                        <script type="text/javascript">
-                                            function verifyCodeCheckEmail(){
-                                                $("#verifyEmail input[name='send']").val("0");
-                                                MioAjaxElement($("#verify-code-check-email"),{
-                                                    form:$("#verifyEmail"),
-                                                    waiting_text:"<?php echo addslashes(__("website/others/button1-pending")); ?>",
-                                                    result:"verifyEmail_handler",
-                                                });
-                                            }
-
-                                            function verifyCodeSendEmail(){
-                                                $("#verifyEmail input[name='send']").val("1");
-                                                MioAjaxElement($("#verify-code-send-email"),{
-                                                    form:$("#verifyEmail"),
-                                                    waiting_text:"<?php echo addslashes(__("website/others/button1-pending")); ?>",
-                                                    result:"verifyEmail_handler",
-                                                });
-                                            }
-
-                                            function verifyEmail_handler(result) {
-                                                if(result != ''){
-                                                    var solve = getJson(result);
-                                                    if(solve !== false){
-                                                        if(solve.status == "error"){
-                                                            if(solve.for != undefined && solve.for != ''){
-                                                                $(+solve.for).focus();
-                                                                $(solve.for).attr("style","border-bottom:2px solid red; color:red;");
-                                                                $(solve.for).change(function(){
-                                                                    $(this).removeAttr("style");
-                                                                });
-                                                            }
-                                                            if(solve.message != undefined && solve.message != '') {
-                                                                swal('<?php echo __("website/account_info/modal-error-title"); ?>',solve.message,'error');
-                                                            }
-                                                        }else if(solve.status == "sent"){
-                                                            $("#verify-code-send-email").fadeOut(150,function(){
-                                                                $("#verifyEmailSendBlockedButton").fadeIn(150);
-                                                            });
-                                                            swal('<?php echo __("website/account_info/modal-success-title"); ?>',solve.message,'success');
-                                                        }else if(solve.status == "successful")
-                                                            window.location.href = window.location.href;
-                                                    }else
-                                                        console.log(result);
-                                                }
-
-                                            }
-                                        </script>
-                                    <?php
-                                        }elseif($key == "verified-gsm"){
-                                        $sendBlocked = User::CheckBlocked("verify-code-send-gsm",$udata["id"],[
-                                            'ip' => UserManager::GetIP(),
-                                            'phone' => $udata["gsm_cc"].$udata["gsm"],
-                                        ]);
-                                    ?>
-                                        <form action="<?php echo $operation_link; ?>" method="post" id="verifyGSM">
-                                            <?php echo Validation::get_csrf_token('account'); ?>
-
-                                            <input type="hidden" name="operation" value="verifyGSM">
-                                            <input type="hidden" name="send" value="0">
-
-                                            <div class="mailgsmverify">
-                                                <strong>- <?php echo __("website/account_info/please-verify-your-gsm"); ?></strong>
-                                                <input name="code" id="gsm_verify_code" type="text" class="yuzde20" placeholder="<?php echo __("website/account_info/verify-code-input-label"); ?>" style="border-bottom:2px solid red; color:red;">
-                                                <a style="margin-right:5px;" href="javascript:verifyCodeCheckGSM();void 0;" id="verify-code-check-gsm" class="lbtn"><i class="fa fa-check" aria-hidden="true"></i> <?php echo __("website/account_info/verify-button"); ?></a>
-                                                <a<?php echo $sendBlocked ? ' style="display:none;"' : ''; ?> href="javascript:verifyCodeSendGSM();void 0;" id="verify-code-send-gsm" class="lbtn"><i class="fa fa-refresh" aria-hidden="true"></i> <?php echo __("website/account_info/verify-code-send"); ?></a>
-                                                <a style="opacity: 0.3;background: none;color: #777;<?php echo !$sendBlocked ? 'display:none;' : ''; ?>" id="verifyGSMSendBlockedButton" class="lbtn"><i class="fa fa-refresh" aria-hidden="true"></i> <?php echo __("website/account_info/verify-code-send"); ?></a>
-
-                                                <div class="clear"></div>
-                                                <div id="verify_gsm_result" class="error" style="display: none;     margin-top: 5px; margin-bottom:5px; font-size: 14px;font-weight:normal;"></div>
-
-                                            </div>
-                                        </form>
-                                        <script type="text/javascript">
-                                            function verifyCodeCheckGSM(){
-                                                $("#verifyGSM input[name='send']").val("0");
-                                                MioAjaxElement($("#verify-code-check-gsm"),{
-                                                    form:$("#verifyGSM"),
-                                                    waiting_text:"<?php echo addslashes(__("website/others/button1-pending")); ?>",
-                                                    result:"verifyGSM_handler",
-                                                });
-                                            }
-
-                                            function verifyCodeSendGSM(){
-                                                $("#verifyGSM input[name='send']").val("1");
-                                                MioAjaxElement($("#verify-code-send-gsm"),{
-                                                    form:$("#verifyGSM"),
-                                                    waiting_text:"<?php echo addslashes(__("website/others/button1-pending")); ?>",
-                                                    result:"verifyGSM_handler",
-                                                });
-                                            }
-
-                                            function verifyGSM_handler(result) {
-                                                if(result != ''){
-                                                    var solve = getJson(result);
-                                                    if(solve !== false){
-                                                        if(solve.status == "error"){
-                                                            if(solve.for != undefined && solve.for != ''){
-                                                                $(+solve.for).focus();
-                                                                $(solve.for).attr("style","border-bottom:2px solid red; color:red;");
-                                                                $(solve.for).change(function(){
-                                                                    $(this).removeAttr("style");
-                                                                });
-                                                            }
-                                                            if(solve.message != undefined && solve.message != '') {
-                                                                swal('<?php echo __("website/account_info/modal-error-title"); ?>',solve.message,'error');
-                                                            }
-                                                        }else if(solve.status == "sent"){
-                                                            $("#verify-code-send-gsm").fadeOut(150,function(){
-                                                                $("#verifyGSMSendBlockedButton").fadeIn(150);
-                                                            });
-                                                            swal('<?php echo __("website/account_info/modal-success-title"); ?>',solve.message,'success');
-                                                        }else if(solve.status == "successful")
-                                                            window.location.href = window.location.href;
-                                                    }else
-                                                        console.log(result);
-                                                }
-
-                                            }
-                                        </script>
-                                    <?php
-                                        }else{
-                                    ?>
                                         <div><strong>- <?php echo $name; ?></strong></div>
 
                                         <script type="text/javascript">
@@ -620,13 +485,14 @@
                                         </script>
                                         <?php
                                     }
-                                }
-                            ?>
-                        </div> <div class="clear"></div>
-                    </div>
+                                ?>
+                            </div> <div class="clear"></div>
+                        </div>
 
-                </div>
-            <?php endif; ?>
+                    </div>
+                    <?php
+                }
+            ?>
 
             <div class="hesapbilgilerim">
 
@@ -931,7 +797,7 @@
                                     <div class="adresbilgisi" id="address_<?php echo $addr["id"];?>">
                                         <input type="hidden" name="country_id" value="<?php echo $addr["country_id"]; ?>">
                                         <input type="hidden" name="detouse" value="<?php echo $addr["detouse"] ? 1 : 0; ?>">
-                                        <input type="hidden" name="zipcode" value="<?php echo $addr["zipcode"]; ?>" onkeypress="return event.charCode>= 48 &amp;&amp;event.charCode<= 57">
+                                        <input type="hidden" name="zipcode" value="<?php echo $addr["zipcode"]; ?>">
                                         <input type="hidden" name="city" value="<?php echo $addr["city"]; ?>">
                                         <input type="hidden" name="counti" value="<?php echo $addr["counti"]; ?>">
                                         <input type="hidden" name="address" value="<?php echo htmlentities($addr["address"],ENT_QUOTES); ?>">
@@ -1182,6 +1048,353 @@
                 }
             </script>
             <div class="clear"></div>
+        </div>
+    </div>
+
+    <div id="verification" class="tabcontent">
+        <div class="tabcontentcon">
+
+
+            <div class="userverification" style="display:block">
+
+                <?php
+
+                    if($remainingVerifications["force"] > 0){
+                        ?>
+                        <div class="userverification-headinfo"><i class="fa fa-shield" aria-hidden="true"></i>
+                            <h4 style="color: #F44336;"><strong><?php echo __("website/account_info/verification-text1"); ?></strong></h4>
+                            <h5><?php echo __("website/account_info/verification-text2"); ?></h5>
+                        </div>
+                        <?php
+                    }
+                    else{
+                        ?>
+                        <div class="userverification-headinfo"><i class="fa fa-shield" aria-hidden="true" style="color:#4caf50;"></i>
+                            <h4 style="color: #4caf50;"><strong><?php echo __("website/account_info/verification-text3"); ?></strong></h4>
+                            <h5><?php echo __("website/account_info/verification-text4"); ?></h5>
+                        </div>
+                        <?php
+                    }
+
+                    if(isset($remainingVerifications["verified-email"])){
+                        ?>
+                        <div class="hesapbilgisi">
+                            <div class="yuzde50">
+                                <div class="hesapbilgititle"><?php echo __("website/account_info/please-verify-your-email"); ?></div>
+                            </div>
+                            <div class="yuzde50">
+                                <?php
+                                    $sendBlocked = User::CheckBlocked("verify-code-send-email",$udata["id"],[
+                                        'ip' => UserManager::GetIP(),
+                                        'email' => $udata["email"],
+                                    ]);
+                                ?>
+                                <form action="<?php echo $operation_link; ?>" method="post" id="verifyEmail">
+                                    <?php echo Validation::get_csrf_token('account'); ?>
+                                    <input type="hidden" name="operation" value="verifyEmail">
+                                    <input type="hidden" name="send" value="0">
+                                    <input name="code" id="email_verify_code" type="text" class="yuzde30" placeholder="<?php echo __("website/account_info/verify-code-input-label"); ?>" style="border-bottom:2px solid red; color:red;">
+                                    <a style="margin-right:5px;" href="javascript:verifyCodeCheckEmail();void 0;" id="verify-code-check-email" class="lbtn"><i class="fa fa-check" aria-hidden="true"></i> <?php echo __("website/account_info/verify-button"); ?></a>
+                                    <a<?php echo $sendBlocked ? ' style="display:none;"' : ''; ?> href="javascript:verifyCodeSendEmail();void 0;" id="verify-code-send-email" class="lbtn"><i class="fa fa-refresh" aria-hidden="true"></i> <?php echo __("website/account_info/verify-code-send"); ?></a>
+                                    <a style="opacity: 0.3;background: none;color: #777;<?php echo !$sendBlocked ? 'display:none;' : ''; ?>" id="verifyEmailSendBlockedButton" class="lbtn"><i class="fa fa-refresh" aria-hidden="true"></i> <?php echo __("website/account_info/verify-code-send"); ?></a>
+
+                                    <div class="clear"></div>
+                                    <div id="verify_email_result" class="error" style="display: none;     margin-top: 5px; margin-bottom:5px; font-size: 14px;font-weight:normal;"></div>
+
+                                </form>
+                                <script type="text/javascript">
+                                    function verifyCodeCheckEmail(){
+                                        $("#verifyEmail input[name='send']").val("0");
+                                        MioAjaxElement($("#verify-code-check-email"),{
+                                            form:$("#verifyEmail"),
+                                            waiting_text:"<?php echo addslashes(__("website/others/button1-pending")); ?>",
+                                            result:"verifyEmail_handler",
+                                        });
+                                    }
+
+                                    function verifyCodeSendEmail(){
+                                        $("#verifyEmail input[name='send']").val("1");
+                                        MioAjaxElement($("#verify-code-send-email"),{
+                                            form:$("#verifyEmail"),
+                                            waiting_text:"<?php echo addslashes(__("website/others/button1-pending")); ?>",
+                                            result:"verifyEmail_handler",
+                                        });
+                                    }
+
+                                    function verifyEmail_handler(result) {
+                                        if(result != ''){
+                                            var solve = getJson(result);
+                                            if(solve !== false){
+                                                if(solve.status == "error"){
+                                                    if(solve.for != undefined && solve.for != ''){
+                                                        $(+solve.for).focus();
+                                                        $(solve.for).attr("style","border-bottom:2px solid red; color:red;");
+                                                        $(solve.for).change(function(){
+                                                            $(this).removeAttr("style");
+                                                        });
+                                                    }
+                                                    if(solve.message != undefined && solve.message != '') {
+                                                        swal('<?php echo __("website/account_info/modal-error-title"); ?>',solve.message,'error');
+                                                    }
+                                                }else if(solve.status == "sent"){
+                                                    $("#verify-code-send-email").fadeOut(150,function(){
+                                                        $("#verifyEmailSendBlockedButton").fadeIn(150);
+                                                    });
+                                                    swal('<?php echo __("website/account_info/modal-success-title"); ?>',solve.message,'success');
+                                                }else if(solve.status == "successful")
+                                                    window.location.href = window.location.href;
+                                            }else
+                                                console.log(result);
+                                        }
+
+                                    }
+                                </script>
+                            </div>
+                        </div>
+                        <?php
+                    }
+
+                    if(isset($remainingVerifications["verified-gsm"])){
+                        ?>
+                        <div class="hesapbilgisi">
+                            <div class="yuzde50">
+                                <div class="hesapbilgititle"><?php echo __("website/account_info/please-verify-your-gsm"); ?></div>
+                            </div>
+                            <div class="yuzde50">
+                                <?php
+                                    $sendBlocked = User::CheckBlocked("verify-code-send-gsm",$udata["id"],[
+                                        'ip' => UserManager::GetIP(),
+                                        'phone' => $udata["gsm_cc"].$udata["gsm"],
+                                    ]);
+                                ?>
+                                <form action="<?php echo $operation_link; ?>" method="post" id="verifyGSM">
+                                    <?php echo Validation::get_csrf_token('account'); ?>
+
+                                    <input type="hidden" name="operation" value="verifyGSM">
+                                    <input type="hidden" name="send" value="0">
+
+                                    <input name="code" id="gsm_verify_code" type="text" class="yuzde30" placeholder="<?php echo __("website/account_info/verify-code-input-label"); ?>" style="border-bottom:2px solid red; color:red;">
+                                    <a style="margin-right:5px;" href="javascript:verifyCodeCheckGSM();void 0;" id="verify-code-check-gsm" class="lbtn"><i class="fa fa-check" aria-hidden="true"></i> <?php echo __("website/account_info/verify-button"); ?></a>
+                                    <a<?php echo $sendBlocked ? ' style="display:none;"' : ''; ?> href="javascript:verifyCodeSendGSM();void 0;" id="verify-code-send-gsm" class="lbtn"><i class="fa fa-refresh" aria-hidden="true"></i> <?php echo __("website/account_info/verify-code-send"); ?></a>
+                                    <a style="opacity: 0.3;background: none;color: #777;<?php echo !$sendBlocked ? 'display:none;' : ''; ?>" id="verifyGSMSendBlockedButton" class="lbtn"><i class="fa fa-refresh" aria-hidden="true"></i> <?php echo __("website/account_info/verify-code-send"); ?></a>
+
+                                    <div class="clear"></div>
+                                    <div id="verify_gsm_result" class="error" style="display: none;     margin-top: 5px; margin-bottom:5px; font-size: 14px;font-weight:normal;"></div>
+
+                                </form>
+                                <script type="text/javascript">
+                                    function verifyCodeCheckGSM(){
+                                        $("#verifyGSM input[name='send']").val("0");
+                                        MioAjaxElement($("#verify-code-check-gsm"),{
+                                            form:$("#verifyGSM"),
+                                            waiting_text:"<?php echo addslashes(__("website/others/button1-pending")); ?>",
+                                            result:"verifyGSM_handler",
+                                        });
+                                    }
+
+                                    function verifyCodeSendGSM(){
+                                        $("#verifyGSM input[name='send']").val("1");
+                                        MioAjaxElement($("#verify-code-send-gsm"),{
+                                            form:$("#verifyGSM"),
+                                            waiting_text:"<?php echo addslashes(__("website/others/button1-pending")); ?>",
+                                            result:"verifyGSM_handler",
+                                        });
+                                    }
+
+                                    function verifyGSM_handler(result) {
+                                        if(result != ''){
+                                            var solve = getJson(result);
+                                            if(solve !== false){
+                                                if(solve.status == "error"){
+                                                    if(solve.for != undefined && solve.for != ''){
+                                                        $(+solve.for).focus();
+                                                        $(solve.for).attr("style","border-bottom:2px solid red; color:red;");
+                                                        $(solve.for).change(function(){
+                                                            $(this).removeAttr("style");
+                                                        });
+                                                    }
+                                                    if(solve.message != undefined && solve.message != '') {
+                                                        swal('<?php echo __("website/account_info/modal-error-title"); ?>',solve.message,'error');
+                                                    }
+                                                }else if(solve.status == "sent"){
+                                                    $("#verify-code-send-gsm").fadeOut(150,function(){
+                                                        $("#verifyGSMSendBlockedButton").fadeIn(150);
+                                                    });
+                                                    swal('<?php echo __("website/account_info/modal-success-title"); ?>',solve.message,'success');
+                                                }else if(solve.status == "successful")
+                                                    window.location.href = window.location.href;
+                                            }else
+                                                console.log(result);
+                                        }
+
+                                    }
+                                </script>
+                            </div>
+                        </div>
+                        <?php
+                    }
+                ?>
+
+                <div class="clear"></div>
+
+                <?php
+                    if(isset($remainingVerifications["document_filters"])){
+
+                        if($remainingVerifications["document_filters"]){
+                            $show_submit = false;
+
+                            ?>
+                            <form action="<?php echo $operation_link; ?>" method="post" id="SubmitDocumentVerification" enctype="multipart/form-data">
+                                <?php echo Validation::get_csrf_token('account'); ?>
+                                <input type="hidden" name="operation" value="SubmitDocumentVerification">
+
+                                <?php
+                                    foreach($remainingVerifications["document_filters"] AS $f_id=>$f){
+                                        if(!isset($f["fields"][$u_lang])) continue;
+                                        $fields = $f["fields"][$u_lang];
+                                        foreach($fields AS $f_k=>$field){
+                                            $record = isset($field["record"]) ? $field["record"] : [];
+                                            ?>
+                                            <div class="hesapbilgisi">
+                                                <div class="yuzde50">
+                                                    <div class="hesapbilgititle"><?php echo $field["name"]; ?></div>
+                                                </div>
+                                                <div class="yuzde50">
+                                                    <?php
+
+                                                        if(!$record || $record["status"] == 'unverified'){
+                                                            $r_value     = $record ? $record["field_value"] : '';
+                                                            $show_submit = true;
+                                                            if($record && $record["status"] == 'unverified'){
+                                                                ?>
+                                                                <strong><span style="color: #F44336;"><i class="fa fa-times-circle-o" aria-hidden="true"></i> <?php echo __("website/account_info/verification-text5"); ?></span></strong>
+                                                                <?php
+                                                                    if($record["status_msg"]){
+                                                                        ?><br><span>(<?php echo $record["status_msg"]; ?>)</span><?php
+                                                                    }
+                                                                ?>
+                                                                <div class="clear" style="margin-bottom: 5px;"></div>
+                                                                <?php
+                                                            }
+                                                            if($field["type"] == "input"){
+                                                                ?>
+                                                                <input type="text" name="documents[<?php echo $f_id; ?>][fields][<?php echo $f_k; ?>]" value="<?php echo $r_value; ?>">
+                                                                <?php
+                                                            }
+
+                                                            if($field["type"] == "textarea"){
+                                                                ?>
+                                                                <textarea name="documents[<?php echo $f_id; ?>][fields][<?php echo $f_k; ?>]"><?php echo $r_value; ?></textarea>
+                                                                <?php
+                                                            }
+
+                                                            if($field["type"] == "select"){
+                                                                ?>
+                                                                <select name="documents[<?php echo $f_id; ?>][fields][<?php echo $f_k; ?>]">
+                                                                    <?php
+                                                                        foreach($field["options"] AS $opt){
+                                                                            ?>
+                                                                            <option<?php echo $opt == $r_value ? ' selected' : ''; ?> value="<?php echo $opt; ?>"><?php echo $opt; ?></option>
+                                                                            <?php
+                                                                        }
+                                                                    ?>
+                                                                </select>
+                                                                <?php
+                                                            }
+
+                                                            if($field["type"] == "radio"){
+                                                                foreach($field["options"] AS $k=>$opt){
+                                                                    ?>
+                                                                    <input<?php echo $opt == $r_value ? ' checked' : ''; ?> name="documents[<?php echo $f_id; ?>][fields][<?php echo $f_k; ?>]" type="radio" class="radio-custom" id="<?php echo "f_".$f_id."_".$f_k."_".$k; ?>" value="<?php echo $opt; ?>">
+                                                                    <label class="radio-custom-label" for="<?php echo "f_".$f_id."_".$f_k."_".$k; ?>" style="margin-right: 10px;"><?php echo $opt; ?></label>
+                                                                    <?php
+                                                                }
+                                                            }
+
+                                                            if($field["type"] == "checkbox"){
+                                                                $d_value = Utility::jdecode($r_value,true);
+                                                                if(!$d_value) $d_value = [];
+                                                                foreach($field["options"] AS $k=>$opt){
+                                                                    ?>
+                                                                    <input<?php echo in_array($opt,$d_value) ? ' checked' : ''; ?> name="documents[<?php echo $f_id; ?>][fields][<?php echo $f_k; ?>][]" type="checkbox" class="checkbox-custom" id="<?php echo "f_".$f_id."_".$f_k."_".$k; ?>" value="<?php echo $opt; ?>">
+                                                                    <label class="checkbox-custom-label" for="<?php echo "f_".$f_id."_".$f_k."_".$k; ?>" style="margin-right: 10px;"><?php echo $opt; ?></label>
+                                                                    <?php
+                                                                }
+                                                                ?>
+                                                                <?php
+                                                            }
+
+                                                            if($field["type"] == "file"){
+                                                                ?>
+                                                                <input type="file" name="documents-<?php echo $f_id; ?>-fields-<?php echo $f_k; ?>">
+                                                                <div class="clear"></div>
+                                                                <span style="font-size: 9pt; color: #9d0006;">* <?php echo $field["allowed_ext"]; ?></span>
+                                                                <?php
+                                                            }
+                                                        }
+                                                        elseif($record["status"] == 'awaiting'){
+                                                            ?>
+                                                            <strong><span><i class="fa fa-clock-o" aria-hidden="true"></i> <?php echo __("website/account_info/verification-text6"); ?></span></strong>
+                                                            <br><span>(<?php echo __("website/account_info/verification-text7"); ?>)</span>
+                                                            <?php
+                                                        }
+                                                        elseif($record["status"] == 'verified'){
+                                                            ?>
+                                                            <strong> <span style="color:#4caf50;"><i class="fa fa-check-circle-o" aria-hidden="true"></i> <?php echo __("website/account_info/verification-text8"); ?></span></strong>
+                                                            <?php
+                                                        }
+                                                    ?>
+                                                </div>
+                                            </div>
+                                            <?php
+                                        }
+                                    }
+
+                                    if($show_submit){
+                                        ?>
+                                        <div class="clear"></div>
+                                        <a href="javascript:void(0);" class="yesilbtn gonderbtn mio-ajax-submit" mio-ajax-options='{"waiting_text":"<?php echo addslashes(__("website/others/button1-pending")); ?>","result":"SubmitDocumentVerification_handler"}'><?php echo ___("needs/button-submit"); ?></a>
+                                        <div class="clear"></div>
+                                        <?php
+                                    }
+                                ?>
+                            </form>
+                            <script type="text/javascript">
+                                function SubmitDocumentVerification_handler(result) {
+                                    if(result !== ''){
+                                        var solve = getJson(result);
+                                        if(solve !== false){
+                                            if(solve.status === "error"){
+                                                if(solve.for != undefined && solve.for != ''){
+                                                    $("#SubmitDocumentVerification "+solve.for).focus();
+                                                    $("#SubmitDocumentVerification "+solve.for).attr("style","border-bottom:2px solid red; color:red;");
+                                                    $("#SubmitDocumentVerification "+solve.for).change(function(){
+                                                        $(this).removeAttr("style");
+                                                    });
+                                                }
+
+                                                if(solve.message != undefined && solve.message !== '')
+                                                    alert_error(solve.message,{timer:5000});
+                                            }else if(solve.status === "successful"){
+                                                alert_success(solve.message,{timer:3000});
+                                                setTimeout(function(){
+                                                    window.location.href = window.location.href;
+                                                },3000);
+                                            }
+                                        }else
+                                            console.log(result);
+                                    }
+                                }
+                            </script>
+                            <?php
+
+
+                        }
+                    }
+                ?>
+            </div>
+
+
         </div>
     </div>
 

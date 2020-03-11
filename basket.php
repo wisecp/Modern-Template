@@ -125,7 +125,7 @@
                                         $(item.selection_year).each(function(k,v){
                                             var k_i = k+1;
                                             selection_period += '<option value="'+k+'"';
-                                            if(item.year !== undefined && item.year === k_i)
+                                            if(item.year !== undefined && parseInt(item.year) === parseInt(k_i))
                                                 selection_period += ' selected';
                                             selection_period += '>';
                                             selection_period += v.period;
