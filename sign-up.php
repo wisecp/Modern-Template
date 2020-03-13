@@ -3,7 +3,7 @@
     $connectionButtons = Hook::run("ClientAreaConnectionButtons","register");
 ?>
 <!DOCTYPE html>
-<html>
+<html lang="<?php echo ___("package/code"); ?>">
 <head>
     <?php
         $hoptions = [

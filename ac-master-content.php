@@ -1,6 +1,6 @@
 <?php defined('CORE_FOLDER') OR exit('You can not get in here!'); ?>
 <!DOCTYPE html>
-<html>
+<html lang="<?php echo ___("package/code"); ?>">
 <head>
     <?php include __DIR__.DS."inc/ac-head.php"; ?>
 </head>
