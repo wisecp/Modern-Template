@@ -285,7 +285,7 @@
 
                     if(isset($items) && $items){
                         foreach($items AS $item){
-                            $amount = $item["amount"];
+                            $amount = $item["total_amount"];
                             $cid    = isset($item["currency"]) ? $item["currency"] : $item["cid"];
                             ?>
                             <div class="formcon">
