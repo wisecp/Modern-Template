@@ -65,13 +65,16 @@
                                                                 <optgroup label="<?php echo $row["title"]; ?>">
                                                                     <?php
                                                                         foreach($products AS $p){
+                                                                            $creation_info = isset($p["module_data"]["create_account"]) ? $p["module_data"]["create_account"] : $p["module_data"];
+                                                                            $reseller   = isset($creation_info["reseller"]);
+                                                                            $d_limit    = isset($creation_info["disk_limit"]) ? $creation_info["disk_limit"] : 'unlimited';
                                                                             $dlimit = __("website/osteps/unlimited-disk");
-                                                                            if(isset($p["module_data"]["create_account"]["reseller"]))
-                                                                                $dlimit = $p["module_data"]["create_account"]["disk_limit"] != "unlimited" ? FileManager::formatByte(FileManager::converByte($p["module_data"]["create_account"]["disk_limit"]."MB")) : __("website/osteps/unlimited-disk");
+                                                                            if($reseller)
+                                                                                $dlimit = $d_limit != "unlimited" ? FileManager::formatByte(FileManager::converByte($d_limit."MB")) : __("website/osteps/unlimited-disk");
                                                                             elseif(isset($p["options"]["disk_limit"]))
                                                                                 $dlimit = $p["options"]["disk_limit"] != "unlimited" ? FileManager::formatByte(FileManager::converByte($p["options"]["disk_limit"]."MB")) : __("website/osteps/unlimited-disk");
                                                                             $price = Money::formatter_symbol($p["price"]["amount"],$p["price"]["cid"],!$p["override_usrcurrency"]);
-                                                                            if($p["price"]["amount"]==0)
+                                                                            if($p["price"]["amount"]<=0)
                                                                                 $price = ___("needs/free-amount");
                                                                             $disk   = isset($p["options"]["disk_limit"]) ? $dlimit." - " : '';
                                                                             $name = $p["title"]." (".$disk.$price.")";
@@ -90,13 +93,16 @@
                                                                     <optgroup label="<?php echo $row["title"]." - ".$r["title"]; ?>">
                                                                         <?php
                                                                             foreach($products2 AS $p2){
+                                                                                $creation_info = isset($p2["module_data"]["create_account"]) ? $p2["module_data"]["create_account"] : $p2["module_data"];
+                                                                                $reseller   = isset($creation_info["reseller"]);
+                                                                                $d_limit    = isset($creation_info["disk_limit"]) ? $creation_info["disk_limit"] : 'unlimited';
                                                                                 $dlimit = __("website/osteps/unlimited-disk");
-                                                                                if(isset($p2["module_data"]["create_account"]["reseller"]))
-                                                                                    $dlimit = $p2["module_data"]["create_account"]["disk_limit"] != "unlimited" ? FileManager::formatByte(FileManager::converByte($p2["module_data"]["create_account"]["disk_limit"]."MB")) : __("website/osteps/unlimited-disk");
+                                                                                if($reseller)
+                                                                                    $dlimit = $d_limit != "unlimited" ? FileManager::formatByte(FileManager::converByte($d_limit."MB")) : __("website/osteps/unlimited-disk");
                                                                                 elseif(isset($p2["options"]["disk_limit"]))
                                                                                     $dlimit = $p2["options"]["disk_limit"] != "unlimited" ? FileManager::formatByte(FileManager::converByte($p2["options"]["disk_limit"]."MB")) : __("website/osteps/unlimited-disk");
                                                                                 $price = Money::formatter_symbol($p2["price"]["amount"],$p2["price"]["cid"],!$p2["override_usrcurrency"]);
-                                                                                if($p2["price"]["amount"]==0)
+                                                                                if($p2["price"]["amount"]<=0)
                                                                                     $price = ___("needs/free-amount");
                                                                                 $disk   = isset($p2["options"]["disk_limit"]) ? $dlimit." - " : '';
                                                                                 $name = $p2["title"]." (".$disk.$price.")";
