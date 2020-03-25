@@ -637,11 +637,6 @@
     </div>
 <?php endif; ?>
 
-<?php
-    View::main_script();
-?>
-
-
 <div class="clear"></div>
 <a href="#0" class="cd-top">Top</a>
 </body>
