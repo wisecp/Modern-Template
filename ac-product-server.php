@@ -66,7 +66,7 @@ function run_transaction(btn_k,btn_el,post_fields){
     if(typeof data2 !== 'object' && data2 !== undefined && data2.length > 0) data2 = getJson(data2);
     if(typeof data2 !== 'object' || data2 === undefined || data2 === false) data2 = {};
     var data3   = post_fields === undefined || post_fields === false ? {} : post_fields;
-    var _data   = {...data1,...data2,...data3};
+    var _data   = Object.assign(data1,...data2,...data3);
 
     var request = MioAjax({
         button_element:btn_el,
