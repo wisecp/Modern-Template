@@ -366,7 +366,7 @@
                                             <td align="center">
                                                 <strong><?php echo Money::formatter_symbol($row["commission"],$aff["currency"]); ?></strong> (%<?php echo $rate; ?>)
                                                 <?php
-                                                    if($row["exchange"])
+                                                    if($row["exchange"] > 0.00)
                                                     {
                                                         ?>
                                                         <br>(<?php echo __("website/account/affiliate-tx51")." ".Money::formatter($row["exchange"],$aff["currency"]); ?>)

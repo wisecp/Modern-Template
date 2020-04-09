@@ -428,6 +428,11 @@
                 }
             });
 
+            $("#coupon_code").bind("paste", function(e){
+                var pastedData = e.originalEvent.clipboardData.getData('text');
+                coupon_check(pastedData);
+            });
+
         });
     </script>
 <div id="wrapper">
@@ -496,7 +501,7 @@
                             <td colspan="2" align="center">
                                 <a href="javascript:$('#kuponkodu').slideToggle();void 0"><i class="fa fa-ticket" aria-hidden="true"></i> <?php echo __("website/basket/use-coupon-code"); ?></a>
                                 <div class="kuponkodu" id="kuponkodu" style="display: none; transition-property: all; transition-duration: 0s; transition-timing-function: ease; opacity: 1;">
-                                    <input id="coupon_code" name="coupon_code" type="text" placeholder="<?php echo __("website/basket/coupon-code-pholder"); ?>">
+                                    <input id="coupon_code" name="coupon_code" type="text" placeholder="<?php echo __("website/basket/coupon-code-pholder"); ?>" onchange="coupon_check($(this).val());">
                                     <div style="text-align: center; margin-top: 5px; display: none;" class="error" id="coupon_result"></div>
                                 </div>
                             </td>
