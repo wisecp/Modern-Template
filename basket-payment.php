@@ -59,7 +59,7 @@
                 }
 
                 if(pay == 1 && pmethod == "Balance" && !pay_ok){
-                    if(int_balance==0 && total_payable != 0){
+                    if((int_balance==0 && total_payable !== 0) || total_payable < 0.00 || int_balance < total_payable){
                         open_modal("InsufficientBalance");
                     }else{
                         var text = '<?php echo __("website/basket/balance-warning-text",[EOL => '\n']); ?>';

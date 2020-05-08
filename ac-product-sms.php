@@ -134,7 +134,7 @@
                 <i class="fa fa-envelope-o" aria-hidden="true"></i>
                 <h4><strong><?php echo $proanse["name"]; ?></strong></h4>
                 <h4 style="margin-bottom:10px;"><?php echo __("website/account_products/current-credit"); ?>: <strong id="getCredit"><i class="fa fa-spinner" style="font-size:20px; -webkit-animation:fa-spin 2s infinite linear;animation: fa-spin 2s infinite linear;"></i></strong></h4>
-                <?php if($proanse["status"] == "active"){ ?>
+                <?php if($proanse["status"] == "active" && !isset($proanse["disable_renewal"])){ ?>
                     <div id="credit_list" style="display:none;">
                         <select id="selection_credit">
                             <option value=""><?php echo __("website/account_products/renewal-credit-list-option"); ?></option>

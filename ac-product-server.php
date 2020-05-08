@@ -270,7 +270,7 @@ function t_form_handle(result){
                 <?php endif; ?>
 
                 <?php if(isset($options["product_image"])): ?>
-                    <img style="margin:25px;" src="<?php echo $options["product_image"]; ?>" width="200" height="auto">
+                    <img  src="<?php echo $options["product_image"]; ?>" width="200" height="auto">
                 <?php else: ?>
                     <img style="width:140px;" src="<?php echo $tadress."images/image47.png"; ?>" width="auto" height="auto">
                 <?php endif; ?>

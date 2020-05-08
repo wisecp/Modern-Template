@@ -34,13 +34,9 @@
         $(document).ready(function(){
 
             var telInput = $("#gsm");
-
             telInput.intlTelInput({
                 geoIpLookup: function(callback) {
-                    $.get("https://ipinfo.io", function() {}, "jsonp").always(function(resp) {
-                        var countryCode = (resp && resp.country) ? resp.country : "";
-                        callback(countryCode);
-                    });
+                    callback('<?php if($ipInfo = UserManager::ip_info()) echo $ipInfo["countryCode"]; else echo 'us'; ?>');
                 },
                 autoPlaceholder: "on",
                 formatOnDisplay: true,
@@ -48,7 +44,6 @@
                 hiddenInput: "gsm",
                 nationalMode: false,
                 placeholderNumberType: "MOBILE",
-                preferredCountries: ['us', 'gb', 'ch', 'ca', 'de', 'it'],
                 separateDialCode: true,
                 utilsScript: "<?php echo $sadress;?>assets/plugins/phone-cc/js/utils.js"
             });

@@ -55,29 +55,18 @@
 <script src="<?php echo $sadress;?>assets/plugins/phone-cc/js/intlTelInput.js"></script>
 <script type="text/javascript">
     var default_country,city_request = false,counti_request=false;
+    var telInput = $("#gsm"),countryCode;
     $(document).ready(function(){
 
         $('#birthday').mask('00/00/0000');
 
-        setTimeout(function(){
-            if(!default_country){
-                $.get("https://ipinfo.io", function() {}, "jsonp").always(function(resp){
-                    var countryCode = (resp && resp.country) ? resp.country : "";
-                    default_country = countryCode;
-                });
-            }
-        },500);
-
-        var telInput = $("#gsm");
+        countryCode         = '<?php if($ipInfo = UserManager::ip_info()) echo $ipInfo["countryCode"]; else echo 'us'; ?>';
+        default_country     = countryCode;
 
         telInput.intlTelInput({
             geoIpLookup: function(callback) {
-                $.get("http://ipinfo.io", function() {}, "jsonp").always(function(resp) {
-                    var countryCode = (resp && resp.country) ? resp.country : "";
-                    $("select[name=country] option[data-code="+countryCode+"]").attr("selected",true).trigger("change");
-                    default_country = countryCode;
-                    callback(countryCode);
-                });
+                $("select[name=country] option[data-code="+countryCode+"]").attr("selected",true).trigger("change");
+                callback(countryCode);
             },
             autoPlaceholder: "on",
             formatOnDisplay: true,
@@ -623,7 +612,7 @@
                             <div class="hesapbilgisi corporate-info">
                                 <div class="yuzde25"><div class="hesapbilgititle"><?php echo __("website/sign/up-form-ctaxno"); ?></div></div>
                                 <div class="yuzde75">
-                                    <input id="company_tax_number" name="company_tax_number" type="text" placeholder="<?php echo __("website/sign/up-form-ctaxno"); ?>" value="<?php echo (isset($udata["company_tax_number"])) ? $udata["company_tax_number"] : NULL; ?>" onkeypress="return event.charCode>= 48 &amp;&amp;event.charCode<= 57">
+                                    <input id="company_tax_number" name="company_tax_number" type="text" placeholder="<?php echo __("website/sign/up-form-ctaxno"); ?>" value="<?php echo (isset($udata["company_tax_number"])) ? $udata["company_tax_number"] : NULL; ?>">
                                 </div>
                             </div>
 
