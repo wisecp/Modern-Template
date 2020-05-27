@@ -16,6 +16,15 @@
     $cpu_limit = isset($options["cpu_limit"]) ? Filter::html_clear($options["cpu_limit"]) : false;
     $server_features = isset($p_options["server_features"]) ? $p_options["server_features"] : (isset($options["server_features"]) ? $options["server_features"] : false);
     $dns             = isset($options["dns"]) ? $options["dns"] : [];
+    if(!$dns && isset($server) && $server)
+    {
+        $dns = [
+                'ns1' => $server["ns1"],
+                'ns2' => $server["ns2"],
+                'ns3' => $server["ns3"],
+                'ns4' => $server["ns4"],
+        ];
+    }
     $ftp_raw         = isset($options["ftp_raw"]) ? nl2br($options["ftp_raw"]) : NULL;
     $ftp_info        = isset($options["ftp_info"]) && $options["ftp_info"] ? $options["ftp_info"] : [];
     $domain          = isset($options["domain"]) ? $options["domain"] : false;
@@ -821,9 +830,9 @@
 
         </div>
 
-        <div class="hizmetblok">
-            <table width="100%" border="0">
-                <?php if($ftp_info || $ftp_raw): ?>
+        <?php if($ftp_info || $ftp_raw): ?>
+            <div class="hizmetblok">
+                <table width="100%" border="0">
                     <tr>
                         <td bgcolor="#ebebeb" ><strong><?php echo __("website/account_products/ftp-informations"); ?></strong></td>
                     </tr>
@@ -857,37 +866,48 @@
                             <td><?php echo $ftp_raw; ?></td>
                         </tr>
                     <?php endif; ?>
-                <?php endif; ?>
-                <tr>
-                    <td bgcolor="#ebebeb" id="nserverinfo"><strong><?php echo __("website/account_products/name-servers"); ?></strong></td>
-                </tr>
+                </table>
+            </div>
+        <?php endif; ?>
 
-                <?php if(isset($dns["ns1"]) && $dns["ns1"]): ?>
-                    <tr>
-                        <td><strong>NS1</strong>: <?php echo $dns["ns1"]; ?></td>
-                    </tr>
-                <?php endif; ?>
+        <?php
+            if(isset($dns["ns1"]) && $dns["ns1"])
+            {
+                ?>
+                <div class="hizmetblok">
+                    <table width="100%" border="0">
+                        <tr>
+                            <td bgcolor="#ebebeb" id="nserverinfo"><strong><?php echo __("website/account_products/name-servers"); ?></strong></td>
+                        </tr>
 
-                <?php if(isset($dns["ns2"]) && $dns["ns2"]): ?>
-                    <tr>
-                        <td><strong>NS2</strong>: <?php echo $dns["ns2"]; ?></td>
-                    </tr>
-                <?php endif; ?>
+                        <?php if(isset($dns["ns1"]) && $dns["ns1"]): ?>
+                            <tr>
+                                <td><strong>NS1</strong>: <?php echo $dns["ns1"]; ?></td>
+                            </tr>
+                        <?php endif; ?>
 
-                <?php if(isset($dns["ns3"]) && $dns["ns3"]): ?>
-                    <tr>
-                        <td><strong>NS3</strong>: <?php echo $dns["ns3"]; ?></td>
-                    </tr>
-                <?php endif; ?>
+                        <?php if(isset($dns["ns2"]) && $dns["ns2"]): ?>
+                            <tr>
+                                <td><strong>NS2</strong>: <?php echo $dns["ns2"]; ?></td>
+                            </tr>
+                        <?php endif; ?>
 
-                <?php if(isset($dns["ns4"]) && $dns["ns4"]): ?>
-                    <tr>
-                        <td><strong>NS4</strong>: <?php echo $dns["ns4"]; ?></td>
-                    </tr>
-                <?php endif; ?>
+                        <?php if(isset($dns["ns3"]) && $dns["ns3"]): ?>
+                            <tr>
+                                <td><strong>NS3</strong>: <?php echo $dns["ns3"]; ?></td>
+                            </tr>
+                        <?php endif; ?>
 
-            </table>
-        </div>
+                        <?php if(isset($dns["ns4"]) && $dns["ns4"]): ?>
+                            <tr>
+                                <td><strong>NS4</strong>: <?php echo $dns["ns4"]; ?></td>
+                            </tr>
+                        <?php endif; ?>
+                    </table>
+                </div>
+                <?php
+            }
+        ?>
 
         <?php
             if(isset($options["blocks"]) && $options["blocks"]){

@@ -55,8 +55,11 @@
 <script src="<?php echo $sadress;?>assets/plugins/phone-cc/js/intlTelInput.js"></script>
 <script type="text/javascript">
     var default_country,city_request = false,counti_request=false;
-    var telInput = $("#gsm"),countryCode;
+    var telInput;
+    var countryCode;
     $(document).ready(function(){
+
+        telInput = $("#gsm");
 
         $('#birthday').mask('00/00/0000');
 
@@ -65,12 +68,12 @@
 
         telInput.intlTelInput({
             geoIpLookup: function(callback) {
-                $("select[name=country] option[data-code="+countryCode+"]").attr("selected",true).trigger("change");
                 callback(countryCode);
+                $("select[name=country] option[data-code="+countryCode+"]").attr("selected",true).trigger("change");
             },
             autoPlaceholder: "on",
             formatOnDisplay: true,
-            //initialCountry: "auto",
+            initialCountry: "auto",
             hiddenInput: "gsm",
             nationalMode: false,
             placeholderNumberType: "MOBILE",
