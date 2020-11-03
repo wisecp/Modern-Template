@@ -24,10 +24,18 @@
 
         loading_template = $("#loading-template").html();
 
-        var gDomain = gGET("domain");
+        var gDomain     = gGET("domain");
+        var gTransfer   = gGET("transfer");
         if(gDomain != null && gDomain != '' && gDomain != undefined){
             $("#domainInput").val(gDomain);
-            checkButton(document.getElementById("checkButton"));
+
+            if(gTransfer != null && gTransfer != '' && gTransfer !== undefined)
+            {
+                $(".transfercode").slideToggle();
+                $(".transfercode input").focus();
+            }
+            else
+                checkButton(document.getElementById("checkButton"));
         }
 
         $("#transferbtn").click(function(){
@@ -39,14 +47,7 @@
         });
 
         $("#transferButton").click(function(){
-            $("#checkForm input[name=domain]").val($("#domainInput").val());
-            $("#checkForm input[name=tcode]").val($("#transfer_code").val());
-            $("#checkForm input[name=type]").val("transfer");
-            MioAjaxElement($(this),{
-                form:$("#checkForm"),
-                waiting_text: '<?php echo __("website/others/button3-pending"); ?>',
-                result:"transfer_handler",
-            });
+            transferButton(this);
         });
 
         $("#OrderForm").on("change","input[type=checkbox]",function(){
@@ -132,6 +133,10 @@
                                                 price_to_year += '</select>';
                                             }
                                         }
+                                        else
+                                        {
+                                            select_content = '<a href="javascript:transferModal(\''+item.domain+'\');" class="lbtn transfer-btn"><?php echo __("website/domain/transfer-btn"); ?></a> <a href="javascript:void 0;" onclick="openWhois(\''+item.domain+'\');" class="lbtn whois-btn"><?php echo __("website/domain/whois-btn"); ?></a> ';
+                                        }
 
                                         $(".lookcolumlist[data-name='"+item.tld+"'] .tld-name").addClass("tldhere").html('<strong>'+item.sld+'.'+item.tld+'</strong>');
                                         $(".lookcolumlist[data-name='"+item.tld+"'] .tld-status").fadeOut(300,function(){
@@ -153,8 +158,6 @@
                                         $(".lookcolumlist[data-name='"+item.tld+"'] .tld-select").fadeOut(function(){
                                             $(this).html(select_content).fadeIn(300);
                                         });
-
-
                                     }, 200 * i);
                                 })(key);
 
@@ -287,6 +290,10 @@
                                         price_to_year += '</select>';
                                     }
                                 }
+                                else
+                                {
+                                    select_content = '<a href="javascript:transferModal(\''+item.domain+'\');" class="lbtn transfer-btn"><?php echo __("website/domain/transfer-btn"); ?></a> <a href="javascript:void 0;" onclick="openWhois(\''+item.domain+'\');" class="lbtn whois-btn"><?php echo __("website/domain/whois-btn"); ?></a> ';
+                                }
 
                                 $("#domainResult").attr("data-name",item.tld);
 
@@ -352,6 +359,18 @@
 
     }
 
+    function transferButton(elem)
+    {
+        $("#checkForm input[name=domain]").val($("#domainInput").val());
+        $("#checkForm input[name=tcode]").val($("#transfer_code").val());
+        $("#checkForm input[name=type]").val("transfer");
+        MioAjaxElement($(elem),{
+            form:$("#checkForm"),
+            waiting_text: '<?php echo __("website/others/button3-pending"); ?>',
+            result:"transfer_handler",
+        });
+    }
+
     function OrderForm_before_submit(){
         var count = $("#OrderForm input[type=checkbox]:checked").length;
         return count>0 ? true : false;
@@ -378,6 +397,31 @@
             }else
                 console.log(result);
         }
+
+    }
+
+    function openWhois(domain)
+    {
+        var title = 'WHOIS';
+        var url = '<?php echo $links["controller"]; ?>?whois='+domain+"&token=<?php echo Validation::get_csrf_token('domain-check',false); ?>";
+        var w   = 1090;
+        var h   = 600;
+        var dualScreenLeft = window.screenLeft != undefined ? window.screenLeft : screen.left;
+        var dualScreenTop = window.screenTop != undefined ? window.screenTop : screen.top;
+        var width = window.innerWidth ? window.innerWidth : document.documentElement.clientWidth ? document.documentElement.clientWidth : screen.width;
+        var height = window.innerHeight ? window.innerHeight : document.documentElement.clientHeight ? document.documentElement.clientHeight : screen.height;
+        var left = ((width / 2) - (w / 2)) + dualScreenLeft;
+        var top = ((height / 2) - (h / 2)) + dualScreenTop;
+        /*--------------*/
+        window.open(url, title, 'scrollbars=yes, width=' + w + ', height=' + h + ', top=' + top + ', left=' + left);
+    }
+
+    function transferModal(domain)
+    {
+        scrollUp();
+        $("#domainInput").val(domain);
+        $(".transfercode").slideDown();
+        $(".transfercode input").focus();
 
     }
 </script>
@@ -442,6 +486,7 @@
 
 
     <div class="clear"></div>
+
     <div id="transfercode" class="transfercode">
         <h5><strong><?php echo __("website/domain/transfer-text1"); ?></strong></h5>
 
@@ -492,7 +537,7 @@
                             array_pop($split_amount);
                             $amount2         = implode(" ",$split_amount);
                         }
-                        
+
                         ?>
                         <div class="uzantibox spotlight-tlds" data-name="<?php echo $row["name"]; ?>" style="position: relative;   ">
 
@@ -642,8 +687,8 @@
                 <th align="center" bgcolor="#F2F2F2"><strong><?php echo __("website/domain/tld-renewal"); ?></strong></th>
                 <th align="center" bgcolor="#F2F2F2"><strong><?php echo __("website/domain/tld-transfer"); ?></strong></th>
             </tr>
-        </thead>
-        <tbody>
+            </thead>
+            <tbody>
 
             <?php
                 if(isset($tldList) && is_array($tldList) && sizeof($tldList)){

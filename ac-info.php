@@ -573,7 +573,7 @@
                                             });
                                         });
                                     </script>
-                                    <input<?php echo !$editable["birthday"] && $udata["birthday"] != '' ? ' disabled' : NULL; ?> type="text" name="birthday" class="accountinputs" id="birthday" value="<?php echo $udata["birthday"] == NULL ? NULL : DateManager::format("d/m/Y",$udata["birthday"]); ?>" placeholder="00/00/0000">
+                                    <input<?php echo !$editable["birthday"] && $udata["birthday"] != '' ? ' disabled' : NULL; ?> type="text" name="birthday" class="accountinputs" id="birthday" value="<?php echo $udata["birthday"] == NULL ? NULL : DateManager::format(Config::get("options/date-format"),$udata["birthday"]); ?>" placeholder="00/00/0000">
                                     <?php
                                         if($birthday_adult_verify){
                                             ?>
@@ -894,22 +894,6 @@
                     <div class="yuzde30">
                         <input id="sms_notifications" class="checkbox-custom" name="sms_notifications" value="1" type="checkbox"<?php echo ($udata["sms_notifications"] == 1) ? ' checked' : ''; ?>>
                         <label for="sms_notifications" class="checkbox-custom-label" style="margin-right: 28px;"></label>
-                    </div>
-                </div>
-
-                <div class="formcon">
-                    <div class="yuzde70"><?php echo __("website/sign/contract1"); ?></div>
-                    <div class="yuzde30">
-                        <input id="contract1" class="checkbox-custom" name="contract1" value="1" type="checkbox"<?php echo ($udata["contract1"]) ? ' checked' : ''; ?>>
-                        <label for="contract1" class="checkbox-custom-label" style="margin-right: 28px;"></label>
-                    </div>
-                </div>
-
-                <div class="formcon">
-                    <div class="yuzde70"><?php echo __("website/sign/contract2"); ?></div>
-                    <div class="yuzde30">
-                        <input id="contract2" class="checkbox-custom" name="contract2" value="1" type="checkbox"<?php echo ($udata["contract2"]) ? ' checked' : ''; ?>>
-                        <label for="contract2" class="checkbox-custom-label" style="margin-right: 28px;"></label>
                     </div>
                 </div>
 

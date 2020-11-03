@@ -4,10 +4,10 @@
     if(!$logo) $logo = Utility::image_link_determiner(Config::get("theme/header-logo"));
     $status         = __("website/account_invoices/status-".$invoice["status"]);
     $status         = Utility::strtoupper($status);
-    $cdate          = DateManager::format("d/m/Y",$invoice["cdate"]);
-    $duedate        = DateManager::format("d/m/Y",$invoice["duedate"]);
-    $datepaid       = substr($invoice["datepaid"],0,4) == "1881" ? '' : DateManager::format("d/m/Y H:i",$invoice["datepaid"]);
-    $refunddate     = substr($invoice["refunddate"],0,4) == "1881" ? '' : DateManager::format("d/m/Y H:i",$invoice["refunddate"]);
+    $cdate          = DateManager::format(Config::get("options/date-format"),$invoice["cdate"]);
+    $duedate        = DateManager::format(Config::get("options/date-format"),$invoice["duedate"]);
+    $datepaid       = substr($invoice["datepaid"],0,4) == "1881" ? '' : DateManager::format(Config::get("options/date-format")." H:i",$invoice["datepaid"]);
+    $refunddate     = substr($invoice["refunddate"],0,4) == "1881" ? '' : DateManager::format(Config::get("options/date-format")." H:i",$invoice["refunddate"]);
     $sharing        = isset($sharing) ? $sharing : false;
     if($sharing) $censored = isset($udata) && $udata["id"] == $invoice["user_id"] ? false : true;
     else $censored       = false;
@@ -268,7 +268,7 @@
 
 
             <div class="invoiceidx">
-                <?php echo __("website/account_invoices/invoice-num"); ?>: <?php echo $invoice["id"]; ?>
+                <?php echo __("website/account_invoices/invoice-num"); ?>: <?php echo $invoice["number"] ? $invoice["number"] : $invoice["id"]; ?>
             </div>
 
             <div class="clear"></div>
@@ -604,12 +604,10 @@
     </div>
 </div>
 
-<?php if(!isset($admin)): ?>
-    <?php if(isset($udata)): ?>
-        <div style="text-align:center;margin-bottom:25px;"><a href="<?php echo $links["invoices"]; ?>"><i class="fa fa-angle-double-left" aria-hidden="true"></i> <?php echo __("website/account_invoices/go-back"); ?></a></div>
-    <?php else: ?>
-        <div style="text-align:center;margin-bottom:25px;"><a href="<?php echo $login_link; ?>"><i class="fa fa-angle-double-left" aria-hidden="true"></i> <?php echo __("website/account_invoices/sign-in"); ?></a></div>
-    <?php endif; ?>
+<?php if(isset($udata)): ?>
+    <div style="text-align:center;margin-bottom:25px;"><a href="<?php echo $links["invoices"]; ?>"><i class="fa fa-angle-double-left" aria-hidden="true"></i> <?php echo __("website/account_invoices/go-back"); ?></a></div>
+<?php else: ?>
+    <div style="text-align:center;margin-bottom:25px;"><a href="<?php echo $login_link; ?>"><i class="fa fa-angle-double-left" aria-hidden="true"></i> <?php echo __("website/account_invoices/sign-in"); ?></a></div>
 <?php endif; ?>
 
 <?php if($permission_share): ?>

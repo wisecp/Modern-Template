@@ -188,6 +188,11 @@
                                 $selected = true;
                                 $selection = $cat;
                             }
+                            elseif(!$selection && $k == 0){
+                                $category = $cat;
+                                $selected = true;
+                                $selection = $cat;
+                            }
                         }
                         ?>
                         <a href="<?php echo $cat["route"]; ?>" class="lbtn"<?php echo $selected ? ' id="category-button-active"' : ''; ?>>

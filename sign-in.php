@@ -102,6 +102,7 @@ video{position:fixed;top:50%;left:50%;min-width:100%;min-height:100%;width:auto;
 .logo img{width:200px}
 .uyeolgirisslogan h4{width:80%}
 #uyeolgiris input{background:transparent;color:rgba(255,255,255,0.75);border-bottom-color:rgba(255,255,255,0.58)}
+#uyeolgiris #gsm {padding-left: 90px;}
 .uyeolgirisyap .btn{width:200px;background:transparent;    padding: 12px 0px;}
 .clientcopyright{width:100%;text-align:center;font-size:13px;margin-top:15px;margin-bottom:30px;color:#b4b4b4;display:inline-block}
 .clientcopyright a{color:#b4b4b4}

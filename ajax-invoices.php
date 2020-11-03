@@ -5,7 +5,7 @@
         foreach($list AS $i=>$row){
             $amount = $row["total"];
             $item = [];
-            array_push($item,$row["id"]);
+            array_push($item,$row["number"] ? $row["number"] : "#".$row["id"]);
             array_push($item,$row["creation_date"]);
             array_push($item,"".$row["due_date"]."");
             array_push($item,Money::formatter_symbol($amount,$row["currency"]));

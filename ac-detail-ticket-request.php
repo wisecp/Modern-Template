@@ -177,7 +177,7 @@
             <div class="destekinfo">
                 <div class="destekinfocon">
                     <h5><strong><?php echo __("website/account_tickets/last-update"); ?></strong></h5>
-                    <h4 id="get_lastreply"><?php echo UserManager::formatTimeZone($ticket["lastreply"],$zone,"d/m/Y - H:i"); ?></h4>
+                    <h4 id="get_lastreply"><?php echo UserManager::formatTimeZone($ticket["lastreply"],$zone,Config::get("options/date-format")." - H:i"); ?></h4>
                 </div>
             </div>
 

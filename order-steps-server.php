@@ -337,7 +337,7 @@
                                                                     });
                                                                 });
                                                             </script>
-                                                            <div id="addon-<?php echo $addon["id"]; ?>-slider-content" style="display: none;">
+                                                            <div id="addon-<?php echo $addon["id"]; ?>-slider-content" style="<?php echo $compulsory ? '' : 'display: none;'; ?>">
                                                                 <input id="addon-<?php echo $addon["id"]; ?>-slider-value" name="addons_values[<?php echo $addon["id"]; ?>]" type="range" min="<?php echo $min; ?>" max="<?php echo $max; ?>" step="<?php echo $stp; ?>" value="<?php echo $min; ?>">
 
                                                             </div>

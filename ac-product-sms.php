@@ -193,7 +193,7 @@
                             if(isset($invoice) && $invoice)
                             {
                                 ?>
-                                <span style="float:right;"><?php echo __("website/account_invoices/invoice-num"); ?> <a href="<?php echo $invoice["detail_link"]; ?>" target="_blank"><strong>#<?php echo $invoice["id"]; ?></strong></a></span>
+                                <span style="float:right;"><?php echo __("website/account_invoices/invoice-num"); ?> <a href="<?php echo $invoice["detail_link"]; ?>" target="_blank"><strong><?php echo $invoice["number"] ? $invoice["number"] : "#".$invoice["id"]; ?></strong></a></span>
                                 <?php
                             }
                         ?>
@@ -213,7 +213,7 @@
                 </tr>
                 <tr>
                     <td><strong><?php echo __("website/account_products/purchase-date"); ?></strong></td>
-                    <td><?php echo DateManager::format("d/m/Y",$proanse["cdate"]); ?></td>
+                    <td><?php echo DateManager::format(Config::get("options/date-format"),$proanse["cdate"]); ?></td>
                 </tr>
                 </tr>
                 <tr align="center" class="tutartd">
@@ -270,7 +270,7 @@
 
                 <tr>
                     <td><strong>Doğum Tarihi</strong></td>
-                    <td><?php echo isset($options["birthday"]) ? DateManager::format("d.m.Y",$options["birthday"]) : ''; ?></td>
+                    <td><?php echo isset($options["birthday"]) ? DateManager::format(Config::get("options/date-format"),$options["birthday"]) : ''; ?></td>
                 </tr>
 
                 <tr>
@@ -702,7 +702,7 @@
                                         <strong><?php echo $origin["name"]; ?></strong>
                                         <?php if($origin["status_message"] != ''){ ?><br><span style="color:<?php echo $color; ?>"><?php echo __("website/account_products/operator-note"); ?>:</span> <?php echo $origin["status_message"]; } ?>
                                     </td>
-                                    <td align="center" id="nomobil"><?php echo DateManager::format("d.m.Y - H:i",$origin["ctime"]); ?></td>
+                                    <td align="center" id="nomobil"><?php echo DateManager::format(Config::get("options/date-format")." - H:i",$origin["ctime"]); ?></td>
                                     <td align="center" width="130">
                                         <?php echo $origin_situations[$origin["status"]]; ?>
                                     </td>
@@ -1142,7 +1142,7 @@
                                     <tr style="background:none;" id="ctoc_s_t_<?php echo $ctoc_s_t_r["id"]; ?>">
                                         <td align="left"><?php echo $full_name; ?></td>
                                         <td align="center"><?php echo $evt_data["to_email"]; ?></td>
-                                        <td align="center"><?php echo DateManager::format("d/m/Y H:i",$ctoc_s_t_r["cdate"]); ?></td>
+                                        <td align="center"><?php echo DateManager::format(Config::get("options/date-format")." H:i",$ctoc_s_t_r["cdate"]); ?></td>
                                         <td align="center" width="140">
                                             <a href="javascript:void 0;" onclick="remove_ctoc_s_t(<?php echo $ctoc_s_t_r["id"]; ?>,this);" class="sbtn red" data-tooltip="<?php echo ___("needs/button-delete"); ?>"><i class="fa fa-times"></i></a>
                                         </td>

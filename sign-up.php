@@ -150,6 +150,9 @@ video{position:fixed;top:50%;left:50%;min-width:100%;min-height:100%;width:auto;
 .checktext a:hover{color:rgba(255,255,255,1.58)}
 .country-name{color:#999}
 .selected-dial-code{color:rgba(255, 255, 255, 0.75)}
+#uyeolgiris #gsm {
+    padding-left: 90px;
+}
 
 @media only screen and (min-width:320px) and (max-width:1024px){
 .uyeolgirishead{width:100%;margin-top:15%}

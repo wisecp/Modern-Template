@@ -359,7 +359,7 @@
                                         ?>
                                         <tr>
                                             <td align="center"><?php echo $k; ?></td>
-                                            <td align="center"><?php echo DateManager::format("d/m/Y H:i",$row['clicked_ctime']); ?></td>
+                                            <td align="center"><?php echo DateManager::format(Config::get("options/date-format")." H:i",$row['clicked_ctime']); ?></td>
                                             <td align="center"><strong><?php echo $row["full_name"]; ?></strong><br>(<?php echo in_array($row['status'],['invalid','invalid-another']) ? __("website/account/affiliate-tx46") : __("website/account/affiliate-tx45"); ?>)</td>
                                             <td align="center"><?php echo $row['order_name'] ? $row["order_name"] : __("website/account/affiliate-tx59"); ?></td>
                                             <td align="center"><?php echo Money::formatter_symbol($row["amount"],$row["currency"]); ?></td>
@@ -382,8 +382,8 @@
                                                         if(in_array($row["status"],['approved','completed']))
                                                         {
                                                             ?>
-                                                            <br>(<?php echo DateManager::format("d/m/Y",$row["ctime"]); ?>)
-                                                            <a class="dashboardbox-info tooltip-top" data-tooltip="<?php echo __("website/account/affiliate-tx48",['{date}' => DateManager::format("d/m/Y",$row["clearing_date"])]); ?>"><i class="fa fa-info-circle" aria-hidden="true"></i></a>
+                                                            <br>(<?php echo DateManager::format(Config::get("options/date-format"),$row["ctime"]); ?>)
+                                                            <a class="dashboardbox-info tooltip-top" data-tooltip="<?php echo __("website/account/affiliate-tx48",['{date}' => DateManager::format(Config::get("options/date-format"),$row["clearing_date"])]); ?>"><i class="fa fa-info-circle" aria-hidden="true"></i></a>
                                                             <?php
                                                         }
                                                         elseif($row["status"] == "invalid")
@@ -432,7 +432,7 @@
                                         <tr>
                                             <td align="center"><?php echo $k; ?></td>
                                             <td align="center">
-                                                <?php echo DateManager::format("d/m/Y H:i",$row["ctime"]); ?>
+                                                <?php echo DateManager::format(Config::get("options/date-format")." H:i",$row["ctime"]); ?>
                                             </td>
                                             <td align="center">
                                                 <?php echo isset($gateways[$row["gateway"]]) ? $gateways[$row["gateway"]] : ___("needs/unknown"); ?> <a class="dashboardbox-info tooltip-top" data-tooltip="<?php echo str_replace('"','\"',$row["gateway_info"]  ? $row["gateway_info"] : __("website/account/affiliate-tx64")); ?>"><i class="fa fa-info-circle" aria-hidden="true"></i></a></td>
@@ -446,7 +446,7 @@
                                                         {
                                                             ?>
                                                             <br>
-                                                            (<?php echo DateManager::format("d/m/Y H:i",$row["completed_time"]); ?>)
+                                                            (<?php echo DateManager::format(Config::get("options/date-format")." H:i",$row["completed_time"]); ?>)
                                                             <?php
                                                         }
                                                         if($row["status_msg"])

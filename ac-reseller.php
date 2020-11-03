@@ -204,7 +204,7 @@
                                             if($row["period"] == "none")
                                                 echo ___("date/period-none");
                                             else
-                                                echo DateManager::format("d/m/Y H:i",$row["duedate"]);
+                                                echo DateManager::format(Config::get("options/date-format")." H:i",$row["duedate"]);
                                         ?>
                                     </td>
                                     <td align="center"><?php echo $situations[$row["status"]]; ?></td>

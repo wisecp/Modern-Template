@@ -11,7 +11,7 @@
                     <div class="destekdetaymsjcon">
                         <div class="msjyazan">
 
-                            <h4><?php echo $reply["name"]; ?> <span><?php echo __("website/account_tickets/authorized"); ?></span></h4><h5><?php echo UserManager::formatTimeZone($reply["ctime"],$zone,"d/m/Y - H:i"); ?></h5>
+                            <h4><?php echo $reply["name"]; ?> <span><?php echo __("website/account_tickets/authorized"); ?></span></h4><h5><?php echo UserManager::formatTimeZone($reply["ctime"],$zone,Config::get("options/date-format")." - H:i"); ?></h5>
                         </div><div class="clear"></div>
                         <div class="reply-message"><?php echo $message; ?>
                             <div class="clear"></div>
@@ -51,7 +51,7 @@
                 <div class="<?php echo $reply["admin"] && $get_last_reply_id > 0 ? 'new-reply ' : ''; ?>destekdetaymsj">
                     <div class="destekdetaymsjcon">
                         <div class="msjyazan">
-                            <h4><?php echo $reply["name"]; ?> <span><?php echo __("website/account_tickets/customer"); ?></span></h4><h5><?php echo UserManager::formatTimeZone($reply["ctime"],$zone,"d/m/Y - H:i"); ?></h5>
+                            <h4><?php echo $reply["name"]; ?> <span><?php echo __("website/account_tickets/customer"); ?></span></h4><h5><?php echo UserManager::formatTimeZone($reply["ctime"],$zone,Config::get("options/date-format")." - H:i"); ?></h5>
                         </div><div class="clear"></div>
                         <div class="reply-message"><?php echo $message; ?>
                             <div class="clear"></div>

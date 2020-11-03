@@ -54,7 +54,7 @@
                         $period = View::period($row["period_time"],$row["period"]);
                         $duedate = $row["duedate"];
                         if(substr($duedate,0,4) == "1881") $duedate = $row["cdate"];
-                        $duedate_format = DateManager::format("d/m/Y",$duedate);
+                        $duedate_format = DateManager::format(Config::get("options/date-format"),$duedate);
                         ?>
                         <tr>
                             <td align="left"><?php echo $r; ?></td>

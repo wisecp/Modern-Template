@@ -277,7 +277,7 @@
                             if(isset($invoice) && $invoice)
                             {
                                 ?>
-                                <span style="float:right;"><?php echo __("website/account_invoices/invoice-num"); ?> <a href="<?php echo $invoice["detail_link"]; ?>" target="_blank"><strong>#<?php echo $invoice["id"]; ?></strong></a></span>
+                                <span style="float:right;"><?php echo __("website/account_invoices/invoice-num"); ?> <a href="<?php echo $invoice["detail_link"]; ?>" target="_blank"><strong><?php echo $invoice["number"] ? $invoice["number"] : "#".$invoice["id"]; ?></strong></a></span>
                                 <?php
                             }
                         ?>
@@ -305,14 +305,14 @@
                 <?php if(substr($proanse["renewaldate"],0,4) != "1881" && substr($proanse["renewaldate"],0,4) != "1970"): ?>
                     <tr>
                         <td><strong><?php echo __("website/account_products/renewal-date"); ?></strong></td>
-                        <td><?php echo DateManager::format("d/m/Y",$proanse["renewaldate"]); ?></td>
+                        <td><?php echo DateManager::format(Config::get("options/date-format"),$proanse["renewaldate"]); ?></td>
                     </tr>
                 <?php endif; ?>
 
                 <?php if(substr($proanse["duedate"],0,4) != "1881" && substr($proanse["duedate"],0,4) != "1970"): ?>
                     <tr>
                         <td><strong><?php echo __("website/account_products/due-date"); ?></strong></td>
-                        <td><?php echo DateManager::format("d/m/Y",$proanse["duedate"]); ?></td>
+                        <td><?php echo DateManager::format(Config::get("options/date-format"),$proanse["duedate"]); ?></td>
                     </tr>
                 <?php endif; ?>
 
@@ -391,9 +391,9 @@
                 <tbody align="center" style="border-top:none;">
                 <?php
                     foreach($addons AS $k=>$row){
-                        $list_cdatetime     = substr($row["cdate"],0,4)!="1881" ? DateManager::format("d/m/Y",$row["cdate"]) : '-';
-                        $list_rdatetime     = substr($row["renewaldate"],0,4)!="1881" ? DateManager::format("d/m/Y",$row["renewaldate"]) : '-';
-                        $list_duedatetime   = substr($row["duedate"],0,4)!="1881" ? DateManager::format("d/m/Y",$row["duedate"]) : '-';
+                        $list_cdatetime     = substr($row["cdate"],0,4)!="1881" ? DateManager::format(Config::get("options/date-format"),$row["cdate"]) : '-';
+                        $list_rdatetime     = substr($row["renewaldate"],0,4)!="1881" ? DateManager::format(Config::get("options/date-format"),$row["renewaldate"]) : '-';
+                        $list_duedatetime   = substr($row["duedate"],0,4)!="1881" ? DateManager::format(Config::get("options/date-format"),$row["duedate"]) : '-';
                         $status = $product_situations[$row["status"]];
 
                         $amount = $row["amount"]>0 ? Money::formatter_symbol($row["amount"],$row["cid"]) : ___("needs/free-amount");
@@ -494,12 +494,12 @@
 
                             <div class="formcon">
                                 <span><?php echo __("website/account_products/upgrade-renewaldate"); ?>:</span>
-                                <strong> <?php echo DateManager::format("d.m.Y",$proanse["renewaldate"]); ?></strong>
+                                <strong> <?php echo DateManager::format(Config::get("options/date-format"),$proanse["renewaldate"]); ?></strong>
                             </div>
 
                             <div class="formcon">
                                 <span><?php echo __("website/account_products/upgrade-duedate"); ?>:</span>
-                                <strong><?php echo DateManager::format("d.m.Y",$proanse["duedate"]); ?>     </strong>
+                                <strong><?php echo DateManager::format(Config::get("options/date-format"),$proanse["duedate"]); ?>     </strong>
                             </div>
 
 
@@ -802,7 +802,7 @@
                                     <tr style="background:none;" id="ctoc_s_t_<?php echo $ctoc_s_t_r["id"]; ?>">
                                         <td align="left"><?php echo $full_name; ?></td>
                                         <td align="center"><?php echo $evt_data["to_email"]; ?></td>
-                                        <td align="center"><?php echo DateManager::format("d/m/Y H:i",$ctoc_s_t_r["cdate"]); ?></td>
+                                        <td align="center"><?php echo DateManager::format(Config::get("options/date-format")." H:i",$ctoc_s_t_r["cdate"]); ?></td>
                                         <td align="center" width="140">
                                             <a href="javascript:void 0;" onclick="remove_ctoc_s_t(<?php echo $ctoc_s_t_r["id"]; ?>,this);" class="sbtn red" data-tooltip="<?php echo ___("needs/button-delete"); ?>"><i class="fa fa-times"></i></a>
                                         </td>

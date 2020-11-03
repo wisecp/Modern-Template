@@ -373,9 +373,9 @@
                                                                             $d_limit    = isset($creation_info["disk_limit"]) ? $creation_info["disk_limit"] : 'unlimited';
                                                                             $dlimit = __("website/osteps/unlimited-disk");
                                                                             if($reseller)
-                                                                                $dlimit = $d_limit != "unlimited" ? FileManager::formatByte(FileManager::converByte($d_limit."MB")) : __("website/osteps/unlimited-disk");
+                                                                                $dlimit = $d_limit != "unlimited" && $d_limit != 0 ? FileManager::formatByte(FileManager::converByte($d_limit."MB")) : __("website/osteps/unlimited-disk");
                                                                             elseif(isset($p["options"]["disk_limit"]))
-                                                                                $dlimit = $p["options"]["disk_limit"] != "unlimited" ? FileManager::formatByte(FileManager::converByte($p["options"]["disk_limit"]."MB")) : __("website/osteps/unlimited-disk");
+                                                                                $dlimit = $p["options"]["disk_limit"] != "unlimited" && $p["options"]["disk_limit"] != 0 ? FileManager::formatByte(FileManager::converByte($p["options"]["disk_limit"]."MB")) : __("website/osteps/unlimited-disk");
                                                                             $price = Money::formatter_symbol($p["price"]["amount"],$p["price"]["cid"],!$p["override_usrcurrency"]);
                                                                             if($p["price"]["amount"]<=0)
                                                                                 $price = ___("needs/free-amount");
@@ -401,9 +401,9 @@
                                                                                 $d_limit    = isset($creation_info["disk_limit"]) ? $creation_info["disk_limit"] : 'unlimited';
                                                                                 $dlimit = __("website/osteps/unlimited-disk");
                                                                                 if($reseller)
-                                                                                    $dlimit = $d_limit != "unlimited" ? FileManager::formatByte(FileManager::converByte($d_limit."MB")) : __("website/osteps/unlimited-disk");
+                                                                                    $dlimit = $d_limit != "unlimited" && $d_limit != 0 ? FileManager::formatByte(FileManager::converByte($d_limit."MB")) : __("website/osteps/unlimited-disk");
                                                                                 elseif(isset($p2["options"]["disk_limit"]))
-                                                                                    $dlimit = $p2["options"]["disk_limit"] != "unlimited" ? FileManager::formatByte(FileManager::converByte($p2["options"]["disk_limit"]."MB")) : __("website/osteps/unlimited-disk");
+                                                                                    $dlimit = $p2["options"]["disk_limit"] != "unlimited" && $p2["options"]["disk_limit"] != 0 ? FileManager::formatByte(FileManager::converByte($p2["options"]["disk_limit"]."MB")) : __("website/osteps/unlimited-disk");
                                                                                 $price = Money::formatter_symbol($p2["price"]["amount"],$p2["price"]["cid"],!$p2["override_usrcurrency"]);
                                                                                 if($p2["price"]["amount"]<=0)
                                                                                     $price = ___("needs/free-amount");
@@ -787,7 +787,7 @@
                                                     });
                                                 });
                                             </script>
-                                            <div id="addon-<?php echo $addon["id"]; ?>-slider-content" style="display: none;">
+                                            <div id="addon-<?php echo $addon["id"]; ?>-slider-content" style="<?php echo $compulsory ? '' : 'display: none;'; ?>">
                                                 <input id="addon-<?php echo $addon["id"]; ?>-slider-value" name="addons_values[<?php echo $addon["id"]; ?>]" type="range" min="<?php echo $min; ?>" max="<?php echo $max; ?>" step="<?php echo $stp; ?>" value="<?php echo $min; ?>">
 
                                             </div>

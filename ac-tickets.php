@@ -69,7 +69,7 @@
                                     }
                                 ?>
                             </td>
-                            <td align="center"><?php echo UserManager::formatTimeZone($row["ctime"],$zone,"d/m/Y - H:i"); ?></td>
+                            <td align="center"><?php echo UserManager::formatTimeZone($row["ctime"],$zone,Config::get("options/date-format")." - H:i"); ?></td>
                             <td align="center"><?php echo $situations[$row["status"]]; ?></td>
                             <td align="center"><?php echo '<a href="'.$row["detail_link"].'" class="incelebtn"><i class="fa fa-search" aria-hidden="true"></i> '.__("website/account_products/view-button").'</a>'; ?></td>
                         </tr>

@@ -2,6 +2,7 @@
     $hoptions = [
         'page' => "basket-payment",
     ];
+    $ipInfo = UserManager::ip_info();
 
     $currency_symbols = [];
     foreach(Money::getCurrencies() AS $currency){
@@ -281,7 +282,7 @@
         }
 
         function getCountries(){
-            var local_cc = "<?php echo strtoupper(___("package/code")); ?>";
+            var local_cc = "<?php echo strtoupper($ipInfo ? $ipInfo["countryCode"] : ___("package/code")); ?>";
             var request = MioAjax({
                 action: "<?php echo $links["bring-info"]."country-list"; ?>",
                 method: "GET"
