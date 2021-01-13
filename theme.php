@@ -1,8 +1,8 @@
 <?php
     //define("DISABLE_CSRF",true);
 
-    Class Default_Theme {
-        public $config=[],$name = 'Default',$error=NULL,$language,$languages;
+    Class Modern_Theme {
+        public $config=[],$name = 'Modern',$error=NULL,$language,$languages;
 
         function __construct()
         {
@@ -29,7 +29,8 @@
             if($raw == "templates/website/".$this->name."/css/wisecp.css"){
                 $this->main_css();
                 return true;
-            }elseif($page && file_exists(__DIR__.DS."pages".DS.$page.".php"))
+            }
+            elseif($page && file_exists(__DIR__.DS."pages".DS.$page.".php"))
                 return ['include_file' => __DIR__.DS."pages".DS.$page.".php"];
         }
 
@@ -69,6 +70,7 @@
 
             $header_type        = (int) Filter::init("POST/header_type","numbers");
             $clientArea_type    = (int) Filter::init("POST/clientArea_type","numbers");
+            $nla                = (int) Filter::init("POST/new-login-area","numbers");
             $color1             = ltrim(Filter::init("POST/color1"),"#");
             $color2             = ltrim(Filter::init("POST/color2"),"#");
             $tcolor             = ltrim(Filter::init("POST/text_color"),"#");
@@ -82,6 +84,7 @@
             }
 
             if($color2 != $settings["color2"]) $settings["color2"] = $color2;
+            if($nla != $settings["new-login-area"]) $settings["new-login-area"] = $nla;
 
 
             if($tcolor != $settings["text-color"]) $settings["text-color"] = $tcolor;

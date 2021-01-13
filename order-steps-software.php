@@ -657,19 +657,19 @@
                             $compulsory = isset($properties["compulsory"]) && $properties["compulsory"];
                             ?>
                             <tr>
-                                <td width="30%">
+                                <td width="50%">
                                     <?php if($compulsory): ?>
                                         <span class="zorunlu">*</span>
                                     <?php endif; ?>
                                     <label for="addon-<?php echo $addon["id"]; ?>">
-                                        <?php echo $addon["name"]; ?>
+                                       <strong> <?php echo $addon["name"]; ?></strong>
                                         <?php if($addon["description"]): ?>
                                             <br>
                                             <span style="font-size: 14px;"><?php echo $addon["description"]; ?></span>
                                         <?php endif; ?>
                                     </label>
                                 </td>
-                                <td width="70%">
+                                <td width="50%">
                                     <?php
                                         if($addon["type"] == "radio"){
                                             ?>

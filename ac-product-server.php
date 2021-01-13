@@ -369,6 +369,43 @@ function t_form_handle(result){
                     <td><strong><?php echo __("website/account_products/service-status"); ?></strong></td>
                     <td><?php echo $product_situations[$proanse["status"]]; ?></td>
                 </tr>
+                <?php
+                    $c_s_m = Config::get("modules/card-storage-module");
+                    if($c_s_m && $c_s_m != "none")
+                    {
+                        $o_a_p = isset($proanse["auto_pay"]) ? $proanse["auto_pay"]  : 0;
+                        ?>
+                        <tr>
+                            <td><strong><?php echo __("website/account_products/auto-pay-1"); ?></strong></td>
+                            <td>
+                                <input onchange="change_auto_pay_status(this);" type="checkbox" class="sitemio-checkbox" id="auto_pay" value="1"<?php echo $o_a_p ? ' checked' : ''; ?>>
+                                <label class="sitemio-checkbox-label" for="auto_pay"></label>
+
+                                <script type="text/javascript">
+                                    function change_auto_pay_status(el){
+                                        let status = $(el).prop('checked') ? 1 : 0;
+
+                                        if(status === 1 && '<?php echo isset($stored_cards) && $stored_cards ? "true" : "false"; ?>' === "false")
+                                        {
+                                            alert_error("<?php echo __("website/account_products/auto-pay-3"); ?>",{timer:5000});
+                                            $(el).prop('checked',false);
+                                            return false;
+                                        }
+
+                                        MioAjax({
+                                            action:"<?php echo $links["controller"]; ?>",
+                                            method:"POST",
+                                            data:{operation:"set_auto_pay_status",status:status}
+                                        },true,true);
+                                        alert_success("<?php echo __("website/account_products/auto-pay-4"); ?>",{timer:3000});
+                                    }
+                                </script>
+
+                            </td>
+                        </tr>
+                        <?php
+                    }
+                ?>
                 <tr>
                     <td><strong><?php echo __("website/account_products/payment-period"); ?></strong></td>
                     <td><?php echo View::period($proanse["period_time"],$proanse["period"]); ?></td>

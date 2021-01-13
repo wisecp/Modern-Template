@@ -2,7 +2,7 @@
 <style>
     .menu_tag{ background-color:#4CAF50;color:#fff;padding:2px 7px;font-size:13px;border-radius:3px;text-align:center;font-weight:300;margin-top:-10px;float:right;margin-left:-100px;margin-right:20px;}@media only screen and (min-width:320px) and (max-width:1023px){.menu_tag{margin-top:13px;position:relative;margin-bottom:-50px;margin-left: 0px;}}
 </style>
-<div class="header"<?php echo (isset($header_background) && $header_background) ? ' style="background-image: url('.$header_background.');"' : '';?>>
+<div class="header"<?php echo (!isset($hoptions["page"]) || $hoptions["page"] != "index") && (isset($header_background) && $header_background) ? ' style="background-image: url('.$header_background.');"' : '';?>>
     <div class="head">
         <div class="headbutonlar">
 

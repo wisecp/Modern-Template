@@ -1,4 +1,9 @@
 <?php defined('CORE_FOLDER') OR exit('You can not get in here!');
+    if(Config::get("theme/new-login-area"))
+    {
+        include __DIR__.DS."sign-up-new.php";
+        return false;
+    }
     $master_content_none = true;
     $connectionButtons = Hook::run("ClientAreaConnectionButtons","register");
 ?>

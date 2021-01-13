@@ -53,8 +53,8 @@
                         $amount = Money::formatter_symbol($row["amount"],$row["amount_cid"]);
                         $period = View::period($row["period_time"],$row["period"]);
                         $duedate = $row["duedate"];
-                        if(substr($duedate,0,4) == "1881") $duedate = $row["cdate"];
-                        $duedate_format    = DateManager::format(Config::get("options/date-format"),$duedate);
+                        if(in_array(substr($duedate,0,4),['1881','1970'])) $duedate = '1970';
+                        $duedate_format = $duedate == "1970" ? ' - ' : DateManager::format(Config::get("options/date-format"),$duedate);
                         ?>
                         <tr>
                             <td align="left"><?php echo $r; ?></td>

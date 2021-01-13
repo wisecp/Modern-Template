@@ -335,6 +335,20 @@
                                 }
                             }
 
+                            if(isset($items["promotions"]) && $items["promotions"]){
+                                foreach($items["promotions"] AS $item){
+                                    $name   = $item["name"]." - ".$item["dvalue"];
+                                    $total_discount_amount += $item["amountd"];
+                                    ?>
+                                    <div class="formcon" style="background:#eee;padding: 0px;">
+                                        <div class="yuzde70" style="text-align:right;"><span><?php echo $name; ?></span></div>
+                                        <div class="yuzde30"><span><strong>-<?php echo $item["amount"]; ?></strong></span></div>
+                                    </div>
+                                    <?php
+                                }
+                            }
+                            
+
                             if(isset($items["dealership"]) && $items["dealership"]){
                                 foreach($items["dealership"] AS $item){
                                     $name   = $item["name"]." - %".$item["rate"];

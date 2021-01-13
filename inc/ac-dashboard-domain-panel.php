@@ -47,7 +47,6 @@
     <form id="checkForm" action="<?php echo $domain_check_post; ?>" method="get">
         <input type="text" name="domain" placeholder="<?php echo __("website/index/domain-check-input-placeholder"); ?>">
         <a href="javascript:void(0);" id="checkButton" onclick="$('#checkForm').submit();" class="gonderbtn"><?php echo __("website/domain/check-it"); ?></a>
-        <a href="javascript:void(0);" onclick="$('#checkForm').submit();" class="gonderbtn" id="transferbtn"><?php echo __("website/domain/transfer"); ?></a>
     </form>
 
 

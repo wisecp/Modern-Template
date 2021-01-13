@@ -1,4 +1,5 @@
-<?php defined('CORE_FOLDER') OR exit('You can not get in here!'); ?><div class="wclientblockscon">
+<?php defined('CORE_FOLDER') OR exit('You can not get in here!'); ?>
+<div class="wclientblockscon">
 
     <div class="moderncliendblock mclientlastblocks">
         <div class="mpanelrightcon">

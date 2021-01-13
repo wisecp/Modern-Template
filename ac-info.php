@@ -2,7 +2,8 @@
 
     $wide_content = true;
 
-    $inc = Filter::GET("inc");
+    $inc        = Filter::GET("inc");
+
     if($inc){
 
         if($inc == "address-list"){
@@ -82,16 +83,23 @@
             utilsScript: "<?php echo $sadress;?>assets/plugins/phone-cc/js/utils.js"
         });
 
-        var tab = gGET("tab");
-        if(tab == '' || tab == undefined){
-            var tab_eq = 0;
-            $(".tablinks:eq("+tab_eq+")").click();
-        }
-        else{
-            var tab_eq = tab-1;
-            $(".tablinks").removeAttr("id");
-            $(".tablinks:eq("+tab_eq+")").click();
-        }
+        let tab = gGET("tab");
+        if(tab === "1")
+            tab = 'general';
+        else if(tab === "2")
+            tab = 'billing';
+        else if(tab === "3")
+            tab = 'preferences';
+        else if(tab === "4")
+            tab = 'password';
+        else if(tab === "5")
+            tab = 'verification';
+        
+        if(tab !== '' && tab !== undefined && tab !== 'null' && typeof tab !== 'object')
+            $('.tablinks[data-k='+tab+']').click();
+        else
+            $(".tablinks:eq(0)").click();
+
 
         var accordionx = gGET("accordion");
         if(accordionx == null){
@@ -104,6 +112,7 @@
             active:accordionx,
             collapsible: false,
         });
+
 
         $("input[name='kind']").change(function(){
             var value       = $("input[name='kind']:checked").val();
@@ -170,6 +179,7 @@
                                     value: elem.id,
                                     text: elem.name
                                 }));
+                                if(index === 0) def_val = elem.id;
                             });
                             $("#manageAddressForm select[name='city']").css("display","block").attr("disabled",false);
                             $("#manageAddressForm input[name='city']").css("display","none").attr("disabled",true);
@@ -320,17 +330,18 @@
             }
         },100);
     }
-    function openTab(evt, tabName) {
-        var rank,link,tab;
+    function openTab(evt, tabName)
+    {
+        let k,link,tab;
         $(".tabcontent").css("display","none");
         $(".tablinks").removeClass("active");
         $("#"+tabName).css("display","block");
         $(evt).addClass("active");
-        rank     = $(evt).attr("data-rank");
+        k     = $(evt).attr("data-k");
         link     = window.location.href;
         tab      = gGET("tab");
-        if(tab || (!tab && rank >1)){
-            link = sGET("tab",rank);
+        if(tab || (!tab && k.length > 1)){
+            link = sGET("tab",k);
         }
         window.history.pushState("object or string", $("title").html(),link);
     }
@@ -426,15 +437,24 @@
 
 
     <ul class="tab">
-        <li><a href="javascript:void(0)" class="tablinks" data-rank="1" onclick="openTab(this, 'ozet')"><i class="fa fa-info" aria-hidden="true"></i> <?php echo __("website/account_info/info-tab1"); ?></a></li>
-        <li><a href="javascript:void(0)" class="tablinks" data-rank="2" onclick="openTab(this, 'faturabilgilerim')"><i class="fa fa-file-text-o" aria-hidden="true"></i> <?php echo __("website/account_info/info-tab2"); ?></a></li>
-        <li><a href="javascript:void(0)" class="tablinks" data-rank="3" onclick="openTab(this, 'tercihler')"><i class="fa fa-star-o" aria-hidden="true"></i> <?php echo __("website/account_info/info-tab3"); ?></a></li>
-        <li><a href="javascript:void(0)" class="tablinks" data-rank="4" onclick="openTab(this, 'sifredegistir')"><i class="fa fa-key" aria-hidden="true"></i> <?php echo __("website/account_info/info-tab4"); ?></a></li>
-        <li><a href="javascript:void(0)" class="tablinks" data-rank="5" onclick="openTab(this, 'verification')"><i class="fa fa-check" aria-hidden="true"></i> <?php echo __("website/account_info/info-tab5"); ?></a></li>
+        <li><a href="javascript:void(0)" class="tablinks" data-k="general" onclick="openTab(this, 'general')"><i class="fa fa-info" aria-hidden="true"></i> <?php echo __("website/account_info/info-tab1"); ?></a></li>
+        <li><a href="javascript:void(0)" class="tablinks" data-k="billing" onclick="openTab(this, 'billing')"><i class="fa fa-file-text-o" aria-hidden="true"></i> <?php echo __("website/account_info/info-tab2"); ?></a></li>
+        <li><a href="javascript:void(0)" class="tablinks" data-k="preferences" onclick="openTab(this, 'preferences')"><i class="fa fa-star-o" aria-hidden="true"></i> <?php echo __("website/account_info/info-tab3"); ?></a></li>
+        <?php
+            if($c_s_m && $c_s_m != "none")
+            {
+                ?>
+                <li><a href="javascript:void(0)" class="tablinks" data-k="csm" onclick="openTab(this, 'csm')"><i class="fa fa-credit-card-alt" aria-hidden="true"></i> <?php echo __("website/account_info/info-tab-c-s-m"); ?></a></li>
+
+                <?php
+            }
+        ?>
+        <li><a href="javascript:void(0)" class="tablinks" data-k="password" onclick="openTab(this, 'password')"><i class="fa fa-key" aria-hidden="true"></i> <?php echo __("website/account_info/info-tab4"); ?></a></li>
+        <li><a href="javascript:void(0)" class="tablinks" data-k="verification" onclick="openTab(this, 'verification')"><i class="fa fa-check" aria-hidden="true"></i> <?php echo __("website/account_info/info-tab5"); ?></a></li>
     </ul>
 
 
-    <div id="ozet" class="tabcontent">
+    <div id="general" class="tabcontent">
         <div class="tabcontentcon" style="margin-top:25px;">
 
 
@@ -770,7 +790,7 @@
 
     </div>
 
-    <div id="faturabilgilerim" class="tabcontent">
+    <div id="billing" class="tabcontent">
         <div class="tabcontentcon"  style="margin-top:25px;">
             <div id="accordion" style="margin-top:25px;">
 
@@ -853,8 +873,7 @@
         </div>
     </div>
 
-
-    <div id="tercihler" class="tabcontent">
+    <div id="preferences" class="tabcontent">
         <div class="tabcontentcon">
 
             <form action="<?php echo $operation_link; ?>" method="post" id="ModifyPreferences">
@@ -970,7 +989,7 @@
         </div>
     </div>
 
-    <div id="sifredegistir" class="tabcontent">
+    <div id="password" class="tabcontent">
         <div class="tabcontentcon">
             <form action="<?php echo $operation_link; ?>" method="post" id="ModifyPassword">
                 <?php echo Validation::get_csrf_token('account'); ?>
@@ -1373,6 +1392,226 @@
 
         </div>
     </div>
+
+    <?php
+        if($c_s_m && $c_s_m != "none")
+        {
+            ?>
+            <div id="csm" class="tabcontent">
+                <div class="tabcontentcon">
+
+                    <script type="text/javascript">
+                        let waiting_text = '<i class="fa fa-spinner" style="-webkit-animation:fa-spin 2s infinite linear;animation: fa-spin 2s infinite linear;" aria-hidden="true"></i>'
+                        $(document).ready(function(){
+                            $(".card_as_default_btn").click(function(){
+                                let
+                                    btn = $(this),
+                                    request = MioAjax({
+                                        button_element  : btn,
+                                        waiting_text    : waiting_text,
+                                        action          : "<?php echo $operation_link; ?>",
+                                        method          : "POST",
+                                        data            : {
+                                            token       : "<?php echo Validation::get_csrf_token('account',false); ?>",
+                                            operation:"stored_card_as_default",
+                                            id:btn.data("id")
+                                        }
+                                    },true,true);
+                                request.done(function(result){
+                                    if(result != ''){
+                                        let solve = getJson(result);
+                                        if(solve !== false){
+                                            if(solve.status == "error")
+                                                alert_error(solve.message,{timer:5000});
+                                            else if(solve.status === "successful")
+                                            {
+                                                $(".creditcardbox").removeAttr("id");
+                                                $(".card_as_default_btn").css("display","block");
+                                                $(".creditcardbox .defaultcardtitle").css("display","none");
+                                                $(".creditcardbox[data-id="+btn.data("id")+"]").attr("id","default");
+                                                $(".creditcardbox[data-id="+btn.data("id")+"] .defaultcardtitle").css("display","block");
+                                                $(".creditcardbox[data-id="+btn.data("id")+"] .card_as_default_btn").css("display","none");
+                                            }
+                                        }else
+                                            console.log(result);
+                                    }
+                                });
+                            });
+
+                            $(".card_remove_btn").click(function(){
+
+                                if(!confirm("<?php echo ___("needs/delete-are-you-sure"); ?>"))
+                                    return false;
+
+                                let
+                                    btn = $(this),
+                                    request = MioAjax({
+                                        button_element  : btn,
+                                        waiting_text    : waiting_text,
+                                        action          : "<?php echo $operation_link; ?>",
+                                        method          : "POST",
+                                        data            : {
+                                            token       : "<?php echo Validation::get_csrf_token('account',false); ?>",
+                                            operation:"stored_card_remove",
+                                            id:btn.data("id")
+                                        }
+                                    },true,true);
+                                request.done(function(result){
+                                    if(result != ''){
+                                        let solve = getJson(result);
+                                        if(solve !== false){
+                                            if(solve.status == "error")
+                                                alert_error(solve.message,{timer:5000});
+                                            else if(solve.status === "successful")
+                                                window.location.href = '<?php echo $operation_link; ?>?tab=csm';
+                                        }else
+                                            console.log(result);
+                                    }
+                                });
+                            });
+
+                            $("#auto_payment_cx").change(function(){
+                                let
+                                    cx = $(this),
+                                    request = MioAjax({
+                                        action          : "<?php echo $operation_link; ?>",
+                                        method          : "POST",
+                                        data            : {
+                                            token       : "<?php echo Validation::get_csrf_token('account',false); ?>",
+                                            operation:"stored_card_auto_payment",
+                                            status      : cx.prop('checked') ? 1 : 0
+                                        }
+                                    },true,true);
+                                request.done(function(result){
+                                    if(result != ''){
+                                        let solve = getJson(result);
+                                        if(solve !== false){
+                                            if(solve.status == "error")
+                                            {
+                                                alert_error(solve.message,{timer:5000});
+                                                if(cx.prop('checked')) cx.prop('checked',false);
+                                            }
+                                        }else
+                                            console.log(result);
+                                    }
+                                });
+                            });
+
+                        });
+                    </script>
+
+
+                    <div id="accordion2" style="margin-top:25px;" class="ui-accordion ui-widget ui-helper-reset" role="tablist">
+
+                        <h3 class="ui-accordion-header ui-corner-top ui-state-default ui-accordion-icons" role="tab" id="ui-id-1" aria-controls="ui-id-2" aria-selected="true" aria-expanded="true" tabindex="0"><span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-s"></span><strong><?php echo __("website/account_info/stored-cards-1"); ?></strong></h3>
+                        <div class="ui-accordion-content ui-corner-bottom ui-helper-reset ui-widget-content ui-accordion-content-active" id="ui-id-2" aria-labelledby="ui-id-1" role="tabpanel" aria-hidden="false" style="display: block;">
+
+
+                            <?php
+                                if(isset($stored_cards) && $stored_cards)
+                                {
+                                    ?>
+                                    <div class="creditcardbox-list">
+
+                                        <?php
+                                            foreach($stored_cards AS $sc)
+                                            {
+                                                $as_default     = $sc["as_default"] == 1;
+                                                $bank_logo      = PaymentGatewayModule::find_bank_logo($sc["bank_name"],$sc["card_brand"],$sc["card_type"]);
+
+                                                ?>
+                                                <div data-id="<?php echo $sc["id"]; ?>" class="creditcardbox"<?php if($as_default){ ?> id="default" title="<?php echo __("website/account_info/stored-cards-4"); ?>"<?php } ?>>
+                                                    <div style="<?php echo !$as_default ? 'display:none;' : ''; ?>" class="defaultcardtitle"><?php echo __("website/account_info/stored-cards-5"); ?></div>
+                                                    <a class="defaultcard card_as_default_btn" style="<?php echo $as_default ? 'display:none;' : ''; ?>" href="javascript:void 0;" title="<?php echo __("website/account_info/stored-cards-6"); ?>" data-id="<?php echo $sc["id"]; ?>" alt="<?php echo __("website/account_info/stored-cards-6"); ?>"><i class="fa fa-check" aria-hidden="true"></i></a>
+                                                    <a class="deletecard tooltip-right card_remove_btn" href="javascript:void 0;" data-id="<?php echo $sc["id"]; ?>" title="<?php echo __("website/account_info/stored-cards-7"); ?>" alt="<?php echo __("website/account_info/stored-cards-7"); ?>"><i class="fa fa-trash" aria-hidden="true"></i></a>
+
+                                                    <div class="creditcardbox-con">
+                                                        <?php
+                                                            if($bank_logo)
+                                                            {
+                                                                ?>
+                                                                <img class="banklogo" src="<?php echo $bank_logo; ?>" alt="">
+                                                                <?php
+                                                            }
+                                                            else
+                                                            {
+                                                                ?>
+                                                                <div class="banknologo"><?php echo $sc["bank_name"]; ?></div>
+                                                                <?php
+                                                            }
+                                                        ?>
+                                                        <img class="visamaster" src="<?php echo APP_URI; ?>/resources/assets/images/creditcardlogos/<?php echo strtolower($sc["card_schema"]); ?>.png" alt="<?php echo $sc["card_schema"]; ?>">
+                                                        <img class="cardchip" src="<?php echo APP_URI; ?>/resources/assets/images/creditcardlogos/chipicon.png" alt="">
+                                                        <div class="creditcardbox-numbers"><h5>****</h5><h5>****</h5><h5>****</h5><h5><?php echo $sc["ln4"]; ?></h5></div>
+                                                        <div class="creditcardbox-validdate"><?php echo $sc["expiry_month"]; ?>/<?php echo $sc["expiry_year"]; ?></div>
+                                                        <div class="creditcardbox-fullname"><?php echo $sc["name"]; ?></div>
+                                                        <div class="clear"></div>
+                                                    </div>
+                                                </div>
+                                                <?php
+                                            }
+                                        ?>
+                                        <div class="line"></div>
+
+                                        <div class="clear"></div>
+
+                                        <div class="all-payment-auto-approval">
+                                            <input<?php echo isset($udata["auto_payment"]) && $udata["auto_payment"] ? ' checked' : ''; ?> id="auto_payment_cx" class="checkbox-custom" name="auto_payment" value="1" type="checkbox">
+                                            <label for="auto_payment_cx" class="checkbox-custom-label">
+                                                <span class="checktext"><?php echo __("website/account_info/stored-cards-8"); ?></span><br>
+                                                <span class="kinfo"><?php echo __("website/account_info/stored-cards-9"); ?></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <?php
+                                }
+                                else
+                                {
+                                    ?>
+                                    <div class="creditcardbox-list">
+                                        <h4><?php echo __("website/account_info/stored-cards-3"); ?></h4>
+                                    </div>
+                                    <?php
+                                }
+                            ?>
+
+
+                        </div>
+
+                        <?php
+                            if(isset($refund_support) && $refund_support)
+                            {
+                                ?>
+                                <h3 class="ui-accordion-header ui-corner-top ui-state-default ui-accordion-icons" role="tab" id="ui-id-1" aria-controls="ui-id-2" aria-selected="true" aria-expanded="true" tabindex="0"><span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-s"></span><strong><?php echo __("website/account_info/stored-cards-2"); ?></strong></h3>
+                                <div class="ui-accordion-content ui-corner-bottom ui-helper-reset ui-widget-content ui-accordion-content-active" id="ui-id-2" aria-labelledby="ui-id-1" role="tabpanel" aria-hidden="false" style="display: block;">
+                                    <div class="creditcardpaypage">
+
+                                        <div class="creditcardinfo">
+
+                                            <?php
+                                                echo isset($c_s_m_content) && $c_s_m_content ? $c_s_m_content : '';
+                                            ?>
+
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                                <?php
+                            }
+                        ?>
+
+                    </div>
+
+
+
+
+
+                </div>
+            </div>
+            <?php
+        }
+    ?>
 
     <div class="clear"></div>
 </div>

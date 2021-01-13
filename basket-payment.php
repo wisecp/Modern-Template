@@ -176,6 +176,12 @@
                             else
                                 $("#total-amount-payable").html('-');
 
+                            if(solve.use_coupon !== undefined){
+                                if(solve.use_coupon) $("#use_coupon").fadeIn(1);
+                                else $("#use_coupon").fadeOut(1);
+                            }else $("#use_coupon").fadeOut(1);
+
+
                             if(solve.sendbta_visible != undefined && solve.sendbta_visible){
                                 if(solve.sendbta_price != undefined && solve.sendbta_price != ''){
                                     $("#sendbta_amount").html("(+"+solve.sendbta_price+")");
@@ -479,7 +485,67 @@
             }
         }
 
+        function coupon_check(value){
+            if(value != '' && value.length>=3){
+                var request = MioAjax({
+                    action: "<?php echo $links["bring"]."coupon-check"; ?>",
+                    method: "POST",
+                    data:{code:value}
+                },true,true);
+
+                request.done(function (result) {
+                    if(result){
+                        var solve = getJson(result);
+                        if(solve){
+
+                            if(solve.status == "error"){
+
+                                $("#coupon_result").html(solve.message).fadeIn(200);
+
+                            }else if(solve.status == "successful"){
+
+                                $("#coupon_result").html('').fadeOut(1);
+                                $("#kuponkodu").slideUp(400,function(){
+                                    $("#coupon_code").val('');
+                                    OrderSummary();
+                                });
+                            }else{
+                                $("#coupon_result").html('').fadeOut(1);
+                            }
+                        }else{
+                            $("#coupon_result").html('').fadeOut(1);
+                            console.log(result);
+                        }
+                    }else{
+                        $("#coupon_result").html('').fadeOut(1);
+                        console.log("Coupon check result is empty");
+                    }
+                });
+            }
+        }
+
         $(document).ready(function(){
+
+            $("#coupon_code").keyup(function(e){
+                var ithis = this;
+                var isBackspaceOrDelete = (e.keyCode == 8 || e.keyCode == 9 || e.keyCode == 46 || e.keyCode == 32);
+                var check = isBackspaceOrDelete || (e.keyCode>=33 && e.keyCode < 254);
+                var inputValue = $(ithis).val();
+                if(inputValue.length<3) $("#coupon_result").html('').fadeOut(1);
+                if(check && inputValue.length>=3){
+                    var ithis = this;
+                    var ie    = e;
+                    setTimeout(function(){
+                        coupon_check(inputValue);
+                    },600);
+                }
+            });
+
+            $("#coupon_code").bind("paste", function(e){
+                var pastedData = e.originalEvent.clipboardData.getData('text');
+                coupon_check(pastedData);
+            });
+
 
             if(gGET("status") != null){
                 var url = sGET("status",'');
@@ -728,6 +794,16 @@
                             <td align="right"><h5 id="tax-amount">0</h5></td>
                         </tr>
 
+                        <tr id="use_coupon" style="display: none;">
+                            <td colspan="2" align="center">
+                                <a href="javascript:$('#kuponkodu').slideToggle();void 0"><i class="fa fa-ticket" aria-hidden="true"></i> <?php echo __("website/basket/use-coupon-code"); ?></a>
+                                <div class="kuponkodu" id="kuponkodu" style="display: none; transition-property: all; transition-duration: 0s; transition-timing-function: ease; opacity: 1;">
+                                    <input id="coupon_code" name="coupon_code" type="text" placeholder="<?php echo __("website/basket/coupon-code-pholder"); ?>" onchange="coupon_check($(this).val());">
+                                    <div style="text-align: center; margin-top: 5px; display: none;" class="error" id="coupon_result"></div>
+                                </div>
+                            </td>
+                        </tr>
+
                         <tr>
                             <td class="totalamountinfo" align="center" colspan="2">
                                 <strong ><?php echo __("website/basket/total-amount-payable"); ?></strong><br>
@@ -753,8 +829,8 @@
 
 
             </div>
-            <a href="javascript:OrderSummary('pay'); void 0" style="display: none" class="gonderbtn" id="pay_button"><?php echo __("website/basket/pay-button"); ?></a>
-            <a class="graybtn gonderbtn" id="block_button" style="display:none;background: #CCCCCC; cursor: no-drop;"><?php echo __("website/basket/pay-button"); ?></a>
+            <a href="javascript:OrderSummary('pay'); void 0" style="display: none" class="gonderbtn" id="pay_button"><?php echo __("website/basket/continue-button"); ?></a>
+            <a class="graybtn gonderbtn" id="block_button" style="display:none;background: #CCCCCC; cursor: no-drop;"><?php echo __("website/basket/continue-button"); ?></a>
             <div class="clear"></div>
             <div id="pay_result" class="error" style="text-align: center; margin-top: 5px; display: none;"></div>
 

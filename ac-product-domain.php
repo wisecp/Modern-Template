@@ -70,15 +70,15 @@
                 <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(this, 'dnsbilgileri')" data-tab="dns"><i class="fa fa-globe" aria-hidden="true"></i> <?php echo __("website/account_products/dns-manager"); ?></a></li>
             <?php endif; ?>
 
-            <?php if(isset($options["epp_code_manage"]) && $options["epp_code_manage"]): ?>
-                <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(this, 'guvenlik')" data-tab="security"><i class="fa fa-shield" aria-hidden="true"></i> <?php echo __("website/account_products/security-manager"); ?></a></li>
+            <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(this, 'guvenlik')" data-tab="security"><i class="fa fa-shield" aria-hidden="true"></i> <?php echo __("website/account_products/security-manager"); ?></a></li>
 
-                <?php if($proanse["status"] == "active" && $ctoc_service_transfer): ?>
-                    <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(this, 'transfer-service')" data-tab="transfer-service"><i class="fa fa-exchange" aria-hidden="true"></i> <?php echo __("website/account_products/transfer-service"); ?></a></li>
-                <?php endif; ?>
-
-                <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(this, 'transfer')" data-tab="transfer"><i class="fa fa-random" aria-hidden="true"></i> <?php echo __("website/account_products/transfer-manager"); ?></a></li>
+            <?php if($proanse["status"] == "active" && $ctoc_service_transfer): ?>
+                <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(this, 'transfer-service')" data-tab="transfer-service"><i class="fa fa-exchange" aria-hidden="true"></i> <?php echo __("website/account_products/transfer-service"); ?></a></li>
             <?php endif; ?>
+
+            <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(this, 'transfer')" data-tab="transfer"><i class="fa fa-random" aria-hidden="true"></i> <?php echo __("website/account_products/transfer-manager"); ?></a></li>
+
+
         <?php endif; ?>
 
         <div class="orderidno"><span><?php echo __("website/account_products/table-ordernum"); ?></span><strong>#<?php echo $proanse["id"]; ?></strong></div>
@@ -180,6 +180,43 @@
                     <td><strong><?php echo __("website/account_products/service-status"); ?></strong></td>
                     <td><?php echo $product_situations[$proanse["status"]]; ?></td>
                 </tr>
+                <?php
+                    $c_s_m = Config::get("modules/card-storage-module");
+                    if($c_s_m && $c_s_m != "none")
+                    {
+                        $o_a_p = isset($proanse["auto_pay"]) ? $proanse["auto_pay"]  : 0;
+                        ?>
+                        <tr>
+                            <td><strong><?php echo __("website/account_products/auto-pay-1"); ?></strong></td>
+                            <td>
+                                <input onchange="change_auto_pay_status(this);" type="checkbox" class="sitemio-checkbox" id="auto_pay" value="1"<?php echo $o_a_p ? ' checked' : ''; ?>>
+                                <label class="sitemio-checkbox-label" for="auto_pay"></label>
+
+                                <script type="text/javascript">
+                                    function change_auto_pay_status(el){
+                                        let status = $(el).prop('checked') ? 1 : 0;
+
+                                        if(status === 1 && '<?php echo isset($stored_cards) && $stored_cards ? "true" : "false"; ?>' === "false")
+                                        {
+                                            alert_error("<?php echo __("website/account_products/auto-pay-3"); ?>",{timer:5000});
+                                            $(el).prop('checked',false);
+                                            return false;
+                                        }
+
+                                        MioAjax({
+                                            action:"<?php echo $links["controller"]; ?>",
+                                            method:"POST",
+                                            data:{operation:"set_auto_pay_status",status:status}
+                                        },true,true);
+                                        alert_success("<?php echo __("website/account_products/auto-pay-4"); ?>",{timer:3000});
+                                    }
+                                </script>
+
+                            </td>
+                        </tr>
+                        <?php
+                    }
+                ?>
                 <tr>
                     <td><strong><?php echo __("website/account_products/payment-period"); ?></strong></td>
                     <td><?php echo View::period($proanse["period_time"],$proanse["period"]); ?></td>
@@ -561,15 +598,9 @@
                     if(isset($ctoc_limit) && strlen($ctoc_limit) > 0){
                         ?>
                         <div class="clear"></div>
-                        <div class="green-info" style="width: 20%; text-align: center;">
-                            <div class="padding10">
-                                <?php
-                                    echo __("website/account_products/limit-info",[
-                                        '{used}'    => ($ctoc_limit - $ctoc_used),
-                                        '{limit}'   => $ctoc_limit,
-                                    ]);
-                                ?>
-                            </div>
+                        <div class="formcon">
+                            <div class="yuzde30"><?php echo __("website/account_products/limit-info"); ?></div>
+                            <div class="yuzde70" style="color: #F44336;"><?php echo ($ctoc_limit - $ctoc_used); ?></div>
                         </div>
                         <div class="clear"></div>
                         <?php
@@ -722,7 +753,7 @@
     <?php endif; ?>
 
     <?php
-        if(isset($options["epp_code_manage"]) && $options["epp_code_manage"]){
+        if($proanse["status"] == "active"){
             ?>
             <div id="guvenlik" class="tabcontent">
                 <div class="tabcontentcon">
