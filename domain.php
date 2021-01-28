@@ -399,7 +399,7 @@
         }
 
     }
-
+    
     function openWhois(domain)
     {
         var title = 'WHOIS';
@@ -415,7 +415,7 @@
         /*--------------*/
         window.open(url, title, 'scrollbars=yes, width=' + w + ', height=' + h + ', top=' + top + ', left=' + left);
     }
-
+    
     function transferModal(domain)
     {
         scrollUp();
@@ -504,7 +504,7 @@
                     $is_img = View::$init->get_template_dir()."images".DS."tldlogos".DS.$row["name"].".jpg";
                     $is_img = file_exists($is_img);
 
-                    if($row["promo_status"] && DateManager::strtotime($row["promo_duedate"]." 23:59:59") > DateManager::strtotime() && $row["promo_register_price"]>0){
+                    if($row["promo_status"] && (substr($row["promo_duedate"],0,4) == '1881' || DateManager::strtotime($row["promo_duedate"]." 23:59:59") > DateManager::strtotime()) && $row["promo_register_price"]>0){
 
                         $amount1     = Money::formatter_symbol($row["reg_price"]["amount"],$row["reg_price"]["cid"],!$override_usrcurrency);
                         $amount1_symbol_position = '';
@@ -537,7 +537,7 @@
                             array_pop($split_amount);
                             $amount2         = implode(" ",$split_amount);
                         }
-
+                        
                         ?>
                         <div class="uzantibox spotlight-tlds" data-name="<?php echo $row["name"]; ?>" style="position: relative;   ">
 
@@ -687,14 +687,14 @@
                 <th align="center" bgcolor="#F2F2F2"><strong><?php echo __("website/domain/tld-renewal"); ?></strong></th>
                 <th align="center" bgcolor="#F2F2F2"><strong><?php echo __("website/domain/tld-transfer"); ?></strong></th>
             </tr>
-            </thead>
-            <tbody>
+        </thead>
+        <tbody>
 
             <?php
                 if(isset($tldList) && is_array($tldList) && sizeof($tldList)){
                     foreach($tldList AS $row){
 
-                        if($row["promo_status"] && DateManager::strtotime($row["promo_duedate"]." 23:59:59") > DateManager::strtotime()){
+                        if($row["promo_status"] && (substr($row["promo_duedate"],0,4) == '1881' || DateManager::strtotime($row["promo_duedate"]." 23:59:59") > DateManager::strtotime())){
                             ?>
                             <tr style="background: #eeeeee5e;border-bottom: 1px solid #dfdfdf;">
                                 <td><strong style="font-weight:bold;color: #8BC34A;font-size: 18px;">.<?php echo $row["name"]; ?></strong>

@@ -349,7 +349,7 @@
                                 <h4><strong><?php echo __("website/sign/in-form-signintext"); ?></strong></h4>
                                 <p style="font-size: 20px;"><?php echo __("website/sign/in-form-headinfo"); ?></p>
 
-                                <input name="email" type="text" placeholder="<?php echo __("website/sign/in-form-email"); ?>" autocomplete="off"></td>
+                                <input name="email" type="text" placeholder="<?php echo __("website/sign/in-form-email"); ?>" autocomplete="off">
 
                                 <input name="password" type="password" placeholder="<?php echo __("website/sign/in-form-password"); ?>" autocomplete="off">
 
@@ -373,13 +373,22 @@
                                 <div class="signin-signup-foot-btn">
                                     <button type="button"  mio-ajax-options='{"waiting_text":"<?php echo addslashes(__("website/others/button1-pending")); ?>","result":"signin_submit"}' class="yesilbtn gonderbtn mio-ajax-submit"><?php echo __("website/sign/in-form-submit"); ?></button>
                                     <div class="clear"></div>
-                                    <?php if($sign_up): ?>
-                                        <a href="<?php echo $register_link;?>" class="createnewaccountlink">+ <?php echo __("website/sign/in-button-up"); ?></a>
-                                    <?php endif; ?>
                                 </div>
 
 
                             </form>
+
+                            <!-- Success Div -->
+                            <div id="Success_Div" style="display:none">
+                                <div style="margin-top:15%;margin-bottom:70px;text-align:center;">
+                                    <i style="font-size:80px;color:green;" class="fa fa-check"></i>
+                                    <h4 style="color:green;font-weight:bold;font-size: 26px;"><?php echo __("website/sign/in-success-title"); ?></h4>
+                                    <br>
+                                    <h5><?php echo __("website/sign/in-success-content"); ?></h5>
+                                </div>
+                            </div>
+                            <!-- Success Div -->
+
                             <!-- Form End -->
                         <?php endif; ?>
 
@@ -392,7 +401,7 @@
                                 <p style="font-size: 20px;"><?php echo __("website/sign/forget-form-headinfo"); ?></p>
 
 
-                                <input name="email" type="text" placeholder="<?php echo __("website/sign/forget-form-email"); ?>"></td>
+                                <input name="email" type="text" placeholder="<?php echo __("website/sign/forget-form-email"); ?>">
 
                                 <a class="sifreunuttulink" href="javascript:void(0);" onclick="login();"><?php echo __("website/sign/forget-form-login"); ?></a>
 
@@ -415,32 +424,21 @@
                                     <div class="clear"></div>
                                     <div class="error" id="Signforget_Form_output" align="center" style="display:none;font-weight:bold;"></div>
                                 </div>
-
-
-                                <!-- Success Div -->
-                                <div id="forget_success" style="display:none">
-                                    <div style="margin-top:15%;margin-bottom:70px;text-align:center;">
-                                        <i style="font-size:80px;    margin-bottom: 25px;" class="fa fa-check"></i>
-                                        <h4 style="font-weight:bold; font-size: 26px;"><?php echo __("website/sign/forget-success-title"); ?></h4>
-                                        <h5><?php echo __("website/sign/forget-success-content"); ?></h5>
-                                    </div>
-                                </div>
-                                <!-- Success Div -->
-
                             </form>
+
+                            <!-- Success Div -->
+                            <div id="forget_success" style="display:none">
+                                <div style="margin-top:15%;margin-bottom:70px;text-align:center;">
+                                    <i style="font-size:80px;    margin-bottom: 25px;" class="fa fa-check"></i>
+                                    <h4 style="font-weight:bold; font-size: 26px; margin-bottom: 5px;"><?php echo __("website/sign/forget-success-title"); ?></h4>
+                                    <h5><?php echo __("website/sign/forget-success-content"); ?></h5>
+                                </div>
+                            </div>
+                            <!-- Success Div -->
+
                             <!-- Form END -->
                         <?php endif; ?>
 
-                        <!-- Success Div -->
-                        <div id="Success_Div" style="display:none">
-                            <div style="margin-top:15%;margin-bottom:70px;text-align:center;">
-                                <i style="font-size:80px;color:green;" class="fa fa-check"></i>
-                                <h4 style="color:green;font-weight:bold;font-size: 26px;"><?php echo __("website/sign/in-success-title"); ?></h4>
-                                <br>
-                                <h5><?php echo __("website/sign/in-success-content"); ?></h5>
-                            </div>
-                        </div>
-                        <!-- Success Div -->
 
                         <script type="text/javascript">
                             function forget_password() {
@@ -560,7 +558,7 @@
                                             if(solve.message != undefined && solve.message != '')
                                                 alert_error(solve.message,{timer:4000});
                                         }else if(solve.status == "sent"){
-                                            $("#forget_table").fadeOut(750,function() {
+                                            $("#Signforget_Form").fadeOut(750,function() {
                                                 $("#forget_success").fadeIn(750);
                                             })
                                         }

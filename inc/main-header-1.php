@@ -270,7 +270,7 @@
     <?php } ?>
 
     <?php
-        if(isset($acheader_info)){
+        if(isset($acheader_info) && isset($page_type) && $page_type == "account"){
             $header_inc = true;
             include __DIR__.DS."ac-header-info.php";
         }

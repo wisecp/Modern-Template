@@ -83,19 +83,24 @@
             utilsScript: "<?php echo $sadress;?>assets/plugins/phone-cc/js/utils.js"
         });
 
+
         let tab = gGET("tab");
-        if(tab === "1")
-            tab = 'general';
-        else if(tab === "2")
-            tab = 'billing';
-        else if(tab === "3")
-            tab = 'preferences';
-        else if(tab === "4")
-            tab = 'password';
-        else if(tab === "5")
-            tab = 'verification';
-        
-        if(tab !== '' && tab !== undefined && tab !== 'null' && typeof tab !== 'object')
+
+        if(tab !== "null" && tab !== 'NULL' && tab !== null)
+        {
+            if(tab === "1")
+                tab = 'general';
+            else if(tab === "2")
+                tab = 'billing';
+            else if(tab === "3")
+                tab = 'preferences';
+            else if(tab === "4")
+                tab = 'password';
+            else if(tab === "5")
+                tab = 'verification';
+        }
+
+        if(tab !== '' && tab !== undefined && typeof tab !== 'object' && tab !== "null" && tab !== 'NULL' && tab !== null)
             $('.tablinks[data-k='+tab+']').click();
         else
             $(".tablinks:eq(0)").click();
@@ -139,7 +144,7 @@
 
             }
             elseif($remainingVerifications["force"] > 0){
-                ?>$('.tab .tablinks:eq(4)').click();<?php
+                ?>$('.tablinks[data-k=verification]').click();<?php
             }
         ?>
 
@@ -632,19 +637,23 @@
                                 </div>
                             </div>
 
-                            <div class="hesapbilgisi corporate-info">
+                            <?php if(Config::get("options/sign/up/kind/corporate/company_tax_number")): ?>
+                                <div class="hesapbilgisi corporate-info">
                                 <div class="yuzde25"><div class="hesapbilgititle"><?php echo __("website/sign/up-form-ctaxno"); ?></div></div>
                                 <div class="yuzde75">
                                     <input id="company_tax_number" name="company_tax_number" type="text" placeholder="<?php echo __("website/sign/up-form-ctaxno"); ?>" value="<?php echo (isset($udata["company_tax_number"])) ? $udata["company_tax_number"] : NULL; ?>">
                                 </div>
                             </div>
+                            <?php endif; ?>
 
-                            <div class="hesapbilgisi corporate-info">
+                            <?php if(Config::get("options/sign/up/kind/corporate/company_tax_office")): ?>
+                                <div class="hesapbilgisi corporate-info">
                                 <div class="yuzde25"><div class="hesapbilgititle"><?php echo __("website/sign/up-form-ctaxoff"); ?></div></div>
                                 <div class="yuzde75">
                                     <input id="company_tax_office" name="company_tax_office" type="text" placeholder="<?php echo __("website/sign/up-form-ctaxoff"); ?>" value="<?php echo (isset($udata["company_tax_office"])) ? $udata["company_tax_office"] : NULL; ?>">
                                 </div>
                             </div>
+                            <?php endif; ?>
                         <?php endif; ?>
                         <?php
                             if($cfields){
@@ -784,8 +793,6 @@
                 </script>
                 <div class="clear"></div>
             </div>
-
-
         </div>
 
     </div>

@@ -356,7 +356,6 @@
                                         <?php $countryList = AddressManager::getCountryList(); ?>
                                         <div class="yuzde50">
                                             <select name="country" onchange="getCities(this.options[this.selectedIndex].value);">
-                                                <option value=""><?php echo __("website/account_info/select-your"); ?></option>
                                                 <?php
                                                     foreach($countryList as $country){
                                                         ?><option value="<?php echo $country["id"];?>" data-code="<?php echo $country["code"]; ?>"><?php echo $country["name"];?></option><?php
@@ -459,9 +458,6 @@
                                     <button type="button" class="yesilbtn gonderbtn mio-ajax-submit" mio-ajax-options='{"result":"signup_submit","waiting_text":"<?php echo addslashes(__("website/others/button1-pending")); ?>"}' id="signUpBtn" style="display: none;"><?php echo __("website/sign/up-form-submit"); ?></button>
 
                                     <div class="clear"></div>
-                                    <?php if($sign_in): ?>
-                                        <a href="<?php echo $login_link; ?>" class="createnewaccountlink"><i class="fa fa-sign-in" aria-hidden="true"></i> <?php echo __("website/sign/up-button-in"); ?></a>
-                                    <?php endif; ?>
                                     <div class="error" id="FormOutput" align="center" style="display:none;font-weight:bold;"></div>
                                 </div>
 
@@ -633,11 +629,10 @@
 
                                 $('.level-block').css("display","none");
                                 $("#"+level).css("display","block");
-
-                                $("select[name=country] option[data-code=<?php echo isset($ipInfo["countryCode"]) ? strtoupper($ipInfo["countryCode"]) : 'US'; ?>]").attr("selected",true);
-                                $("select[name=country]").trigger("change");
-
                             });
+
+                            $("select[name=country] option[data-code=<?php echo isset($ipInfo["countryCode"]) ? strtoupper($ipInfo["countryCode"]) : 'US'; ?>]").attr("selected",true);
+                            $("select[name=country]").trigger("change");
                         });
                     </script>
 
