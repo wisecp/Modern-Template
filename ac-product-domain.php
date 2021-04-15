@@ -88,14 +88,16 @@
 
     <div id="ozet" class="tabcontent">
 
-        <div class="hizmetblok" style="border:none;min-height: 250px;">
-            <div class="domaindetayinfo">
+        <div class="hizmetblok">
+            <div class="service-first-block" style="border:none;min-height:auto; padding:30px 0px;">
 
-                <i class="fa fa-globe" aria-hidden="true"></i><div class="clear"></div>
-                <?php if(isset($options["whois_privacy"]) && $options["whois_privacy"]): ?>
-                    <div class="whoisgizlenmis"><i style="font-size:15px;" class="fa fa-user-secret" aria-hidden="true"></i> <?php echo __("website/account_products/whois-hidden"); ?></div>
-                <?php endif; ?>
-                <h4><strong><?php echo $options["domain"]; ?></strong></h4>
+                 <div id="order_image" style="    position: relative;display: inline-block;margin-right: 32px;">
+                 		<img style="width:130px;" src="<?php echo $tadress."images/domain-order-cover.jpg"; ?>" width="auto" height="auto">
+                 </div>
+
+                <div style="display: inline-block;vertical-align: top;margin-top: 10px;   position:relative;">
+
+                <h4 style="font-size: 24px;"><strong><?php echo $options["domain"]; ?></strong></h4>
                 <?php if($proanse["status"] == "active" || $proanse["status"] == "suspended" || $proanse["status"] == "inprocess"){ ?>
                     <h4 style="margin-bottom:10px;"><?php echo __("website/account_products/remaining-day"); ?>: <strong><?php echo $remaining_day; ?></strong></h4>
                 <?php } ?>
@@ -103,7 +105,22 @@
                     if($proanse["status"] == "active" || $proanse["status"] == "suspended"){
 
                         ?>
-                        <div id="renewal_list" style="display:none;">
+
+                         <?php if(isset($options["whois_privacy"]) && $options["whois_privacy"]): ?>
+
+                     	  	 <div class="service-status-con" style="display:block;" id="server_status_other"><span class="statusother"><i class="fa fa-shield" aria-hidden="true" style="margin-right: 5px;"></i> <?php echo __("website/account_products/whois-hidden"); ?></span>
+                     	  	 </div>
+                     	   <?php endif; ?>
+                        
+                </div>
+
+            </div>
+        </div>
+
+
+        <div class="hizmetblok" style="border:none;min-height:auto;    padding-bottom: 25px;">
+                 <div id="order-service-detail-btns">
+                 	<div id="renewal_list" style="display:none;">
                             <select id="selection_renewal">
                                 <option value=""><?php echo __("website/account_products/renewal-list-option"); ?></option>
                                 <?php
@@ -140,7 +157,7 @@
                                 });
                             </script>
                         </div>
-                        <a href="javascript:$('#renewal_list').slideToggle(400);void 0;" class="yesilbtn gonderbtn"><?php echo __("website/account_products/renewal-now-button"); ?></a>
+                     <a href="javascript:$('#renewal_list').slideToggle(400);void 0;" class="metalbtn gonderbtn"><i class="fa fa-refresh"></i> <?php echo __("website/account_products/renewal-now-button"); ?></a>
                         <?php
                     }else{
                         ?>
@@ -149,8 +166,13 @@
                     }
                 ?>
 
-            </div>
-        </div>
+                 <a href="javascript:void(0)" onclick="openTab(this, 'dnsbilgileri')" data-tab="dns" class="turuncbtn gonderbtn"><i class="fa fa-globe" aria-hidden="true"></i> <?php echo __("website/account_products/dns-manager"); ?></a>
+
+                 <a href="javascript:void(0)" onclick="openTab(this, 'whoisbilgileri')" data-tab="whois" class="mavibtn gonderbtn"><i class="fa fa-user" aria-hidden="true"></i> <?php echo __("website/account_products/whois-manager"); ?></a>
+
+                 
+                </div>
+              </div>
 
         <div class="hizmetblok">
             <table width="100%" border="0">

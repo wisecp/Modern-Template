@@ -41,7 +41,9 @@
             <label><span><?php echo __("website/index/clientArea-style"); ?></span>
                 <select onchange="window.location = this.options[this.selectedIndex].value;">
                     <option value="<?php echo $redirect_link."c_clientArea=1"; ?>"<?php echo $clientArea_type == 1 ? ' selected' : ''; ?>>WClient</option>
+                    <!--
                     <option value="<?php echo $redirect_link."c_clientArea=2"; ?>"<?php echo $clientArea_type == 2 ? ' selected' : ''; ?>>Basic Style</option>
+                    -->
                 </select>
             </label>
 

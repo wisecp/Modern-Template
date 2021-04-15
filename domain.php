@@ -429,7 +429,7 @@
 
     <?php
         $first_tld_price_amount = $first_tld_price["register"]["amount"];
-        if($first_tld_price["promo_status"] && DateManager::strtotime($first_tld_price["promo_duedate"]." 23:59:59") > DateManager::strtotime() && $first_tld_price["promo_register_price"]>0){
+        if($first_tld_price["promo_status"] && (substr($first_tld_price["promo_duedate"],0,4) == '1881' || DateManager::strtotime($first_tld_price["promo_duedate"]." 23:59:59") > DateManager::strtotime()) && $first_tld_price["promo_register_price"]>0){
             $first_tld_price_amount = $first_tld_price["promo_register_price"];
         }
 
@@ -501,8 +501,13 @@
             if(isset($box_tldList) && is_array($box_tldList)){
                 foreach($box_tldList AS $row){
 
-                    $is_img = View::$init->get_template_dir()."images".DS."tldlogos".DS.$row["name"].".jpg";
-                    $is_img = file_exists($is_img);
+                    $is_img = false;
+                    $is_svg = "images".DS."tldlogos".DS.$row["name"].".svg";
+                    $is_png = "images".DS."tldlogos".DS.$row["name"].".png";
+                    $is_jpg = "images".DS."tldlogos".DS.$row["name"].".jpg";
+                    if(file_exists(View::$init->get_template_dir().$is_svg)) $is_img = $is_svg;
+                    elseif(file_exists(View::$init->get_template_dir().$is_png)) $is_img = $is_png;
+                    elseif(file_exists(View::$init->get_template_dir().$is_jpg)) $is_img = $is_jpg;
 
                     if($row["promo_status"] && (substr($row["promo_duedate"],0,4) == '1881' || DateManager::strtotime($row["promo_duedate"]." 23:59:59") > DateManager::strtotime()) && $row["promo_register_price"]>0){
 
@@ -547,7 +552,7 @@
                             <div style="padding:10px">
                                 <h4>
                                     <?php if($is_img): ?>
-                                        <img src="<?php echo $tadress; ?>images/tldlogos/<?php echo $row["name"]; ?>.jpg" alt=".<?php echo $row["name"]; ?>">
+                                        <img src="<?php echo Utility::image_link_determiner($tadress.$is_img); ?>" alt=".<?php echo $row["name"]; ?>">
                                     <?php else: ?>
                                         .<?php echo $row["name"]; ?>
                                     <?php endif; ?>
@@ -585,7 +590,7 @@
                             <div style="padding:10px">
                                 <h4>
                                     <?php if($is_img): ?>
-                                        <img src="<?php echo $tadress; ?>images/tldlogos/<?php echo $row["name"]; ?>.jpg" alt=".<?php echo $row["name"]; ?>">
+                                        <img src="<?php echo Utility::image_link_determiner($tadress.$is_img); ?>" alt=".<?php echo $row["name"]; ?>">
                                     <?php else: ?>
                                         .<?php echo $row["name"]; ?>
                                     <?php endif; ?>

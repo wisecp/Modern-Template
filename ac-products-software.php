@@ -16,7 +16,7 @@
                 [10, 25, 50, -1], [10, 25, 50, "<?php echo __("website/others/datatable-all"); ?>"]
             ],
             responsive: true,
-            "language":{"url":"<?php echo APP_URI; ?>/<?php echo ___("package/code"); ?>/datatable/lang.json"}
+            "oLanguage":<?php include __DIR__.DS."datatable-lang.php"; ?>
         });
     });
 </script>
@@ -61,8 +61,12 @@
                             <td align="center"><?php echo $row["id"]; ?></td>
                             <td align="left">
                                 <strong><?php echo $row["name"]; ?></strong>
-                                <br>
-                                <?php echo isset($row["options"]["domain"]) ? $row["options"]["domain"] : ''; ?>
+                                <?php
+                                    if(isset($row["options"]["domain"]) && $row["options"]["domain"])
+                                        echo "<br>".$row["options"]["domain"];
+                                    if(isset($row["options"]["code"]) && $row["options"]["code"])
+                                        echo "<br>".$row["options"]["code"];
+                                ?>
                             </td>
                             <td align="center">
                                 <?php echo $amount; ?> <?php echo $period; ?>

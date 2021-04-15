@@ -15,7 +15,7 @@
             ],
             "aaSorting" : [[0, 'asc']],
             responsive: true,
-            "language":{"url":"<?php echo APP_URI; ?>/<?php echo ___("package/code"); ?>/datatable/lang.json"}
+            "oLanguage":<?php include __DIR__.DS."datatable-lang.php"; ?>
         });
     });
 </script>

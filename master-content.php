@@ -92,7 +92,6 @@
         <div class="clear"></div>
 
         <?php
-
     }
     else{
 

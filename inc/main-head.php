@@ -1,5 +1,7 @@
 <?php defined('CORE_FOLDER') OR exit('You can not get in here!');
     if(!isset($hoptions)) $hoptions = [];
+    if(isset($hoptions["page"]) && $hoptions["page"] != "index" && isset($meta["title"]))
+        $meta["title"] .= " - ".__("website/index/meta/title");
 ?>
 <!-- Meta Tags -->
 <title><?php echo isset($meta["title"]) ? $meta["title"] : NULL; ?></title>
@@ -64,6 +66,8 @@
 <?php if(in_array("ion.rangeSlider",$hoptions)): ?>
     <link rel="stylesheet" href="<?php echo $sadress; ?>assets/plugins/ion.rangeSlider/css/ion.rangeSlider.min.css">
 <?php endif; ?>
+
+<?php if(___("package/rtl")): ?><link rel="stylesheet" href="<?php echo $sadress."assets/style/theme-rtl.css?v=".License::get_version();?>&lang=<?php echo Bootstrap::$lang->clang; ?>"><?php endif; ?>
 
 <!-- Css -->
 

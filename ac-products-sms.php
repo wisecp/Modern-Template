@@ -16,7 +16,7 @@ $(document).ready(function(){
             [10, 25, 50, -1], [10, 25, 50, "<?php echo __("website/others/datatable-all"); ?>"]
         ],
         responsive: true,
-        "language":{"url":"<?php echo APP_URI; ?>/<?php echo ___("package/code"); ?>/datatable/lang.json"}
+        "oLanguage":<?php include __DIR__.DS."datatable-lang.php"; ?>
     });
 });
 </script>

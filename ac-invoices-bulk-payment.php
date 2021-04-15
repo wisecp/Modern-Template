@@ -202,7 +202,7 @@
                                     }
                                 ?>
                             </td>
-                            <td align="center"><?php echo Money::formatter_symbol($_subtotal,$invoice["currency"]); ?></td>
+                            <td align="center"><?php echo Money::formatter_symbol($amount,$cid,true); ?></td>
                         </tr>
                         <?php
                     }

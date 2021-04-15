@@ -596,8 +596,8 @@
             <center>
                 <p></p>
                 <div class="clear"></div>
-                <a href="javascript:balance_warning('ok');void 0;" class="green lbtn"><?php echo __("website/basket/balance-warning-ok"); ?></a>
-                <a href="javascript:balance_warning('no');void 0;" class="red lbtn"><?php echo __("website/basket/balance-warning-no"); ?></a>
+                <div class="line"></div>
+                <a href="javascript:balance_warning('ok');void 0;" class="gonderbtn yesilbtn"><?php echo __("website/basket/balance-warning-ok"); ?></a>
             </center>
 
         </div>
@@ -608,7 +608,8 @@
             <center>
                 <p><?php echo __("website/basket/insufficient-balance"); ?></p>
                 <div class="clear"></div>
-                <a href="<?php echo $links["balance-page"]; ?>" class="green lbtn"><?php echo __("website/basket/button-balance-page"); ?></a>
+                <div class="line"></div>
+                <a href="<?php echo $links["balance-page"]; ?>" class="gonderbtn yesilbtn"><?php echo __("website/basket/button-balance-page"); ?></a>
             </center>
 
         </div>

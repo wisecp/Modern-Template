@@ -95,20 +95,27 @@
 
         <div id="ozet" class="smshzmblok tabcontent">
 
-            <div class="hizmetblok" style="border:none;min-height: 250px;">
-                <div class="domaindetayinfo">
-                    <i class="fa fa-envelope-o" aria-hidden="true"></i>
-                    <h4 style="margin-bottom:10px;    font-size: 18px;"><?php echo __("website/account_sms/detail-current-credit"); ?></h4>
-                    <h4 style="    margin-top: -5px;    margin-bottom: 10px;">
-                        <strong id="currency_prefix"></strong>
-                        <strong id="get_credit"><img src="<?php echo $sadress; ?>assets/images/loading.gif" width="30"></strong>
-                        <strong id="currency_suffix"></strong>
+            <div class="hizmetblok" >
+                <div class="service-first-block" style="border:none;min-height:auto">
+                    <div id="order_image" style="display: inline-block;margin-right: 32px;">
+                        <img style="width:130px;" src="<?php echo $tadress."images/smscover.svg"; ?>" width="auto" height="auto">
+                    </div>
+                    <div style="display: inline-block;vertical-align: top;margin-top: 30px;">
+                    <h4 style="font-size: 25px;">
+                        <strong id="currency_prefix"></strong><strong id="get_credit"><img src="<?php echo $sadress; ?>assets/images/loading.gif" width="30"></strong> <strong id="currency_suffix"></strong>
                     </h4>
-
-                    <a style="width:48%;" href="<?php echo $links["buy-credit"]; ?>" class="mavibtn gonderbtn"><?php echo __("website/account_sms/add-credit"); ?></a>
-                    <a style="width:48%;" href="javascript:$('a[data-tab=send]').click();void 0;" class="yesilbtn gonderbtn"><?php echo __("website/account_sms/send-sms"); ?></a>
+                    <h4 style=" font-size: 18px;"><?php echo __("website/account_sms/detail-current-credit"); ?></h4>
+                    </div>
+                   
                 </div>
             </div>
+
+              <div class="hizmetblok" style="border:none;min-height:auto">
+                 <div id="order-service-detail-btns">
+                     <a href="javascript:$('a[data-tab=send]').click();void 0;" class="yesilbtn gonderbtn"><i class="fa fa-paper-plane-o" aria-hidden="true"></i> <?php echo __("website/account_sms/send-sms"); ?></a>
+                    <a href="<?php echo $links["buy-credit"]; ?>" class="mavibtn gonderbtn"><i class="fa fa-refresh"></i> <?php echo __("website/account_sms/add-credit"); ?></a>
+                </div>
+              </div>
 
             <div class="hizmetblok">
                 <table width="100%" border="0">
@@ -201,14 +208,13 @@
 
                         <br>
                         <div class="smsaccountbalanceinfo blue-info">
-                            <i class="fa fa-info-circle" aria-hidden="true"></i>
+                            
 
                             <div class="padding20">
 
-
-
-                                <?php echo __("website/account_sms/accountbalanceinfo"); ?>
-                                <strong><?php echo $user_balance; ?></strong>
+                            	<i style="    font-size: 35px;    margin: 0;" class="fa fa-info-circle" aria-hidden="true"></i>
+                            	<p><?php echo __("website/account_sms/accountbalanceinfo"); ?>
+                                <strong><?php echo $user_balance; ?></strong></p>
                             </div>
                         </div>
                         <div class="clear"></div>
@@ -1341,8 +1347,8 @@
                     if(solve && typeof solve == "object" && solve.data != undefined){
                         $("#pre-register-countries").html('');
                         $(solve.data).each(function(key,item){
-                            content = '<input type="radio" class="radio-custom" name="country" value="'+item.code+'" id="country-'+item.id+'">';
-                            content += '<label class="radio-custom-label" for="country-'+item.id+'">'+item.name+'</label>';
+                            content = '<input type="checkbox" class="checkbox-custom" name="countries[]" value="'+item.code+'" id="country-'+item.id+'">';
+                            content += '<label class="checkbox-custom-label" for="country-'+item.id+'">'+item.name+'</label>';
                             $("#pre-register-countries").append(content);
                         });
                     }else

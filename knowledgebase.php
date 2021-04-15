@@ -27,7 +27,7 @@
                 elseif(isset($category))
                     $otitle = $category["title"];
                 else
-                    $otitle = __("website/knowledgebase/most-popular-articles");
+                    $otitle = __("website/knowledgebase/sidebar-most-popular");
 
             ?>
 
@@ -119,7 +119,7 @@
             <?php
                 if($most_popular){
                     ?>
-                    <h4 style="margin-top:25px;"><?php echo __("website/knowledgebase/sidebar-most-popular"); ?></h4>
+                    <h4 style="margin-top:25px;"><?php echo __("website/knowledgebase/most-popular-articles"); ?></h4>
                     <?php
                     foreach($most_popular AS $row){
                         ?><a href="<?php echo $row["route"]; ?>"><span><?php echo $row["title"];?></span></a><?php

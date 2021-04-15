@@ -209,7 +209,11 @@
                                                     }
                                                 }
                                             </script>
-                                            <h5><?php echo __("website/domain/slogan",['{price}' => Money::formatter_symbol($firstTLD["register"]["amount"],$firstTLD["register"]["cid"],!$domain_override_usrcurrency)]); ?></h5>
+                                            <?php
+                                                $firstTLD_amount = $firstTLD["register"]["amount"];
+                                                if($firstTLD["promo_status"] && (substr($firstTLD["promo_duedate"],0,4) == '1881' || DateManager::strtotime($firstTLD["promo_duedate"]." 23:59:59") > DateManager::strtotime()) && $firstTLD["promo_register_price"]>0) $firstTLD_amount = $firstTLD["promo_register_price"];
+                                            ?>
+                                            <h5><?php echo __("website/domain/slogan",['{price}' => Money::formatter_symbol($firstTLD_amount,$firstTLD["register"]["cid"],!$domain_override_usrcurrency)]); ?></h5>
                                         </div>
 
 
@@ -475,6 +479,7 @@
                                             $min = isset($properties["min"]) ? $properties["min"] : '0';
                                             $max = isset($properties["max"]) ? $properties["max"] : '0';
                                             $stp = isset($properties["step"]) ? $properties["step"] : '1';
+                                            if($min == 0) $min = 1;
                                         ?>
                                             <select name="addons[<?php echo $addon["id"]; ?>]" id="addon-<?php echo $addon["id"]; ?>-selection" style="margin-bottom: 5px;">
                                                 <?php if(!$compulsory): ?>

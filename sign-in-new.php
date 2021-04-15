@@ -65,7 +65,7 @@
 .notverification a{color:#b5b5b5;font-weight:600}
 #uyeolgiris{position:fixed;overflow:auto;margin-bottom:0;width:100%;height:100%;bottom:0px;background-image:url(<?php echo $tadress;?>images/signinsignupbg2020.jpg);background-color:rgba(50, 90, 108, 0.55);background-repeat:no-repeat;    background-size: 100%;}
 #uyeolgirisbody .footer{display:none}
-.uyeol{position:fixed;width:50%;border-radius:0;margin-bottom:0px;right:0;top:0;bottom:0}
+.uyeol{position:absolute;width:50%;border-radius:0;margin-bottom:0px;right:0;top:0;bottom:0}
 .uyeolgirisslogan{float:left;width:50%;text-align:left;margin-top:0;}
 .uyeolgirishead{text-align:center;width:100%;margin-top:5%;margin-bottom:0;float:none; -webkit-animation-name: fadeIn;
   animation-name: fadeIn;
@@ -94,7 +94,7 @@
 .uyeolgirisslogan-con{width:70%;margin:auto;margin-top:35%;}
 .uyeolgirisslogan-con .gonderbtn{color:#fff;border:2px solid #fff;margin-top:35px}
 .uyeolgirisslogan-con .gonderbtn:hover{color:#333;background:white}
-.signupcon{padding:20px}
+.signupcon{padding:20px;    background: white;}
 .socialconnect a{color:#7c7c7c;font-size:14px;background:#e7e7e7}
 .socialconnect .facebookconnect{color:#7c7c7c;background:#eee}
 .socialconnect .facebookconnect:hover{color:#fff}
@@ -108,7 +108,7 @@
 #uyeolgiris input{border-radius:5px;padding-left: 7px;}
 .signup-stages-block.active{background:#<?php echo Config::get("theme/color1");?>;color:white}
 .clean-theme-signup-box .yuzde50{width:47%}
-.signin-signup-foot-btn{text-align:center;margin-top: 35px;}
+.signin-signup-foot-btn{text-align:center;margin-top: 25px;}
 .signin-signup-foot-btn button{font-family:'Titillium Web',sans-serif;float:none;width:250px;cursor:pointer;outline:none;-webkit-transition:all 0.3s ease-out;-moz-transition:all 0.3s ease-out;-ms-transition:all 0.3s ease-out;-o-transition:all 0.3s ease-out;transition:all 0.3s ease-out;}
 .signin-signup-foot-btn button:hover {background:#77a83f;}
 .signup-stages{float:left;margin-bottom:20px;width:100%;text-align:center}
@@ -119,6 +119,7 @@
 #Signforget_Form{width:70%;margin:auto;margin-top:105px}
 #Signforget_Form input{margin-bottom:20px}
 .clientloginheadinfo { margin-bottom: 20px;    font-size: 20px;}
+.captcha-content {margin-top:10px;}
 
 @media only screen and (min-width:320px) and (max-width:1024px){
 .uyeolgirishead{width:100%;margin-top:15%}
@@ -126,7 +127,7 @@
 .uyeolgirisyap{width:100%}
 #wrapper{width:90%}
 .uyeol{width:100%;position:relative;border-right:none}
-.signupcon{position:relative}
+.signupcon{position:relative;}
 #uyeolgiris{overflow-x:auto;background-size:auto 120%;background-position:center}
 .uyeolgirisslogan{text-align:center;width:100%}
 .uyeolgirisslogan h4{width:90%;font-size:17px;margin:auto;margin-top:25px}
@@ -136,8 +137,11 @@
 .signup-stages-block{width:75px;height:75px;line-height:75px;margin:0px 4%;font-size:28px}
 .signup-stage-line {    margin-bottom: -45px;}
 .clean-theme-signup-box .yuzde50 {    width: 46%;}
-#Signin_Form {    width: 100%;}
-#Signforget_Form{width:100%;}
+#Signin_Form {      margin-top: 60px;  width: 100%;}
+#Signforget_Form{width:100%;margin-top: 60px;}
+.captcha-content{width:310px;transform:scale(0.8);margin-left:auto;margin-top:20px;margin-bottom:10px}
+.signin-signup-foot-btn{text-align:center;margin-top:20px;margin-bottom:30px}
+
 }
 
 </style>
@@ -343,7 +347,7 @@
                         <?php if(!Filter::GET("open") || Filter::GET("open") == "login"): ?>
 
                             <!-- Form Start -->
-                            <form action="<?php echo $login_link;?>" method="POST" id="Signin_Form">
+                            <form action="<?php echo $login_link;?>" method="POST" id="Signin_Form" style="<?php echo isset($captcha_sign_in) && $captcha_sign_in ? 'margin-top: 60px;' : ''; ?>">
                                 <?php echo Validation::get_csrf_token('sign'); ?>
 
                                 <h4><strong><?php echo __("website/sign/in-form-signintext"); ?></strong></h4>

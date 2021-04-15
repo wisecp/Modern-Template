@@ -11,6 +11,7 @@
 
         <div class="padding20" style="padding-top:0px;">
             <h4 class="bbbaslik"><strong><?php echo $page["title"]; ?></strong></h4>
+            <div class="clear"></div>
             <div class="line"></div>
             <?php echo $page["content"]; ?>
 
@@ -89,7 +90,7 @@
 
                     if($most_popular){
                         ?>
-                        <h4 style="margin-top:25px;"><?php echo __("website/knowledgebase/sidebar-most-popular"); ?></h4>
+                        <h4 style="margin-top:25px;"><?php echo __("website/knowledgebase/most-popular-articles"); ?></h4>
                         <?php
                         foreach($most_popular AS $row){
                             ?><a href="<?php echo $row["route"]; ?>"><span><?php echo $row["title"];?></span></a><?php

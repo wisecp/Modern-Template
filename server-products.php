@@ -18,9 +18,9 @@
         global $tadress,$currency_symbols;
         if($list){
             $ltemplate = isset($cat["options"]["list_template"]) ? $cat["options"]["list_template"] : 2;
-            $color     = $cat["options"]["color"];
             ?>
             <?php if($ltemplate == 1): ?>
+                <h5 class="servercattitle"><?php echo $cat["title"]; ?></h5>
                 <div class="tablopaketler" style="background: none;" id="category_<?php echo $cat["id"]; ?>">
                     <?php
                         foreach($list AS $product){
@@ -88,7 +88,9 @@
                                                 <?php
                                             }
                                         }
-                                    }else{
+                                    }
+                                    else
+                                    {
                                         $features = $product["features"];
                                         ?>
                                         <div class="clear"></div>
@@ -122,26 +124,22 @@
                     ?>
                 </div>
             <?php elseif($ltemplate== 2): ?>
-                <?php
-                $have_raid   = Utility::array_search_key_recursive("raid",$list);
-                ?>
-                <div class="sunucular">
+                <div class="sunucular" data-aos="fade-up">
+
+                    <h5 class="servercattitle"><?php echo $cat["title"]; ?></h5>
+
                     <div>
-                        <table class="datatable"  width="100%" border="0">
+                        <table class="horizontal-list" width="100%" border="0" data-order='[[6, "asc"]]'>
                             <thead style="background:#ebebeb;">
                             <tr>
-                                <th align="center">#</th>
-                                <th align="center" bgcolor="#ebebeb"><strong><?php echo __("website/products/server-list-title"); ?></strong></td>
-                                <th align="center" bgcolor="#ebebeb"><strong><img src="<?php echo $tadress;?>images/islemci.svg" width="auto" height="auto"><br><?php echo __("website/products/server-list-processor"); ?></strong></th>
-                                <th align="center" bgcolor="#ebebeb"><strong><img src="<?php echo $tadress;?>images/ram.svg" width="auto" height="auto"><br><?php echo __("website/products/server-list-ram"); ?></strong></th>
-                                <th align="center" bgcolor="#ebebeb"><strong><img src="<?php echo $tadress;?>images/disk.svg" width="auto" height="auto"><br><?php echo __("website/products/server-list-disk"); ?></strong></th>
-                                <th align="center" bgcolor="#ebebeb"><strong><img src="<?php echo $tadress;?>images/trafik.svg" width="auto" height="auto"><br><?php echo __("website/products/server-list-bandwidth"); ?></strong></th>
-                                <?php if($have_raid): ?>
-                                    <th align="center" bgcolor="#ebebeb"><strong><img src="<?php echo $tadress;?>images/raid.svg" width="auto" height="auto"><br><?php echo __("website/products/server-list-raid"); ?></strong></th>
-                                <?php endif; ?>
-                                <th align="center" bgcolor="#ebebeb"><strong><img src="<?php echo $tadress;?>images/lokasyon.svg" width="auto" height="auto"><br><?php echo __("website/products/server-list-location"); ?></strong></th>
-                                <th align="center" bgcolor="#ebebeb"><strong><img src="<?php echo $tadress;?>images/tutar.svg" width="auto" height="auto"><br><?php echo __("website/products/server-list-amount"); ?></strong></th>
-                                <th align="center" bgcolor="#ebebeb"><strong><?php echo __("website/products/server-list-buy"); ?></strong></td>
+                                <th data-orderable="false" align="center" bgcolor="#ebebeb"><strong><?php echo __("website/products/server-list-title"); ?></strong></td>
+                                <th data-orderable="false" align="center" bgcolor="#ebebeb"><strong><?php echo __("website/products/server-list-processor"); ?></strong></th>
+                                <th data-orderable="false" align="center" bgcolor="#ebebeb"><strong><?php echo __("website/products/server-list-ram"); ?></strong></th>
+                                <th data-orderable="false" align="center" bgcolor="#ebebeb"><strong><?php echo __("website/products/server-list-disk"); ?></strong></th>
+                                <th data-orderable="false" align="center" bgcolor="#ebebeb"><strong><?php echo __("website/products/server-list-bandwidth"); ?></strong></th>
+                                <th data-orderable="false" align="center" bgcolor="#ebebeb"><strong><?php echo __("website/products/server-list-location"); ?></strong></th>
+                                <th align="center" bgcolor="#ebebeb"><strong><?php echo __("website/products/server-list-amount"); ?></strong></th>
+                                <th data-orderable="false" align="center" bgcolor="#ebebeb"><strong><?php echo __("website/products/server-list-buy"); ?></strong></td>
                             </tr>
                             </thead>
 
@@ -150,12 +148,25 @@
                                 foreach($list AS $k=>$product):
                                     $opt  = $product["options"];
                                     $optl = $product["options_lang"];
+
+                                    $p_n        = 0;
+                                    $prices     = (!isset($product["prices"])) ? [] : $product["prices"];
+                                    if(isset($prices[0]) && $prices[0]["amount"]){
+                                        $period = View::period($prices[0]["time"],$prices[0]["period"]);
+                                        $price      = Money::formatter_symbol($prices[0]["amount"],$prices[0]["cid"],!$product["override_usrcurrency"]);
+                                        $p_n        = Money::formatter($prices[0]["amount"],$prices[0]["cid"],false,!$product["override_usrcurrency"]);
+                                    }
+                                    else{
+                                        $price = ___("needs/free-amount");
+                                        $period = NULL;
+                                    }
+
                                     ?>
                                     <tr>
-                                        <td align="center"><?php echo $k; ?></td>
                                         <td align="center" valign="middle">
-                                            <?php echo $product["title"]; ?><br>
+                                            <strong><?php echo $product["title"]; ?></strong>
                                             <?php if($product["cover_image"]): ?>
+                                                <br>
                                                 <img src="<?php echo $product["cover_image"];?>" width="auto" height="42">
                                             <?php endif; ?>
                                             <?php if(!$product["haveStock"]): ?>
@@ -166,25 +177,12 @@
                                         <td align="center" valign="middle"><?php echo (isset($opt["ram"]) && $opt["ram"] != '') ? $opt["ram"] : "-"; ?></td>
                                         <td align="center" valign="middle"><?php echo (isset($opt["disk-space"]) && $opt["disk-space"] != '') ? $opt["disk-space"] : "-"; ?></td>
                                         <td align="center" valign="middle"><?php echo (isset($opt["bandwidth"]) && $opt["bandwidth"] != '') ? $opt["bandwidth"] : "-"; ?></td>
-                                        <?php if($have_raid): ?>
-                                            <td align="center" valign="middle"><?php echo (isset($opt["raid"]) && $opt["raid"] != '') ? $opt["raid"] : "-"; ?></td>
-                                        <?php endif; ?>
                                         <td align="center" valign="middle"><?php echo (isset($optl["location"]) && $optl["location"] != '') ? $optl["location"] : "-"; ?></td>
-                                        <td align="center" valign="middle">
-                                            <?php
-                                                $prices     = (!isset($product["prices"])) ? [] : $product["prices"];
-                                                if(isset($prices[0]) && $prices[0]["amount"]){
-                                                    $period = View::period($prices[0]["time"],$prices[0]["period"]);
-                                                    $price      = Money::formatter_symbol($prices[0]["amount"],$prices[0]["cid"],!$product["override_usrcurrency"]);
-                                                }else{
-                                                    $price = ___("needs/free-amount");
-                                                    $period = NULL;
-                                                }
-                                            ?>
+                                        <td align="center" valign="middle" data-order="<?php echo $p_n; ?>">
                                             <h4>
                                                 <strong><?php echo $price; ?></strong>
                                                 <?php if($period): ?>
-                                                    <br><span style="font-size: 16px;">(<?php echo $period; ?>)</span>
+                                                   <span style="font-size: 16px;">(<?php echo $period; ?>)</span>
                                                 <?php endif; ?>
                                             </h4>
                                         </td>
@@ -203,7 +201,6 @@
                     </div>
                 </div>
             <?php endif; ?>
-
             <?php
         }
     }
@@ -217,20 +214,15 @@
         });
     } );
 
-    $(document).ready(function() {
-        $('.datatable').DataTable({
-            "columnDefs": [
-                {
-                    "targets": [0],
-                    "visible":false,
-                },
-            ],
+    $(document).ready(function()
+    {
+        $('.horizontal-list').DataTable({
+            paging:false,
+            lengthChange: false,
             responsive: true,
             info: false,
             searching: false,
-            "language":{
-                "url":"<?php echo APP_URI."/".___("package/code")."/datatable/lang.json";?>"
-            }
+            oLanguage:<?php include __DIR__.DS."datatable-lang.php"; ?>
         });
     });
 </script>
@@ -307,10 +299,7 @@
                 if($categories){
                     foreach($categories AS $cat){
                         $list = $get_list($cat["id"],$cat["kind"]);
-                        if($list){
-                            ?><h5 style="font-weight: bold;font-size: 24px;"><?php echo $cat["title"]; ?></h5><?php
-                            $products($cat,$list);
-                        }
+                        if($list) $products($cat,$list);
                     }
                 }
             }

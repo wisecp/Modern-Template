@@ -206,8 +206,6 @@
                         echo "<br>";
                         echo $phone ? censored('phone',$phone)." - " : '';
                         echo censored('email',$invoice["user_data"]["email"]);
-                        echo  "<br>";
-                        echo __("website/account_invoices/user-id").": ".$invoice["user_id"];
                     ?>
 
             </span>
@@ -289,7 +287,7 @@
                             $cid    = isset($item["currency"]) ? $item["currency"] : $item["cid"];
                             ?>
                             <div class="formcon">
-                                <div class="yuzde70"><div class="padding10"><?php echo implode("<br>- ",explode(EOL,$item["description"])); ?></div></div>
+                                <div class="yuzde70"><span class="padding10"><?php echo implode("<br>- ",explode(EOL,$item["description"])); ?></span></div>
                                 <div class="yuzde30"><span><?php echo Money::formatter_symbol($amount,$cid); ?></span></div>
                             </div>
                             <?php

@@ -130,40 +130,49 @@
                 <?php
                 $columns       = isset($cat["options_lang"]["columns"]) ? $cat["options_lang"]["columns"] : [];
                 ?>
-                <div class="sunucular">
-                    <div style="padding:15px;">
-                        <table class="datatable" width="100%" border="0">
+                <div class="sunucular" data-aos="fade-up">
+                    <div>
+                        <table class="horizontal-list" width="100%" border="0" data-order='[[<?php echo sizeof($columns) +2; ?>, "asc"]]'>
                             <thead style="background:#ebebeb;">
                             <tr>
-                                <th align="center">#</th>
-                                <th align="center" bgcolor="#ebebeb"><strong><?php echo __("website/products/special-list-title"); ?></strong></td>
+                                <th data-orderable="false" align="center" bgcolor="#ebebeb"><strong><?php echo __("website/products/special-list-title"); ?></strong></td>
                                 <?php
                                     if($columns){
                                         foreach($columns AS $col){
                                             ?>
-                                            <th align="center" bgcolor="#ebebeb"><strong><?php echo $col["name"]; ?></strong></th>
+                                            <th data-orderable="false" align="center" bgcolor="#ebebeb"><strong><?php echo $col["name"]; ?></strong></th>
                                             <?php
                                         }
                                     }
                                 ?>
 
                                 <th align="center" bgcolor="#ebebeb"><strong><?php echo __("website/products/special-list-amount"); ?></strong></th>
-                                <th align="center" bgcolor="#ebebeb"><strong><?php echo __("website/products/special-list-buy"); ?></strong></td>
+                                <th data-orderable="false" align="center" bgcolor="#ebebeb"><strong><?php echo __("website/products/special-list-buy"); ?></strong></td>
                             </tr>
                             </thead>
 
                             <tbody>
                             <?php
                                 foreach($list AS $k=>$product):
-                                    $opt  = $product["options"];
-                                    $optl = $product["options_lang"];
+                                    $opt        = $product["options"];
+                                    $optl       = $product["options_lang"];
+                                    $p_n        = 0;
                                     $prices     = (!isset($product["prices"])) ? [] : $product["prices"];
+                                    if(isset($prices[0]) && $prices[0]["amount"]){
+                                        $period = View::period($prices[0]["time"],$prices[0]["period"]);
+                                        $price      = Money::formatter_symbol($prices[0]["amount"],$prices[0]["cid"],!$product["override_usrcurrency"]);
+                                        $p_n        = Money::formatter($prices[0]["amount"],$prices[0]["cid"],false,!$product["override_usrcurrency"]);
+                                    }else{
+                                        $price = NULL;
+                                        $period = NULL;
+                                    }
+
+
                                     ?>
                                     <tr>
-                                        <td align="center"><?php echo $k; ?></td>
                                         <td align="center" valign="middle">
-                                            <?php echo $product["title"]; ?><br>
-                                            <?php if($product["cover_image"]): ?>
+                                            <strong><?php echo $product["title"]; ?></strong>
+                                            <?php if($product["cover_image"]): ?><br>
                                                 <img src="<?php echo $product["cover_image"];?>" width="auto" height="42">
                                             <?php endif; ?>
                                             <?php if(!$product["haveStock"]): ?>
@@ -186,16 +195,7 @@
                                             }
                                         ?>
 
-                                        <td align="center" valign="middle" data-order="<?php echo $prices[0]["amount"]; ?>">
-                                            <?php
-                                                if(isset($prices[0]) && $prices[0]["amount"]){
-                                                    $period = View::period($prices[0]["time"],$prices[0]["period"]);
-                                                    $price      = Money::formatter_symbol($prices[0]["amount"],$prices[0]["cid"],!$product["override_usrcurrency"]);
-                                                }else{
-                                                    $price = NULL;
-                                                    $period = NULL;
-                                                }
-                                            ?>
+                                        <td align="center" valign="middle" data-order="<?php echo $prices[0]["amount"]; ?>" data-order="<?php echo $p_n; ?>">
                                             <h4>
                                                 <?php
                                                     if($price != NULL){
@@ -238,19 +238,13 @@
     } );
 
     $(document).ready(function() {
-        $('.datatable').DataTable({
-            "columnDefs": [
-                {
-                    "targets": [0],
-                    "visible":false,
-                },
-            ],
+        $('.horizontal-list').DataTable({
+            paging:false,
+            lengthChange: false,
             responsive: true,
             info: false,
             searching: false,
-            "language":{
-                "url":"<?php echo APP_URI."/".___("package/code")."/datatable/lang.json";?>"
-            }
+            oLanguage:<?php include __DIR__.DS."datatable-lang.php"; ?>
         });
     });
 </script>

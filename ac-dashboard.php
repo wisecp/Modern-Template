@@ -42,7 +42,7 @@
                                         <?php echo $ticket_situations[$row["status"]]; ?>
                                     </td>
                                     <td align="center">
-                                        <a href="<?php echo $row["detail_link"]; ?>" class="sbtn"><i class="fa fa-search" aria-hidden="true"></i></a>
+                                        <a href="<?php echo $row["detail_link"]; ?>" class="incelebtn"><i class="fa fa-search" aria-hidden="true"></i></a>
                                     </td>
                                 </tr>
                                 <?php

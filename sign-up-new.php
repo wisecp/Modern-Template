@@ -122,7 +122,7 @@
 .notverification a{color:#b5b5b5;font-weight:600}
 #uyeolgiris{position:fixed;overflow:auto;margin-bottom:0;width:100%;height:100%;bottom:0px;background-image:url(<?php echo $tadress;?>images/signinsignupbg2020.jpg);background-color:rgba(50, 90, 108, 0.55);background-repeat:no-repeat;    background-size: 100%;}
 #uyeolgirisbody .footer{display:none}
-.uyeol{position:fixed;width:50%;border-radius:0;margin-bottom:0px;right:0;top:0;bottom:0}
+.uyeol{position:absolute;width:50%;border-radius:0;margin-bottom:0px;right:0;top:0;bottom:0}
 .uyeolgirisslogan{float:left;width:50%;text-align:left;margin-top:0;}
 .uyeolgirishead{text-align:center;width:100%;margin-top:5%;margin-bottom:0;float:none; -webkit-animation-name: fadeIn;
   animation-name: fadeIn;
@@ -153,7 +153,7 @@
 .uyeolgirisslogan-con{width:70%;margin:auto;margin-top:35%;}
 .uyeolgirisslogan-con .gonderbtn{color:#fff;border:2px solid #fff;margin-top:35px}
 .uyeolgirisslogan-con .gonderbtn:hover{color:#333;background:white}
-.signupcon{padding:20px}
+.signupcon{padding:20px;    background: white;}
 .socialconnect a{color:#7c7c7c;font-size:14px;background:#e7e7e7}
 .socialconnect .facebookconnect{color:#7c7c7c;background:#eee}
 .socialconnect .facebookconnect:hover{color:#fff}
@@ -174,7 +174,7 @@
 .signup-stages{float:left;margin-bottom:20px;width:100%;text-align:center;}
 .signup-stages-block{background:#eee;width:75px;height:75px;display:inline-block;border-radius:100%;text-align:center;line-height:75px;margin:0px 7%;font-weight:300;font-size:30px}
 .signup-stage-line{width:100%;height:10px;background:#eee;margin-top:35px;float:left;margin-bottom:-55px;border-radius:3px}
-
+.captcha-content {margin-top:0;}
 
 @media only screen and (min-width:320px) and (max-width:1024px){
 .uyeolgirishead{width:100%;margin-top:15%}
@@ -182,7 +182,7 @@
 .uyeolgirisyap{width:100%}
 #wrapper{width:90%}
 .uyeol{width:100%;position:relative;border-right:none}
-.signupcon{position:relative}
+.signupcon{position:relative;}
 #uyeolgiris{overflow-x:auto;background-size:auto 120%;background-position:center}
 .uyeolgirisslogan{text-align:center;width:100%}
 .uyeolgirisslogan h4{width:90%;font-size:17px;margin:auto;margin-top:25px}
@@ -192,6 +192,9 @@
 .signup-stages-block{width:75px;height:75px;line-height:75px;margin:0px 4%;font-size:28px}
 .signup-stage-line {    margin-bottom: -45px;}
 .clean-theme-signup-box .yuzde50 {    width: 46%;}
+.captcha-content{width:310px;transform:scale(0.8);margin-left:auto;margin-top:0;margin-bottom:10px}
+.signin-signup-foot-btn{margin-bottom:30px}
+
 }
 
 </style>
@@ -425,7 +428,7 @@
                                     </div>
 
 
-                                    <div class="clean-theme-signup-box">
+                                    <div class="clean-theme-signup-box" style="    padding-bottom: 10px;">
                                         <div class="clean-theme-signup-box-title"><?php echo __("website/basket/contracts"); ?></div>
                                         <div class="yuzde100">
                                             <input id="checkbox-5" class="checkbox-custom" name="contract" value="1" type="checkbox" required>

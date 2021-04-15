@@ -77,9 +77,10 @@
                 <div id="ticketCustomFields" style="display: none;">
                     <div class="ticketCustomFields-con">
                         <div class="blue-info">
-
-                            <i class="fa fa-lock" aria-hidden="true" style="    margin-top: -10px;"></i>
-                            <?php echo __("website/account_tickets/custom-fields-info"); ?>
+                            <div class="padding20">
+                                <i class="fa fa-lock" aria-hidden="true"></i>
+                                <p><?php echo __("website/account_tickets/custom-fields-info"); ?></p>
+                            </div>
 
                         </div>
                         <?php

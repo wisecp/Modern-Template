@@ -85,12 +85,109 @@
     }
 
     include $tpath."common-needs.php";
-    $hoptions = ["datatables","jquery-ui"];
+    $hoptions = ["datatables","jquery-ui","select2","ion.rangeSlider"];
 ?>
 <link rel="stylesheet" type="text/css" href="<?php echo $sadress; ?>assets/style/progress-circle.css">
 <style type="text/css">
-    .hostbtn{width:150px;padding:10px 20px;background:#eee;display:inline-block;margin:5px;vertical-align:top;border-radius:3px}
+    .statusonline{color:#fff;background: #8bc34a;font-size:13px;padding:4px 20px;-webkit-border-radius:3px;-moz-border-radius:3px;border-radius:3px;font-weight:bold;animation:shadow-pulse 1s infinite;}
+    @keyframes shadow-pulse{0%{box-shadow: 0 0 0 0px rgb(158 215 92 / 67%);}
+        100%{box-shadow: 0 0 0 8px rgb(0 0 0 / 0%);}
+    }
+
+    .hostbtn{width:150px;padding:10px 20px;background:#eee;display:inline-block;margin:5px;vertical-align:top;border-radius:3px;font-weight: 600;}
+    .hostbtn i {margin-right:7px;}
     .hostbtn:hover {background:#dbdbdb;}
+    #nserverinfo {
+        font-size: 15px;
+        padding: 12px;
+        background: none;
+        border-bottom: 1px solid #eee;
+        color: #009595;
+        background: #efefef;
+        background: -moz-linear-gradient(top,#efefef 0%,#fff 100%);
+        background: -webkit-linear-gradient(top,#efefef 0%,#fff 100%);
+        background: linear-gradient(to bottom,#efefef 0%,#fff 100%);
+        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#efefef',endColorstr='#ffffff',GradientType=0);
+    }
+    #hostserverblok {width:48%;text-align:center;border:none;}
+
+    .load-wrapp{width:150px;margin:90px auto;text-align:center;}
+    .square{width:12px;height:12px;border-radius:4px;}
+    .spinner{position:relative;width:45px;height:45px;margin:0 auto}
+    .load-7{margin-left:-70px;display:inline-block}
+    .l-1{animation-delay:.48s}
+    .l-2{animation-delay:.6s}
+    .l-3{animation-delay:.72s}
+    .l-4{animation-delay:.84s}
+    .l-5{animation-delay:.96s}
+    .l-6{animation-delay:1.08s}
+    .l-7{animation-delay:1.2s}
+    .l-8{animation-delay:1.32s}
+    .l-9{animation-delay:1.44s}
+    .l-10{animation-delay:1.56s}
+    .load-7 .square{animation:loadingG 1.5s cubic-bezier(.17,.37,.43,.67) infinite}
+    @keyframes loadingA {
+        50%{height:15px 35px}
+        100%{height:15px}
+    }
+    @keyframes loadingB {
+        50%{width:15px 35px}
+        100%{width:15px}
+    }
+    @keyframes loadingC {
+        50%{transform:translate(0,0) translate(0,15px)}
+        100%{transform:translate(0,0)}
+    }
+    @keyframes loadingD {
+        50%{transform:rotate(0deg) rotate(180deg)}
+        100%{transform:rotate(360deg)}
+    }
+    @keyframes loadingE {
+        100%{transform:rotate(0deg) rotate(360deg)}
+    }
+    @keyframes loadingF {
+        0%{opacity:0}
+        100%{opacity:1}
+    }
+    @keyframes loadingG {
+        0%{transform:translate(0,0) rotate(0deg)}
+        50%{transform:translate(70px,0) rotate(360deg)}
+        100%{transform:translate(0,0) rotate(0deg)}
+    }
+    @keyframes loadingH {
+        0%{width:15px}
+        50%{width:35px;padding:4px}
+        100%{width:15px}
+    }
+    @keyframes loadingI {
+        100%{transform:rotate(360deg)}
+    }
+    @keyframes bounce {
+        0%,100%{transform:scale(0.0)}
+        50%{transform:scale(1.0)}
+    }
+    @keyframes loadingJ {
+        0%,100%{transform:translate(0,0)}
+        50%{transform:translate(80px,0);background-color:#f5634a;width:25px}
+    }
+    @media only screen and (min-width:320px) and (max-width:1025px) {
+        #hostserverblok {width:100%;    margin-bottom: 20px;}
+    }
+    .serverblokbtn a {width:18%;font-size:14px;     margin: 2px;   padding: 12px 0px;background:#eee;    display: inline-block;}
+    .serverblokbtn a:hover {background:#ccc;  }
+    #vpsreboot:hover {background:#607d8b;color:white;}
+    #vpsShutdown:hover {background:#f44336;color:white;}
+    #vpsPowerOff:hover {background:#f44336;color:white;}
+    #vpsPowerOnn:hover {background:#8bc34a;color:white;}
+    #vpspanellogin:hover {background:#607d8b;color:white;}
+    #vpsrestart:hover {background:#607d8b;color:white;}
+    #vpsstart:hover {background:#8bc34a;color:white;}
+    #vpsstop:hover {background:#dd3d32;color:white;}
+    #vpscpassword:hover {background:#8bc34a;color:white;}
+    #vpsreinstall:hover {background:#dd3d32;color:white;}
+    #vpskill:hover {background:#dd3d32;color:white;}
+    #vpsgeneral:hover {background:#607d8b;color:white;}
+
     #nserverinfo {
         font-size: 15px;
         padding: 12px;
@@ -209,9 +306,7 @@
             paging: false,
             info:     false,
             searching: false,
-            "language":{
-                "url":"<?php echo APP_URI."/".___("package/code")."/datatable/lang.json";?>"
-            }
+            "oLanguage":<?php include __DIR__.DS."datatable-lang.php"; ?>
         });
 
         forwards_table = $("#forwards_table").DataTable({
@@ -225,9 +320,7 @@
             paging: false,
             info:     false,
             searching: false,
-            "language":{
-                "url":"<?php echo APP_URI."/".___("package/code")."/datatable/lang.json";?>"
-            }
+            "oLanguage":<?php include __DIR__.DS."datatable-lang.php"; ?>
         });
 
 
@@ -258,15 +351,21 @@
 
     function run_transaction(btn_k,btn_el,post_fields){
         var data1   = {inc: "use_method",method:btn_k};
-        var data2   = $(btn_el).data("fields");
+        var data2   = $(btn_el).attr("data-fields");
+
+        if(typeof data2 == "undefined") data2 = {};
         if(typeof data2 !== 'object' && data2 !== undefined && data2.length > 0) data2 = getJson(data2);
         if(typeof data2 !== 'object' || data2 === undefined || data2 === false) data2 = {};
         var data3   = post_fields === undefined || post_fields === false ? {} : post_fields;
-        var _data   = Object.assign(data1,...data2,...data3);
+        let _data   = Object.assign(data1,data2,data3);
+
+        var icon_w  = false;
+
+        if(btn_el !== undefined && $("i",btn_el).length > 0) icon_w = true;
 
         var request = MioAjax({
             button_element:btn_el,
-            waiting_text: '<?php echo __("website/others/button1-pending"); ?>',
+            waiting_text: icon_w ? '<?php echo __("website/others/button2-pending"); ?>' : '<?php echo __("website/others/button1-pending"); ?>',
             action:"<?php echo $links["controller"]; ?>",
             method:"POST",
             data:_data,
@@ -275,9 +374,8 @@
     }
     function reload_module_content(page){
         if(page === undefined) page = "<?php echo isset($m_page) ? $m_page : false; ?>";
-        else{
-            $("#block_module_details_con").html($("#template-loader").html());
-        }
+
+        $("#block_module_details_con").html($("#template-loader").html());
 
         if(page !== ''){
             window.history.pushState("object or string", $("title").html(),'<?php echo $links["controller"]; ?>?m_page='+page);
@@ -322,7 +420,14 @@
                         }
                     }
                     else
-                        $(".use-progressbar").css("display","none");
+                    {
+                        if(document.getElementsByClassName("use-progressbar").length > 0)
+                        {
+                            $(".use-progressbar").html($("#general-info").html());
+                            $(".use-progressbar").removeAttr("id");
+                            $("#general-info").remove();
+                        }
+                    }
 
                     if(solve.mail_domains != undefined){
                         $(".mailDomains").html('');
@@ -364,8 +469,26 @@
                     }
 
                     if(solve.panel !== undefined) $("#block_module_details_con").html(solve.panel);
-                }else
-                    console.log(result);
+                    else $("#block_module_details_con").html('');
+                }
+                else
+                {
+                    if(document.getElementsByClassName("use-progressbar").length > 0)
+                    {
+                        $(".use-progressbar").html($("#general-info").html());
+                        $(".use-progressbar").removeAttr("id");
+                        $("#general-info").remove();
+                    }
+                }
+            }
+            else
+            {
+                if(document.getElementsByClassName("use-progressbar").length > 0)
+                {
+                    $(".use-progressbar").html($("#general-info").html());
+                    $(".use-progressbar").removeAttr("id");
+                    $("#general-info").remove();
+                }
             }
         });
     }
@@ -387,6 +510,7 @@
                 else if(solve.redirect !== undefined){
                     window.location.href = solve.redirect;
                 }
+                if(solve.javascript_code) eval(solve.javascript_code);
             }else
                 console.log(result);
         }
@@ -504,173 +628,19 @@
     </div>
 </div>
 
-<div class="mpanelrightcon">
-
-    <div class="mpaneltitle">
-        <div class="sayfayolu"><?php include $tpath."inc".DS."panel-breadcrumb.php"; ?></div>
-        <h4><strong><i class="fa fa-cube"></i> <?php echo $proanse["name"]; ?></strong></h4>
-    </div>
-
-
-    <ul class="tab">
-        <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(this, 'ozet')" data-tab="1"><i class="fa fa-info" aria-hidden="true"></i> <?php echo __("website/account_products/hosting-tab1"); ?></a></li>
-
-        <?php if(isset($addons) && $addons): ?>
-            <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(this, 'addons')" data-tab="addons"><i class="fa fa-rocket" aria-hidden="true"></i> <?php echo __("website/account_products/tab-addons"); ?></a></li>
-        <?php endif; ?>
-
-        <?php if(isset($requirements) && $requirements): ?>
-            <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(this, 'requirements')" data-tab="requirements"><i class="fa fa-check-square" aria-hidden="true"></i> <?php echo __("website/account_products/tab-requirements"); ?></a></li>
-        <?php endif; ?>
-
-
-        <?php if($proanse["status"] == "active" && $upgrade): ?>
-            <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(this, 'upgrade')" data-tab="upgrade"><i class="ion-speedometer" aria-hidden="true"></i> <?php echo __("website/account_products/hosting-tab-upgrade"); ?></a></li>
-        <?php endif; ?>
-
-        <?php if($proanse["status"] == "active" && isset($server) && $server["status"] == "active"): ?>
-            <?php if(in_array("manage-email-account",$supported)): ?>
-                <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(this, 'epostayonet')" data-tab="emails"><i class="fa fa-envelope-o" aria-hidden="true"></i> <?php echo __("website/account_products/hosting-tab-emails"); ?></a></li>
-            <?php endif; ?>
-            <?php if(in_array("change-password",$supported)): ?>
-                <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(this, 'sifredegistir')" data-tab="password"><i class="fa fa-key" aria-hidden="true"></i> <?php echo __("website/account_products/hosting-tab-password"); ?></a></li>
-            <?php endif; ?>
-        <?php endif; ?>
-
-        <?php if($proanse["status"] == "active" && $ctoc_service_transfer): ?>
-            <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(this, 'transfer-service')" data-tab="transfer-service"><i class="fa fa-exchange" aria-hidden="true"></i> <?php echo __("website/account_products/transfer-service"); ?></a></li>
-        <?php endif; ?>
-        <?php if($proanse["status"] == "active" && $proanse["period"] != "none"): ?>
-            <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(this, 'iptaltalebi')" data-tab="cancellation"><i class="fa fa-ban" aria-hidden="true"></i> <?php echo __("website/account_products/cancellation-request"); ?></a></li>
-        <?php endif; ?>
-
-        <div class="orderidno"><span><?php echo __("website/account_products/table-ordernum"); ?></span><strong>#<?php echo $proanse["id"]; ?></strong></div>
-
-    </ul>
-
-    <div id="ozet" class="tabcontent">
-
-        <div class="hizmetblok" id="hostserverblok">
-            <div class="cpanelebmail">
-
-                <?php
-                    if($panel_logo){
-                        ?>
-                        <img style="width:210px;" src="<?php echo $panel_logo; ?>" width="auto" height="auto">
-                        <?php
-                    }else{
-                        ?>
-                        <i style="font-size:100px;" class="ion-ios-cloud"></i><div class="clear"></div>
-                        <?php
-                    }
-                ?>
-                <h4><?php echo $domain; ?></h4>
-                <?php
-                    if(isset($options["server_features"]) && is_array($options["server_features"]))
-                        echo '<h5 style="font-weight:normal;margin:0px;">('.implode(" + ",$options["server_features"]).')</h5><br>';
-
-                    if($buttons){
-                        foreach($buttons AS $b_type=>$b_value){
-                            ?>
-                            <a target="_blank" href="<?php echo $b_value["url"]; ?>" class="<?php echo isset($b_value["class"]) ? $b_value["class"].' ' : ''; ?>gonderbtn"><?php echo $b_value["name"]; ?></a><br>
-                            <?php
-                        }
-                    }
-
-                    if(isset($product) && $product && $proanse["period"] != "none" && ($proanse["status"] == "active" || $proanse["status"] == "suspended") && !isset($proanse["disable_renewal"])){
-                        ?>
-                        <div class="clear"></div>
-                        <div id="renewal_list" style="display:none;">
-                            <select id="selection_renewal">
-                                <option value=""><?php echo __("website/account_products/renewal-list-option"); ?></option>
-                                <?php
-                                    if(isset($product["price"])){
-                                        foreach($product["price"] AS $k=>$v){
-                                            ?>
-                                            <option value="<?php echo $k; ?>"><?php
-                                                    echo View::period($v["time"],$v["period"]);
-                                                    echo " ";
-                                                    echo Money::formatter_symbol($v["amount"],$v["cid"],true);
-                                                ?></option>
-                                            <?php
-                                        }
-                                    }
-                                ?>
-                            </select>
-                            <script type="text/javascript">
-                                $(document).ready(function () {
-                                    $("#selection_renewal").change(function () {
-                                        var selection = $(this).val();
-                                        if (selection != '') {
-                                            var result = MioAjax({
-                                                action: "<?php echo $links["controller"]; ?>",
-                                                method: "POST",
-                                                data: {operation: "order_renewal", period: selection}
-                                            }, true);
-
-                                            if (result) {
-                                                var solve = getJson(result);
-                                                if (solve) {
-                                                    if (solve.status == "successful") {
-                                                        window.location.href = solve.redirect;
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    });
-                                });
-                            </script>
-                        </div>
-                        <a href="javascript:$('#renewal_list').slideToggle(400);void 0;"
-                           class="mavibtn gonderbtn"><?php echo __("website/account_products/renewal-now-button"); ?></a>
-                        <div class="clear"></div>
-                        <?php
-                    }
-                ?>
-            </div>
-        </div>
-
-        <?php if(isset($server) && ($proanse["status"] == "active" || $proanse["status"] == "suspended") && in_array("disk-bandwidth-usage",$supported)): ?>
-            <div class="hizmetblok use-progressbar" id="hostserverblok">
-
-                <div style="margin-bottom:20px;font-size:16px;margin:0px 15px;display:inline-block" id="disk_bar">
-                    <h5 style="font-size:16px;"><strong><?php echo __("admin/orders/hosting-usage-disk"); ?></strong></h5>
-                    <div class="clear"></div>
-                    <div class="progress-circle progress-{percent}"><span id="disk_used_percent">0</span></div>
-                    <div class="clear"></div>
-                    <div style="-webkit-filter: grayscale(100%);filter: grayscale(100%);" class="bar-loading"><img src="<?php echo $sadress; ?>assets/images/loading.gif"></div>
-                </div>
-
-                <div style="margin-bottom:20px;font-size:16px;margin:0px 15px;display:inline-block" id="bandwidth_bar">
-                    <h5 style="font-size:16px;"><strong><?php echo __("admin/orders/hosting-usage-bandwidth"); ?></strong></h5>
-                    <div class="clear"></div>
-                    <div class="progress-circle progress-{percent}"><span id="bandwidth_used_percent">0</span></div>
-                    <div class="clear"></div>
-                    <div style="-webkit-filter: grayscale(100%);filter: grayscale(100%);" class="bar-loading"><img src="<?php echo $sadress; ?>assets/images/loading.gif"></div>
-                </div>
-
-                <div class="clear"></div>
-
-                <?php if($proanse["period"] != "none" && $upgrade && $proanse["status"] == "active"): ?>
-                    <a style="width:50%;padding: 12px 0px;margin-top:30px;" href="javascript:$('a[data-tab=upgrade]').click();void 0;" id="updownbtn" class="graybtn gonderbtn"><i class="ion-speedometer"></i> <?php echo __("website/account_products/hosting-button-go-to-upgrade"); ?></a>
-                <?php endif; ?>
-            </div>
-
-            <div class="clear"></div>
-        <?php endif; ?>
-
-
-        <?php if(isset($server) && $proanse["status"] == "active"): ?>
-            <div class="clear"></div>
-
-            <div class="block_module_details" id="get_details_module_content">
-                <div class="hizmetblok" id="block_module_details_con"></div>
-            </div>
-
-            <div class="clear"></div>
-        <?php endif; ?>
-
-        <div class="hizmetblok">
+<?php
+    $GLOBALS["invoice"]             = isset($invoice) ? $invoice : false;
+    $GLOBALS["options"]             = isset($options) ? $options : false;
+    $GLOBALS["proanse"]             = isset($proanse) ? $proanse : false;
+    $GLOBALS["proanse_amount"]      = isset($proanse) ? $proanse_amount : false;
+    $GLOBALS["product_situations"]  = isset($product_situations) ? $product_situations : false;
+    $GLOBALS["stored_cards"]        = isset($stored_cards) ? $stored_cards : false;
+    $GLOBALS["links"]               = isset($links) ? $links : false;
+    function general_info_content()
+    {
+        global $invoice,$options,$proanse,$proanse_amount,$product_situations,$stored_cards,$links;
+        ?>
+        <div class="hizmetblok" id="general-info">
             <table width="100%" border="0">
                 <tr>
                     <td colspan="2" bgcolor="#ebebeb">
@@ -759,116 +729,362 @@
                 </tr>
             </table>
         </div>
-
-        <div class="hizmetblok">
-            <table width="100%" border="0">
-                <tr>
-                    <td colspan="2" bgcolor="#ebebeb" ><strong><?php echo __("website/account_products/hosting-features"); ?></strong></td>
-                </tr>
-
-                <tr>
-                    <td><strong><?php echo __("website/account_products/hosting-disk-limit"); ?></strong></td>
-                    <td><?php echo $disk_limit ? $disk_limit : __("website/account_products/unlimited"); ?></td>
-                </tr>
-
-                <tr>
-                    <td><strong><?php echo __("website/account_products/bandwidth-limit"); ?></strong></td>
-                    <td><?php echo $bandwidth_limit ? $bandwidth_limit : __("website/account_products/unlimited"); ?></td>
-                </tr>
-
-                <tr>
-                    <td><strong><?php echo __("website/account_products/email-limit"); ?></strong></td>
-                    <td><?php echo $email_limit ? $email_limit." ".__("website/account_products/count") : __("website/account_products/unlimited"); ?></td>
-                </tr>
-
-                <tr>
-                    <td><strong><?php echo __("website/account_products/database-limit"); ?></strong></td>
-                    <td><?php echo $database_limit || ($database_limit != '' && $database_limit == 0) ? ((int) $database_limit)." ".__("website/account_products/count") : __("website/account_products/unlimited"); ?></td>
-                </tr>
-
-                <tr>
-                    <td><strong><?php echo __("website/account_products/addons-limit"); ?></strong></td>
-                    <td><?php echo $addons_limit || ($addons_limit != '' && $addons_limit == 0) ? ((int) $addons_limit)." ".__("website/account_products/count") : __("website/account_products/unlimited"); ?></td>
-                </tr>
-
-                <tr>
-                    <td><strong><?php echo __("website/account_products/subdomain-limit"); ?></strong></td>
-                    <td><?php echo $subdomain_limit != '' ? ((int) $subdomain_limit)." ".__("website/account_products/count") : __("website/account_products/unlimited"); ?></td>
-                </tr>
+        <?php
+    }
+?>
 
 
-                <tr align="center" class="tutartd">
-                    <td colspan="2">
-                        <a href="javascript:open_modal('otherLimits');void 0;"><?php echo __("website/account_products/view-all"); ?></a>
-                    </td>
-                </tr>
+<div class="mpanelrightcon">
 
-            </table>
+    <div class="mpaneltitle">
+        <div class="sayfayolu"><?php include $tpath."inc".DS."panel-breadcrumb.php"; ?></div>
+        <h4><strong><i class="fa fa-cube"></i> <?php echo $proanse["name"]; ?></strong></h4>
+    </div>
 
-            <div id="otherLimits" data-izimodal-title="<?php echo __("website/account_products/hosting-all-features"); ?>" style="display: none;">
-                <div class="padding20">
 
-                    <table width="100%" border="0">
+    <ul class="tab">
+        <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(this, 'ozet')" data-tab="1"><i class="fa fa-info" aria-hidden="true"></i> <?php echo __("website/account_products/hosting-tab1"); ?></a></li>
+        
+        <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(this, 'addons')" data-tab="addons"><i class="fa fa-rocket" aria-hidden="true"></i> <?php echo __("website/account_products/tab-addons"); ?></a></li>
 
-                        <tr>
+        <?php if(isset($requirements) && $requirements): ?>
+            <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(this, 'requirements')" data-tab="requirements"><i class="fa fa-check-square" aria-hidden="true"></i> <?php echo __("website/account_products/tab-requirements"); ?></a></li>
+        <?php endif; ?>
+
+
+        <?php if($proanse["status"] == "active" && $upgrade): ?>
+            <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(this, 'upgrade')" data-tab="upgrade"><i class="ion-speedometer" aria-hidden="true"></i> <?php echo __("website/account_products/hosting-tab-upgrade"); ?></a></li>
+        <?php endif; ?>
+
+        <?php if($proanse["status"] == "active" && isset($server) && $server["status"] == "active"): ?>
+            <?php if(in_array("manage-email-account",$supported)): ?>
+                <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(this, 'epostayonet')" data-tab="emails"><i class="fa fa-envelope-o" aria-hidden="true"></i> <?php echo __("website/account_products/hosting-tab-emails"); ?></a></li>
+            <?php endif; ?>
+            <?php if(in_array("change-password",$supported)): ?>
+                <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(this, 'sifredegistir')" data-tab="password"><i class="fa fa-key" aria-hidden="true"></i> <?php echo __("website/account_products/hosting-tab-password"); ?></a></li>
+            <?php endif; ?>
+        <?php endif; ?>
+
+        <?php if($proanse["status"] == "active" && $ctoc_service_transfer): ?>
+            <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(this, 'transfer-service')" data-tab="transfer-service"><i class="fa fa-exchange" aria-hidden="true"></i> <?php echo __("website/account_products/transfer-service"); ?></a></li>
+        <?php endif; ?>
+        <?php if($proanse["status"] == "active" && $proanse["period"] != "none"): ?>
+            <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(this, 'iptaltalebi')" data-tab="cancellation"><i class="fa fa-ban" aria-hidden="true"></i> <?php echo __("website/account_products/cancellation-request"); ?></a></li>
+        <?php endif; ?>
+
+        <div class="orderidno"><span><?php echo __("website/account_products/table-ordernum"); ?></span><strong>#<?php echo $proanse["id"]; ?></strong></div>
+
+    </ul>
+
+    <div id="ozet" class="tabcontent">
+
+        <div class="hizmetblok" id="hostserverblok">
+            <div class="service-first-block">
+
+                <div id="order_image">
+                    <?php
+                        if($panel_logo)
+                        {
+                            ?>
+                            <img style="width:210px;" src="<?php echo $panel_logo; ?>" width="auto" height="auto">
+                            <?php
+                        }
+                        else
+                        {
+                            ?>
+                            <i style="font-size:100px;" class="ion-ios-cloud"></i><div class="clear"></div>
+                            <?php
+                        }
+                    ?>
+                </div>
+                <h5 id="detial_domain"><strong><?php echo $domain; ?></strong></h5>
+                <?php
+                    if(isset($options["server_features"]) && is_array($options["server_features"]))
+                        echo '<h5 id="server_features" style="font-weight:normal;margin:0px;">('.implode(" + ",$options["server_features"]).')</h5><br>';
+                    ?>
+                    <div id="order-service-detail-btns">
+                        <?php
+
+                            if($buttons){
+                                ?>
+                                <div id="panel_buttons">
+                                    <?php
+                                        foreach($buttons AS $b_type=>$b_value){
+                                            ?>
+                                            <a target="_blank" id="btn-<?php echo $b_type; ?>" href="<?php echo $b_value["url"]; ?>" class="yesilbtn gonderbtn"><i class="fa fa-cog" aria-hidden="true"></i> <?php echo $b_value["name"]; ?></a><br>
+                                            <?php
+                                        }
+                                    ?>
+                                </div>
+                                <?php
+                            }
+
+                            if(isset($product) && $product && $proanse["period"] != "none" && ($proanse["status"] == "active" || $proanse["status"] == "suspended") && !isset($proanse["disable_renewal"])){
+                                ?>
+                                <div class="clear"></div>
+                                <div id="renewal_list" style="display:none;">
+                                    <select id="selection_renewal">
+                                        <option value=""><?php echo __("website/account_products/renewal-list-option"); ?></option>
+                                        <?php
+                                            if(isset($product["price"])){
+                                                foreach($product["price"] AS $k=>$v){
+                                                    ?>
+                                                    <option value="<?php echo $k; ?>"><?php
+                                                            echo View::period($v["time"],$v["period"]);
+                                                            echo " ";
+                                                            echo Money::formatter_symbol($v["amount"],$v["cid"],true);
+                                                        ?></option>
+                                                    <?php
+                                                }
+                                            }
+                                        ?>
+                                    </select>
+                                    <script type="text/javascript">
+                                        $(document).ready(function () {
+                                            $("#selection_renewal").change(function () {
+                                                var selection = $(this).val();
+                                                if (selection != '') {
+                                                    var result = MioAjax({
+                                                        action: "<?php echo $links["controller"]; ?>",
+                                                        method: "POST",
+                                                        data: {operation: "order_renewal", period: selection}
+                                                    }, true);
+
+                                                    if (result) {
+                                                        var solve = getJson(result);
+                                                        if (solve) {
+                                                            if (solve.status == "successful") {
+                                                                window.location.href = solve.redirect;
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            });
+                                        });
+                                    </script>
+                                </div>
+                                <a id="renewal_list_btn" href="javascript:$('#renewal_list').slideToggle(400);void 0;"
+                                   class="mavibtn gonderbtn"><i class="fa fa-refresh"></i> <?php echo __("website/account_products/renewal-now-button"); ?></a>
+                                <div class="clear"></div>
+                                <?php
+                            }
+                        ?>
+                    </div>
+            </div>
+        </div>
+
+        <?php if(isset($server) && ($proanse["status"] == "active" || $proanse["status"] == "suspended") && in_array("disk-bandwidth-usage",$supported) && (method_exists($module_con,'getDisk') || method_exists($module_con,'getBandwidth'))): ?>
+            <?php
+            $included_general_info = false;
+            ?>
+            <div class="hizmetblok use-progressbar" id="hostserverblok">
+
+                <?php if(method_exists($module_con,'getDisk')): ?>
+                    <div style="margin:20px;font-size:16px;display:inline-block" id="disk_bar">
+                        <h5 style="font-size:16px;"><strong><?php echo __("admin/orders/hosting-usage-disk"); ?></strong></h5>
+                        <div class="clear"></div>
+                        <div class="progress-circle progress-{percent}"><span id="disk_used_percent">0</span></div>
+                        <div class="clear"></div>
+                        <div style="-webkit-filter: grayscale(100%);filter: grayscale(100%);" class="bar-loading"><img src="<?php echo $sadress; ?>assets/images/loading.gif"></div>
+                    </div>
+                <?php endif; ?>
+
+                <?php if(method_exists($module_con,'getBandwidth')): ?>
+                    <div style="margin:20px;font-size:16px;display:inline-block" id="bandwidth_bar">
+                        <h5 style="font-size:16px;"><strong><?php echo __("admin/orders/hosting-usage-bandwidth"); ?></strong></h5>
+                        <div class="clear"></div>
+                        <div class="progress-circle progress-{percent}"><span id="bandwidth_used_percent">0</span></div>
+                        <div class="clear"></div>
+                        <div style="-webkit-filter: grayscale(100%);filter: grayscale(100%);" class="bar-loading"><img src="<?php echo $sadress; ?>assets/images/loading.gif"></div>
+                    </div>
+                <?php endif; ?>
+
+                <div class="clear"></div>
+
+                <?php if($proanse["period"] != "none" && $upgrade && $proanse["status"] == "active"): ?>
+                    <a style="width:50%;padding: 12px 0px;" href="javascript:$('a[data-tab=upgrade]').click();void 0;" id="updownbtn" class="graybtn gonderbtn"><i class="ion-speedometer"></i> <?php echo __("website/account_products/hosting-button-go-to-upgrade"); ?></a>
+                <?php endif; ?>
+            </div>
+            <div class="clear"></div>
+        <?php else: ?>
+            <?php
+                $included_general_info = true;
+                general_info_content();
+            ?>
+
+        <?php endif; ?>
+
+
+        <?php if(isset($server) && $proanse["status"] == "active"): ?>
+            <div class="clear"></div>
+
+            <div class="block_module_details" id="get_details_module_content">
+                <div class="hizmetblok" id="block_module_details_con"></div>
+            </div>
+
+            <div class="clear"></div>
+        <?php endif; ?>
+
+        <?php
+            if(!$included_general_info)
+            {
+                $included_general_info = true;
+                general_info_content();
+            }
+        ?>
+
+        <?php if(!isset($options["disable_showing_resource_limits"])): ?>
+            <div class="hizmetblok" id="resource_limits">
+                <table width="100%" border="0">
+                    <tr>
+                        <td colspan="2" bgcolor="#ebebeb" ><strong><?php echo __("website/account_products/hosting-features"); ?></strong></td>
+                    </tr>
+
+                    <?php if(isset($options["disk_limit"])): ?>
+                        <tr id="rl_disk_limit">
                             <td><strong><?php echo __("website/account_products/hosting-disk-limit"); ?></strong></td>
                             <td><?php echo $disk_limit ? $disk_limit : __("website/account_products/unlimited"); ?></td>
                         </tr>
+                    <?php endif; ?>
 
-                        <tr>
+                    <?php if(isset($options["bandwidth_limit"])): ?>
+                        <tr id="rl_bandwidth_limit">
                             <td><strong><?php echo __("website/account_products/bandwidth-limit"); ?></strong></td>
                             <td><?php echo $bandwidth_limit ? $bandwidth_limit : __("website/account_products/unlimited"); ?></td>
                         </tr>
+                    <?php endif; ?>
 
-                        <tr>
+
+                    <?php if(isset($options["email_limit"])): ?>
+                        <tr id="rl_email_limit">
                             <td><strong><?php echo __("website/account_products/email-limit"); ?></strong></td>
                             <td><?php echo $email_limit ? $email_limit." ".__("website/account_products/count") : __("website/account_products/unlimited"); ?></td>
                         </tr>
+                    <?php endif; ?>
 
-                        <tr>
+                    <?php if(isset($options["database_limit"])): ?>
+                        <tr id="rl_database_limit">
                             <td><strong><?php echo __("website/account_products/database-limit"); ?></strong></td>
-                            <td><?php echo $database_limit || ($database_limit != '' && $database_limit == 0) ? $database_limit." ".__("website/account_products/count") : __("website/account_products/unlimited"); ?></td>
+                            <td><?php echo $database_limit || ($database_limit != '' && $database_limit == 0) ? ((int) $database_limit)." ".__("website/account_products/count") : __("website/account_products/unlimited"); ?></td>
                         </tr>
+                    <?php endif; ?>
 
-                        <tr>
+                    <?php if(isset($options["addons_limit"])): ?>
+                        <tr id="rl_addons_limit">
                             <td><strong><?php echo __("website/account_products/addons-limit"); ?></strong></td>
                             <td><?php echo $addons_limit || ($addons_limit != '' && $addons_limit == 0) ? ((int) $addons_limit)." ".__("website/account_products/count") : __("website/account_products/unlimited"); ?></td>
                         </tr>
+                    <?php endif; ?>
 
-                        <tr>
+                    <?php if(isset($options["subdomain_limit"])): ?>
+                        <tr id="rl_subdomain_limit">
                             <td><strong><?php echo __("website/account_products/subdomain-limit"); ?></strong></td>
                             <td><?php echo $subdomain_limit != '' ? ((int) $subdomain_limit)." ".__("website/account_products/count") : __("website/account_products/unlimited"); ?></td>
                         </tr>
+                    <?php endif; ?>
 
-                        <tr>
-                            <td><strong><?php echo __("website/account_products/ftp-limit"); ?></strong></td>
-                            <td><?php echo $ftp_limit != '' ? ((int) $ftp_limit)." ".__("website/account_products/count") : __("website/account_products/unlimited"); ?></td>
-                        </tr>
+                    <tr align="center" class="tutartd">
+                        <td colspan="2">
+                            <a href="javascript:open_modal('otherLimits');void 0;"><?php echo __("website/account_products/view-all"); ?></a>
+                        </td>
+                    </tr>
 
-                        <tr>
-                            <td><strong><?php echo __("website/account_products/park-limit"); ?></strong></td>
-                            <td><?php echo $park_limit || ($park_limit != '' && $park_limit == 0) ? ((int) $park_limit)." ".__("website/account_products/count") : __("website/account_products/unlimited"); ?></td>
-                        </tr>
+                </table>
 
-                        <tr>
-                            <td><strong><?php echo __("website/account_products/max-email-per-hour"); ?></strong></td>
-                            <td><?php echo $max_email_per_hour ? $max_email_per_hour." ".__("website/account_products/count") : __("website/account_products/unlimited"); ?></td>
-                        </tr>
+                <div id="otherLimits" data-izimodal-title="<?php echo __("website/account_products/hosting-all-features"); ?>" style="display: none;">
+                    <div class="padding20">
 
-                        <tr>
-                            <td><strong><?php echo __("website/account_products/cpu-limit"); ?></strong></td>
-                            <td><?php echo $cpu_limit; ?></td>
-                        </tr>
-                    </table>
+                        <table width="100%" border="0">
+
+                            <?php if(isset($options["disk_limit"])): ?>
+                                <tr id="rl2_disk_limit">
+                                    <td><strong><?php echo __("website/account_products/hosting-disk-limit"); ?></strong></td>
+                                    <td><?php echo $disk_limit ? $disk_limit : __("website/account_products/unlimited"); ?></td>
+                                </tr>
+                            <?php endif; ?>
+
+                            <?php if(isset($options["bandwidth_limit"])): ?>
+                                <tr id="rl2_bandwidth_limit">
+                                    <td><strong><?php echo __("website/account_products/bandwidth-limit"); ?></strong></td>
+                                    <td><?php echo $bandwidth_limit ? $bandwidth_limit : __("website/account_products/unlimited"); ?></td>
+                                </tr>
+                            <?php endif; ?>
+
+
+                            <?php if(isset($options["email_limit"])): ?>
+                                <tr id="rl2_email_limit">
+                                    <td><strong><?php echo __("website/account_products/email-limit"); ?></strong></td>
+                                    <td><?php echo $email_limit ? $email_limit." ".__("website/account_products/count") : __("website/account_products/unlimited"); ?></td>
+                                </tr>
+                            <?php endif; ?>
+
+
+                            <?php if(isset($options["database_limit"])): ?>
+                                <tr id="rl2_database_limit">
+                                    <td><strong><?php echo __("website/account_products/database-limit"); ?></strong></td>
+                                    <td><?php echo $database_limit || ($database_limit != '' && $database_limit == 0) ? $database_limit." ".__("website/account_products/count") : __("website/account_products/unlimited"); ?></td>
+                                </tr>
+                            <?php endif; ?>
+
+
+                            <?php if(isset($options["addons_limit"])): ?>
+                                <tr id="rl_addons_limit">
+                                    <td><strong><?php echo __("website/account_products/addons-limit"); ?></strong></td>
+                                    <td><?php echo $addons_limit || ($addons_limit != '' && $addons_limit == 0) ? ((int) $addons_limit)." ".__("website/account_products/count") : __("website/account_products/unlimited"); ?></td>
+                                </tr>
+                            <?php endif; ?>
+
+
+                            <?php if(isset($options["subdomain_limit"])): ?>
+                                <tr id="rl2_subdomain_limit">
+                                    <td><strong><?php echo __("website/account_products/subdomain-limit"); ?></strong></td>
+                                    <td><?php echo $subdomain_limit != '' ? ((int) $subdomain_limit)." ".__("website/account_products/count") : __("website/account_products/unlimited"); ?></td>
+                                </tr>
+                            <?php endif; ?>
+
+
+                            <?php if(isset($options["ftp_limit"])): ?>
+                                <tr id="rl2_ftp_limit">
+                                    <td><strong><?php echo __("website/account_products/ftp-limit"); ?></strong></td>
+                                    <td><?php echo $ftp_limit != '' ? ((int) $ftp_limit)." ".__("website/account_products/count") : __("website/account_products/unlimited"); ?></td>
+                                </tr>
+                            <?php endif; ?>
+
+                            <?php if(isset($options["park_limit"])): ?>
+                                <tr id="rl2_park_limit">
+                                    <td><strong><?php echo __("website/account_products/park-limit"); ?></strong></td>
+                                    <td><?php echo $park_limit || ($park_limit != '' && $park_limit == 0) ? ((int) $park_limit)." ".__("website/account_products/count") : __("website/account_products/unlimited"); ?></td>
+                                </tr>
+                            <?php endif; ?>
+
+
+                            <?php if(isset($options["max_email_per_hour"])): ?>
+                                <tr id="rl2_max_email_per_hour">
+                                    <td><strong><?php echo __("website/account_products/max-email-per-hour"); ?></strong></td>
+                                    <td><?php echo $max_email_per_hour ? $max_email_per_hour." ".__("website/account_products/count") : __("website/account_products/unlimited"); ?></td>
+                                </tr>
+                            <?php endif; ?>
+
+                            <?php if(isset($options["cpu_limit"])): ?>
+                                <tr id="rl2_cpu_limit">
+                                    <td><strong><?php echo __("website/account_products/cpu-limit"); ?></strong></td>
+                                    <td><?php echo $cpu_limit; ?></td>
+                                </tr>
+                            <?php endif; ?>
+
+
+
+                        </table>
+                    </div>
+                    <div class="clear"></div>
                 </div>
-                <div class="clear"></div>
+
+
             </div>
-
-
-        </div>
+        <?php endif; ?>
 
         <?php if($ftp_info || $ftp_raw): ?>
-            <div class="hizmetblok">
+            <div class="hizmetblok" id="ftp_info_wrap">
                 <table width="100%" border="0">
                     <tr>
                         <td bgcolor="#ebebeb" ><strong><?php echo __("website/account_products/ftp-informations"); ?></strong></td>
@@ -911,7 +1127,7 @@
             if(isset($dns["ns1"]) && $dns["ns1"])
             {
                 ?>
-                <div class="hizmetblok">
+                <div class="hizmetblok" id="nameservers">
                     <table width="100%" border="0">
                         <tr>
                             <td bgcolor="#ebebeb" id="nserverinfo"><strong><?php echo __("website/account_products/name-servers"); ?></strong></td>
@@ -962,43 +1178,329 @@
 
     </div>
 
-    <?php if(isset($addons) && $addons): ?>
-        <div id="addons" class="tabcontent">
+    <div id="addons" class="tabcontent">
 
-            <script type="text/javascript">
-                $(document).ready(function(){
+        <script type="text/javascript">
+            $(document).ready(function(){
 
-                    $('#addons_table').DataTable({
-                        "columnDefs": [
-                            {
-                                "targets": [0],
-                                "visible":false,
-                                "searchable": false
-                            },
-                        ],
-                        paging: false,
-                        info:     false,
-                        searching: false,
-                        responsive: true,
-                        "language":{
-                            "url":"<?php echo APP_URI."/".___("package/code")."/datatable/lang.json";?>"
-                        }
-                    });
+                $('#addons_table').DataTable({
+                    "columnDefs": [
+                        {
+                            "targets": [0],
+                            "visible":false,
+                            "searchable": false
+                        },
+                    ],
+                    paging: false,
+                    info:     false,
+                    searching: false,
+                    responsive: true,
+                    "oLanguage":<?php include __DIR__.DS."datatable-lang.php"; ?>
                 });
-            </script>
+            });
+        </script>
 
-            <table width="100%" id="addons_table" class="table table-striped table-borderedx table-condensed nowrap">
-                <thead style="background:#ebebeb;">
-                <tr>
-                    <th align="left">#</th>
-                    <th align="left"><?php echo __("website/account_products/addons-table-addon-info"); ?></th>
-                    <th align="center"><?php echo __("website/account_products/addons-table-date"); ?></th>
-                    <th align="center"><?php echo __("website/account_products/addons-table-amount"); ?></th>
-                    <th align="center"><?php echo __("website/account_products/addons-table-status"); ?></th>
-                </tr>
-                </thead>
-                <tbody align="center" style="border-top:none;">
+
+        <style>
+            .buyaddservice {display:inline-block;width:100%;margin-bottom:30px;}
+            .addservicetitle {font-weight: 600;font-size: 22px;padding:15px 0px;margin-bottom:15px;border-bottom:1px solid #eee;}
+            .buyaddservice .sunucukonfigurasyonu {margin-bottom:0;}
+            .buyaddservice .skonfigside {background: #<?php echo Config::get("theme/color1"); ?>}
+        </style>
+
+
+        <?php
+            if(isset($product_addons) && $product_addons)
+            {
+                ?>
+                <div class="buyaddservice">
+
+                    <h4 class="addservicetitle"><?php echo __("website/account_products/buy-service"); ?></h4>
+
+
+                    <div class="sunucukonfigurasyonu">
+
+                        <form action="<?php echo $links["controller"]; ?>" method="post" id="BuyAddons">
+                            <input type="hidden" name="operation" value="buy_addons_summary">
+
+                            <div class="sungenbil">
+
+
+                                <div class="skonfiginfo">
+                                    <div style="padding:20px;">
+
+
+                                        <table width="100%" border="0">
+
+                                            <?php
+                                                foreach($product_addons AS $addon){
+                                                    $options  = $addon["options"];
+                                                    $properties = $addon["properties"];
+                                                    $compulsory = false;
+                                                    ?>
+                                                    <tr>
+                                                        <td width="50%">
+                                                            <?php if($compulsory): ?>
+                                                                <span class="zorunlu">*</span>
+                                                            <?php endif; ?>
+                                                            <label for="addon-<?php echo $addon["id"]; ?>">
+                                                                <strong>  <?php echo $addon["name"]; ?></strong>
+                                                                <?php if($addon["description"]): ?>
+                                                                    <br>
+                                                                    <span style="font-size: 14px;"><?php echo $addon["description"]; ?></span>
+                                                                <?php endif; ?>
+                                                            </label>
+                                                        </td>
+                                                        <td width="50%">
+                                                            <?php
+                                                                if($addon["type"] == "radio"){
+                                                                    ?>
+                                                                    <?php if(!$compulsory): ?>
+                                                                <input checked id="addon-<?php echo $addon["id"]."-none"; ?>" class="radio-custom" name="addons[<?php echo $addon["id"]; ?>]" value="" type="radio">
+                                                                    <label style="margin-right:30px;" for="addon-<?php echo $addon["id"]."-none"; ?>" class="radio-custom-label"><?php echo ___("needs/idont-want"); ?></label>
+                                                                <br>
+                                                                <?php endif; ?>
+                                                                    <?php
+                                                                foreach ($options AS $k=>$opt){
+                                                                    $amount     = Money::formatter_symbol($opt["amount"],$opt["cid"],!$addon["override_usrcurrency"]);
+                                                                    if(!$opt["amount"]) $amount = ___("needs/free-amount");
+                                                                    $periodic   = View::period($opt["period_time"],$opt["period"]);
+                                                                    $name       = $opt["name"];
+                                                                    $show_name  = $name." <strong>".$amount."</strong>";
+                                                                    if(($opt["amount"] && $opt["period"] == "none") || $opt["amount"])
+                                                                        $show_name .= " | <strong>".$periodic."</strong>";
+                                                                    ?>
+                                                                <input<?php echo $compulsory && $k==0 ? ' checked' : ''; ?> id="addon-<?php echo $addon["id"]."-".$k; ?>" class="radio-custom" name="addons[<?php echo $addon["id"]; ?>]" value="<?php echo $opt["id"]; ?>" type="radio">
+                                                                    <label style="margin-right:30px;" for="addon-<?php echo $addon["id"]."-".$k; ?>" class="radio-custom-label"><?php echo $show_name; ?></label>
+                                                                <br>
+                                                                <?php
+                                                                    }
+                                                                    }
+                                                                    elseif($addon["type"] == "checkbox"){
+                                                                ?>
+                                                                <?php if(!$compulsory): ?>
+                                                                <input checked id="addon-<?php echo $addon["id"]."-none"; ?>" class="checkbox-custom" name="addons[<?php echo $addon["id"]; ?>]" value="" type="radio">
+                                                                    <label style="margin-right:30px;" for="addon-<?php echo $addon["id"]."-none"; ?>" class="checkbox-custom-label"><?php echo ___("needs/idont-want"); ?></label>
+                                                                <br>
+                                                                <?php endif; ?>
+                                                                    <?php
+                                                                foreach ($options AS $k=>$opt){
+                                                                    $amount     = Money::formatter_symbol($opt["amount"],$opt["cid"],!$addon["override_usrcurrency"]);
+                                                                    if(!$opt["amount"]) $amount = ___("needs/free-amount");
+                                                                    $periodic = View::period($opt["period_time"],$opt["period"]);
+                                                                    $name       = $opt["name"];
+                                                                    $show_name  = $name." <strong>".$amount."</strong>";
+                                                                    if(($opt["amount"] && $opt["period"] == "none") || $opt["amount"])
+                                                                        $show_name .= " | <strong>".$periodic."</strong>";
+                                                                    ?>
+                                                                <input<?php echo $compulsory && $k==0 ? ' checked' : ''; ?> id="addon-<?php echo $addon["id"]."-".$k; ?>" class="checkbox-custom" name="addons[<?php echo $addon["id"]; ?>]" value="<?php echo $opt["id"]; ?>" type="radio">
+                                                                    <label style="margin-right:30px;" for="addon-<?php echo $addon["id"]."-".$k; ?>" class="checkbox-custom-label"><?php echo $show_name; ?></label>
+                                                                <br>
+                                                                <?php
+                                                                    }
+                                                                    }
+                                                                    elseif($addon["type"] == "select"){
+                                                                ?>
+                                                                    <select name="addons[<?php echo $addon["id"]; ?>]">
+                                                                        <?php if(!$compulsory): ?>
+                                                                            <option value=""><?php echo ___("needs/idont-want"); ?></option>
+                                                                        <?php endif; ?>
+                                                                        <?php
+                                                                            foreach ($options AS $k=>$opt){
+                                                                                $amount     = Money::formatter_symbol($opt["amount"],$opt["cid"],!$addon["override_usrcurrency"]);
+                                                                                if(!$opt["amount"]) $amount = ___("needs/free-amount");
+                                                                                $periodic = View::period($opt["period_time"],$opt["period"]);
+                                                                                $name       = $opt["name"];
+                                                                                $show_name  = $name." <strong>".$amount."</strong>";
+                                                                                if(($opt["amount"] && $opt["period"] == "none") || $opt["amount"])
+                                                                                    $show_name .= " | <strong>".$periodic."</strong>";
+                                                                                ?>
+                                                                                <option value="<?php echo $opt["id"]; ?>"><?php echo $show_name; ?></option>
+
+                                                                                <?php
+                                                                            }
+                                                                        ?>
+                                                                    </select>
+                                                                <?php
+                                                                    }
+                                                                    elseif($addon["type"] == "quantity"){
+                                                                    $min = isset($properties["min"]) ? $properties["min"] : '0';
+                                                                    $max = isset($properties["max"]) ? $properties["max"] : '0';
+                                                                    $stp = isset($properties["step"]) ? $properties["step"] : '1';
+                                                                    if($min == 0) $min = 1;
+                                                                ?>
+                                                                    <select name="addons[<?php echo $addon["id"]; ?>]" id="addon-<?php echo $addon["id"]; ?>-selection" style="margin-bottom: 5px;">
+                                                                        <?php if(!$compulsory): ?>
+                                                                            <option value=""><?php echo ___("needs/idont-want"); ?></option>
+                                                                        <?php endif; ?>
+                                                                        <?php
+                                                                            foreach ($options AS $k=>$opt){
+                                                                                $amount     = Money::formatter_symbol($opt["amount"],$opt["cid"],!$addon["override_usrcurrency"]);
+                                                                                if(!$opt["amount"]) $amount = ___("needs/free-amount");
+                                                                                $periodic = View::period($opt["period_time"],$opt["period"]);
+                                                                                $name       = $opt["name"];
+                                                                                $show_name  = $name." <strong>".$amount."</strong>";
+                                                                                if(($opt["amount"] && $opt["period"] == "none") || $opt["amount"])
+                                                                                    $show_name .= " | <strong>".$periodic."</strong>";
+                                                                                ?>
+                                                                                <option value="<?php echo $opt["id"]; ?>"><?php echo $show_name; ?></option>
+
+                                                                                <?php
+                                                                            }
+                                                                        ?>
+                                                                    </select>
+                                                                    <script type="text/javascript">
+                                                                        $(document).ready(function(){
+                                                                            $("#addon-<?php echo $addon["id"]; ?>-selection").change(function() {
+                                                                                if( $(this).val() === '') {
+                                                                                    $('#addon-<?php echo $addon["id"]; ?>-slider-content').slideUp(250);
+                                                                                }else{
+                                                                                    $('#addon-<?php echo $addon["id"]; ?>-slider-content').slideDown(250);
+                                                                                }
+                                                                            });
+                                                                            $("#addon-<?php echo $addon["id"]; ?>-slider-value").ionRangeSlider({
+                                                                                min: <?php echo $min; ?>,
+                                                                                max: <?php echo $max; ?>,
+                                                                                from:<?php echo $min; ?>,
+                                                                                step:<?php echo $stp; ?>,
+                                                                                grid: true,
+                                                                                skin: "big",
+                                                                            });
+                                                                        });
+                                                                    </script>
+                                                                    <div id="addon-<?php echo $addon["id"]; ?>-slider-content" style="<?php echo $compulsory ? '' : 'display: none;'; ?>">
+                                                                        <input id="addon-<?php echo $addon["id"]; ?>-slider-value" name="addons_values[<?php echo $addon["id"]; ?>]" type="range" min="<?php echo $min; ?>" max="<?php echo $max; ?>" step="<?php echo $stp; ?>" value="<?php echo $min; ?>">
+
+                                                                    </div>
+                                                                    <?php
+
+                                                                }
+                                                            ?>
+                                                        </td>
+                                                    </tr>
+                                                    <?php
+                                                }
+                                            ?>
+                                        </table>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="sunucusipside">
+                                <div class="skonfigside" style="width: 100%;">
+                                    <div style="padding:20px;">
+                                        <h4><?php echo __("website/osteps/order-summary"); ?></h4>
+                                        <div id="service_amounts">
+
+                                        </div>
+                                        <div class="line"></div>
+                                        <div class="sunucretler">
+                                            <h3><span><?php echo __("website/osteps/total-amount"); ?>: <strong id="total_amount">0</strong></span></h3>
+                                        </div>
+                                    </div>
+                                </div>
+                                <a href="javascript:void 0;" style="cursor: no-drop" class="graybtn gonderbtn" id="BuyAddons_submit_disable"><?php echo __("website/osteps/continue-button"); ?></a>
+                                <a style="display: none;" href="javascript:void 0;" class="gonderbtn" id="BuyAddons_submit"><?php echo __("website/osteps/continue-button"); ?></a>
+                                <div class="clear"></div>
+                            </div>
+
+                        </form>
+
+
+                        <script type="text/javascript">
+                            $(document).ready(function(){
+                                var changes = true;
+                                ReloadOrderSummary();
+
+                                $("#BuyAddons").change(function(){
+                                    changes = true;
+                                });
+                                setInterval(function(){
+                                    if(changes)
+                                    {
+                                        ReloadOrderSummary();
+                                        changes = false;
+                                    }
+                                },500);
+
+                                $("#BuyAddons_submit").click(function(){
+                                    $("#BuyAddons input[name=operation]").val("buy_addons");
+                                    MioAjaxElement(this,{
+                                        waiting_text: "<?php echo __("website/others/button1-pending"); ?>",
+                                        result: "t_form_handle",
+                                    })
+                                });
+
+                            });
+
+                            function ReloadOrderSummary(){
+                                $("#BuyAddons input[name=operation]").val("buy_addons_summary");
+                                var form_data = $("#BuyAddons").serialize();
+                                var request = MioAjax({
+                                    action: "<?php echo $links["controller"]; ?>",
+                                    method: "POST",
+                                    data:form_data
+                                },true,true);
+
+                                request.done(function (result){
+                                    if(result){
+                                        var solve = getJson(result),content='';
+                                        if(solve){
+                                            if(solve.status == "successful"){
+                                                $("#service_amounts").html('');
+                                                if(solve.data != undefined){
+                                                    $(solve.data).each(function(key,item){
+                                                        content = '<span>- ';
+                                                        content += item.name;
+                                                        content += '\t<strong>'+item.amount+'</strong>';
+                                                        content += '</span>';
+                                                        $("#service_amounts").append(content);
+                                                    });
+                                                    $("#BuyAddons_submit").css("display","inline-block");
+                                                    $("#BuyAddons_submit_disable").css("display","none");
+                                                }
+                                                else
+                                                {
+                                                    $("#BuyAddons_submit").css("display","none");
+                                                    $("#BuyAddons_submit_disable").css("display","inline-block");
+                                                }
+
+                                                if(solve.total_amount != undefined)
+                                                    $("#total_amount").html(solve.total_amount);
+                                            }else
+                                                console.log(solve);
+                                        }else console.log(result);
+                                    }else console.log("Result not found");
+                                });
+
+                            }
+                        </script>
+
+                    </div>
+
+
+                </div>
                 <?php
+            }
+        ?>
+
+
+        <h4 class="addservicetitle"><?php echo __("website/account_products/purchased-services"); ?></h4>
+
+        <table width="100%" id="addons_table" class="table table-striped table-borderedx table-condensed nowrap">
+            <thead style="background:#ebebeb;">
+            <tr>
+                <th align="left">#</th>
+                <th align="left"><?php echo __("website/account_products/addons-table-addon-info"); ?></th>
+                <th align="center"><?php echo __("website/account_products/addons-table-date"); ?></th>
+                <th align="center"><?php echo __("website/account_products/addons-table-amount"); ?></th>
+                <th align="center"><?php echo __("website/account_products/addons-table-status"); ?></th>
+            </tr>
+            </thead>
+            <tbody align="center" style="border-top:none;">
+            <?php
+                if(isset($addons) && $addons)
+                {
                     foreach($addons AS $k=>$row){
                         $list_cdatetime     = substr($row["cdate"],0,4)!="1881" ? DateManager::format(Config::get("options/date-format"),$row["cdate"]) : '-';
                         $list_rdatetime     = substr($row["renewaldate"],0,4)!="1881" ? DateManager::format(Config::get("options/date-format"),$row["renewaldate"]) : '-';
@@ -1014,24 +1516,31 @@
                         $amount_period  = "<strong>".$amount."</strong>";
                         if($period) $amount_period.= "<br>".$period."";
 
+                        if(stristr($row["option_name"],'x '))
+                        {
+                            $split = explode("x ",$row["option_name"]);
+                            $row["option_quantity"] = $split[0];
+                            $row["option_name"] = $split[1];
+                        }
+
                         ?>
                         <tr>
                             <td align="left"><?php echo $k; ?></td>
-                            <td align="left"><?php echo $row["addon_name"]."<br>".$row["option_name"]; ?></td>
+                            <td align="left"><?php echo $row["addon_name"]."<br>".($row["option_quantity"] > 0 ? $row["option_quantity"]."x " : '').$row["option_name"]; ?></td>
                             <td align="center"><?php echo $list_rdatetime."<br>".$list_duedatetime; ?></td>
                             <td align="center"><?php echo $amount_period; ?></td>
                             <td align="center"><?php echo $status; ?></td>
                         </tr>
                         <?php
                     }
-                ?>
-                </tbody>
-            </table>
+                }
+            ?>
+            </tbody>
+        </table>
 
 
 
-        </div>
-    <?php endif; ?>
+    </div>
 
     <?php if(isset($requirements) && $requirements): ?>
         <div id="requirements" class="tabcontent">
@@ -1083,7 +1592,7 @@
                 <div class="green-info" style="margin-bottom:25px;">
                     <div class="padding20">
                         <i class="ion-speedometer" aria-hidden="true"></i>
-                        <?php echo __("website/account_products/hosting-upgrade-info"); ?>
+                        <p><?php echo __("website/account_products/hosting-upgrade-info"); ?></p>
                     </div>
                 </div>
 
@@ -1132,7 +1641,7 @@
                             <div align="center">
                                 <span id="upgradeConfirm_text"></span>
 
-                                <div class="clear"></div>
+                                <div class="clear"></div><div class="line"></div>
 
                                 <a style="float:none" href="javascript:void(0);" id="upgradeConfirm_ok" class="gonderbtn yesilbtn"><i class="fa fa-check"></i> <?php echo ___("needs/iconfirm"); ?></a>
 
@@ -1633,6 +2142,7 @@
                         </div>
                     </div>
                     <span style="    font-size: 14px;    margin: 15px 0px;    float: left;"><?php echo __("website/account_products/hosting-change-password-warning"); ?></span>
+                    <div class="clear"></div><div class="line"></div>
                     <a href="javascript:void(0);" class="yesilbtn gonderbtn mio-ajax-submit" mio-ajax-options='{"result":"HostingChangePassword_submit","waiting_text":"<?php echo addslashes(__("website/others/button5-pending")); ?>"}'><?php echo __("website/account_products/hosting-change-password-button"); ?></a>
                     <div class="clear"></div>
                 </form>
@@ -1866,7 +2376,7 @@
                         <p><?php echo __("website/account_products/canceled-desc"); ?></p>
                     </div>
                 </div>
-                <form action="<?php echo $links["controller"]; ?>" method="post" id="CanceledProduct">
+                <form action="<?php echo $links["controller"]; ?>" method="post" id="CanceledProduct" style="<?php echo isset($p_cancellation) && $p_cancellation ? 'display:none;' : ''; ?>">
                     <input type="hidden" name="operation" value="canceled_product">
 
                     <textarea name="reason" cols="" rows="3" placeholder="<?php echo __("website/account_products/canceled-reason"); ?>"></textarea>
@@ -1878,11 +2388,8 @@
                     <div class="clear"></div>
                 </form>
                 <div id="CanceledProduct_success" style="display: none;">
-                    <div style="margin-top:30px;margin-bottom:70px;text-align:center;">
-                        <i style="font-size:80px;" class="fa fa-check"></i>
-                        <h4><?php echo __("website/account_products/canceled-sent"); ?></h4>
-                        <br>
-                    </div>
+                    <i class="fa fa-check-circle-o" aria-hidden="true"></i>
+                    <h4><?php echo __("website/account_products/canceled-sent"); ?></h4>
                 </div>
                 <script type="text/javascript">
                     function CanceledProduct_submit(result) {
@@ -1910,6 +2417,57 @@
                         }
                     }
                 </script>
+
+                <?php
+                    if(isset($p_cancellation) && $p_cancellation)
+                    {
+                        $p_cancellation["data"] = Utility::jdecode($p_cancellation["data"],true);
+                        ?>
+                        <div style="margin-top:30px;margin-bottom:70px;text-align:center;">
+                            <i class="fa fa-info-circle" aria-hidden="true" style="font-size: 54px;margin-bottom: 15px;"></i>
+                            <h4 style="margin-bottom: 15px;"><strong><?php echo __("admin/events/cancelled-product-request"); ?></strong></h4>
+                            <div class="line"></div>
+                            <h5><strong><?php echo __("admin/orders/modal-reason-message"); ?></strong><br><?php echo $p_cancellation["data"]["reason"]; ?></h5>
+                            <div class="line"></div>
+                            <h5><strong><?php echo __("admin/tools/reminders-creation-date"); ?></strong><br><?php echo DateManager::format(Config::get("options/date-format")." - H:i",$p_cancellation["cdate"]); ?></h5>
+                            <?php
+                                if($p_cancellation["status"] != "approved")
+                                {
+                                    ?>
+                                    <a class="green lbtn" onclick="remove_cancelled_product(this);" href="javascript:void 0;" style="margin-top: 25px;"><?php echo __("website/account_products/remove-cancellation-request"); ?></a>
+                                    <script type="text/javascript">
+                                        function remove_cancelled_product(el){
+                                            var request = MioAjax({
+                                                button_element:el,
+                                                waiting_text:"<?php echo addslashes(__("website/others/button1-pending")); ?>",
+                                                action: "<?php echo $links["controller"]; ?>",
+                                                method: "POST",
+                                                data:{operation:"remove_cancelled_product"}
+                                            },true,true);
+                                            request.done(function(result){
+                                                if(result !== ''){
+                                                    var solve = getJson(result);
+                                                    if(solve !== false)
+                                                    {
+                                                        if(solve.status === "error")
+                                                            alert_error(solve.message,{timer:3000});
+                                                        else if(solve.status === "successful")
+                                                            window.location.href = location.href;
+                                                    }
+                                                }
+                                                else console.log(result);
+                                            });
+                                        }
+                                    </script>
+                                    <?php
+                                }
+                            ?>
+                        </div>
+                        <?php
+                    }
+                ?>
+
+
             </div>
         </div>
     <?php endif; ?>

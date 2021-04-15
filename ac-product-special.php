@@ -3,7 +3,7 @@
     $proanse_amount = $amount;
 
     include $tpath."common-needs.php";
-    $hoptions = ["datatables","jquery-ui"];
+    $hoptions = ["datatables","jquery-ui","select2","ion.rangeSlider"];
 
     if(isset($module) && $module && isset($proanse["hide_module_details"]) && $proanse["hide_module_details"]) $module = false;
 
@@ -57,15 +57,21 @@
         <script type="text/javascript">
             function run_transaction(btn_k,btn_el,post_fields){
                 var data1   = {action: "use_method",method:btn_k};
-                var data2   = $(btn_el).data("fields");
+                var data2   = $(btn_el).attr("data-fields");
+
+                if(typeof data2 == "undefined") data2 = {};
                 if(typeof data2 !== 'object' && data2 !== undefined && data2.length > 0) data2 = getJson(data2);
                 if(typeof data2 !== 'object' || data2 === undefined || data2 === false) data2 = {};
                 var data3   = post_fields === undefined || post_fields === false ? {} : post_fields;
-                var _data   = Object.assign(data1,...data2,...data3);
+                let _data   = Object.assign(data1,data2,data3);
+
+                var icon_w  = false;
+
+                if(btn_el !== undefined && $("i",btn_el).length > 0) icon_w = true;
 
                 var request = MioAjax({
                     button_element:btn_el,
-                    waiting_text: '<?php echo __("website/others/button1-pending"); ?>',
+                    waiting_text: icon_w ? '<?php echo __("website/others/button2-pending"); ?>' : '<?php echo __("website/others/button1-pending"); ?>',
                     action:"<?php echo $links["controller"]; ?>",
                     method:"POST",
                     data:_data,
@@ -113,6 +119,7 @@
                         else if(solve.redirect !== undefined){
                             window.location.href = solve.redirect;
                         }
+                        if(solve.javascript_code) eval(solve.javascript_code);
                     }else
                         console.log(result);
                 }
@@ -137,9 +144,7 @@
     <ul class="tab">
         <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(this, 'ozet')" data-tab="1"><i class="fa fa-info" aria-hidden="true"></i> <?php echo __("website/account_products/detail"); ?></a></li>
 
-        <?php if(isset($addons) && $addons): ?>
-            <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(this, 'addons')" data-tab="addons"><i class="fa fa-rocket" aria-hidden="true"></i> <?php echo __("website/account_products/tab-addons"); ?></a></li>
-        <?php endif; ?>
+        <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(this, 'addons')" data-tab="addons"><i class="fa fa-rocket" aria-hidden="true"></i> <?php echo __("website/account_products/tab-addons"); ?></a></li>
 
         <?php if(isset($requirements) && $requirements): ?>
             <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(this, 'requirements')" data-tab="requirements"><i class="fa fa-check-square" aria-hidden="true"></i> <?php echo __("website/account_products/tab-requirements"); ?></a></li>
@@ -390,43 +395,329 @@
 
     </div>
 
-    <?php if(isset($addons) && $addons): ?>
-        <div id="addons" class="tabcontent">
+    <div id="addons" class="tabcontent">
 
-            <script type="text/javascript">
-                $(document).ready(function(){
+        <script type="text/javascript">
+            $(document).ready(function(){
 
-                    $('#addons_table').DataTable({
-                        "columnDefs": [
-                            {
-                                "targets": [0],
-                                "visible":false,
-                                "searchable": false
-                            },
-                        ],
-                        paging: false,
-                        info:     false,
-                        searching: false,
-                        responsive: true,
-                        "language":{
-                            "url":"<?php echo APP_URI."/".___("package/code")."/datatable/lang.json";?>"
-                        }
-                    });
+                $('#addons_table').DataTable({
+                    "columnDefs": [
+                        {
+                            "targets": [0],
+                            "visible":false,
+                            "searchable": false
+                        },
+                    ],
+                    paging: false,
+                    info:     false,
+                    searching: false,
+                    responsive: true,
+                    "oLanguage":<?php include __DIR__.DS."datatable-lang.php"; ?>
                 });
-            </script>
+            });
+        </script>
 
-            <table width="100%" id="addons_table" class="table table-striped table-borderedx table-condensed nowrap">
-                <thead style="background:#ebebeb;">
-                <tr>
-                    <th align="left">#</th>
-                    <th align="left"><?php echo __("website/account_products/addons-table-addon-info"); ?></th>
-                    <th align="center"><?php echo __("website/account_products/addons-table-date"); ?></th>
-                    <th align="center"><?php echo __("website/account_products/addons-table-amount"); ?></th>
-                    <th align="center"><?php echo __("website/account_products/addons-table-status"); ?></th>
-                </tr>
-                </thead>
-                <tbody align="center" style="border-top:none;">
+
+        <style>
+            .buyaddservice {display:inline-block;width:100%;margin-bottom:30px;}
+            .addservicetitle {font-weight: 600;font-size: 22px;padding:15px 0px;margin-bottom:15px;border-bottom:1px solid #eee;}
+            .buyaddservice .sunucukonfigurasyonu {margin-bottom:0;}
+            .buyaddservice .skonfigside {background: #<?php echo Config::get("theme/color1"); ?>}
+        </style>
+
+
+        <?php
+            if(isset($product_addons) && $product_addons)
+            {
+                ?>
+                <div class="buyaddservice">
+
+                    <h4 class="addservicetitle"><?php echo __("website/account_products/buy-service"); ?></h4>
+
+
+                    <div class="sunucukonfigurasyonu">
+
+                        <form action="<?php echo $links["controller"]; ?>" method="post" id="BuyAddons">
+                            <input type="hidden" name="operation" value="buy_addons_summary">
+
+                            <div class="sungenbil">
+
+
+                                <div class="skonfiginfo">
+                                    <div style="padding:20px;">
+
+
+                                        <table width="100%" border="0">
+
+                                            <?php
+                                                foreach($product_addons AS $addon){
+                                                    $options  = $addon["options"];
+                                                    $properties = $addon["properties"];
+                                                    $compulsory = false;
+                                                    ?>
+                                                    <tr>
+                                                        <td width="50%">
+                                                            <?php if($compulsory): ?>
+                                                                <span class="zorunlu">*</span>
+                                                            <?php endif; ?>
+                                                            <label for="addon-<?php echo $addon["id"]; ?>">
+                                                                <strong>  <?php echo $addon["name"]; ?></strong>
+                                                                <?php if($addon["description"]): ?>
+                                                                    <br>
+                                                                    <span style="font-size: 14px;"><?php echo $addon["description"]; ?></span>
+                                                                <?php endif; ?>
+                                                            </label>
+                                                        </td>
+                                                        <td width="50%">
+                                                            <?php
+                                                                if($addon["type"] == "radio"){
+                                                                    ?>
+                                                                    <?php if(!$compulsory): ?>
+                                                                <input checked id="addon-<?php echo $addon["id"]."-none"; ?>" class="radio-custom" name="addons[<?php echo $addon["id"]; ?>]" value="" type="radio">
+                                                                    <label style="margin-right:30px;" for="addon-<?php echo $addon["id"]."-none"; ?>" class="radio-custom-label"><?php echo ___("needs/idont-want"); ?></label>
+                                                                <br>
+                                                                <?php endif; ?>
+                                                                    <?php
+                                                                foreach ($options AS $k=>$opt){
+                                                                    $amount     = Money::formatter_symbol($opt["amount"],$opt["cid"],!$addon["override_usrcurrency"]);
+                                                                    if(!$opt["amount"]) $amount = ___("needs/free-amount");
+                                                                    $periodic   = View::period($opt["period_time"],$opt["period"]);
+                                                                    $name       = $opt["name"];
+                                                                    $show_name  = $name." <strong>".$amount."</strong>";
+                                                                    if(($opt["amount"] && $opt["period"] == "none") || $opt["amount"])
+                                                                        $show_name .= " | <strong>".$periodic."</strong>";
+                                                                    ?>
+                                                                <input<?php echo $compulsory && $k==0 ? ' checked' : ''; ?> id="addon-<?php echo $addon["id"]."-".$k; ?>" class="radio-custom" name="addons[<?php echo $addon["id"]; ?>]" value="<?php echo $opt["id"]; ?>" type="radio">
+                                                                    <label style="margin-right:30px;" for="addon-<?php echo $addon["id"]."-".$k; ?>" class="radio-custom-label"><?php echo $show_name; ?></label>
+                                                                <br>
+                                                                <?php
+                                                                    }
+                                                                    }
+                                                                    elseif($addon["type"] == "checkbox"){
+                                                                ?>
+                                                                <?php if(!$compulsory): ?>
+                                                                <input checked id="addon-<?php echo $addon["id"]."-none"; ?>" class="checkbox-custom" name="addons[<?php echo $addon["id"]; ?>]" value="" type="radio">
+                                                                    <label style="margin-right:30px;" for="addon-<?php echo $addon["id"]."-none"; ?>" class="checkbox-custom-label"><?php echo ___("needs/idont-want"); ?></label>
+                                                                <br>
+                                                                <?php endif; ?>
+                                                                    <?php
+                                                                foreach ($options AS $k=>$opt){
+                                                                    $amount     = Money::formatter_symbol($opt["amount"],$opt["cid"],!$addon["override_usrcurrency"]);
+                                                                    if(!$opt["amount"]) $amount = ___("needs/free-amount");
+                                                                    $periodic = View::period($opt["period_time"],$opt["period"]);
+                                                                    $name       = $opt["name"];
+                                                                    $show_name  = $name." <strong>".$amount."</strong>";
+                                                                    if(($opt["amount"] && $opt["period"] == "none") || $opt["amount"])
+                                                                        $show_name .= " | <strong>".$periodic."</strong>";
+                                                                    ?>
+                                                                <input<?php echo $compulsory && $k==0 ? ' checked' : ''; ?> id="addon-<?php echo $addon["id"]."-".$k; ?>" class="checkbox-custom" name="addons[<?php echo $addon["id"]; ?>]" value="<?php echo $opt["id"]; ?>" type="radio">
+                                                                    <label style="margin-right:30px;" for="addon-<?php echo $addon["id"]."-".$k; ?>" class="checkbox-custom-label"><?php echo $show_name; ?></label>
+                                                                <br>
+                                                                <?php
+                                                                    }
+                                                                    }
+                                                                    elseif($addon["type"] == "select"){
+                                                                ?>
+                                                                    <select name="addons[<?php echo $addon["id"]; ?>]">
+                                                                        <?php if(!$compulsory): ?>
+                                                                            <option value=""><?php echo ___("needs/idont-want"); ?></option>
+                                                                        <?php endif; ?>
+                                                                        <?php
+                                                                            foreach ($options AS $k=>$opt){
+                                                                                $amount     = Money::formatter_symbol($opt["amount"],$opt["cid"],!$addon["override_usrcurrency"]);
+                                                                                if(!$opt["amount"]) $amount = ___("needs/free-amount");
+                                                                                $periodic = View::period($opt["period_time"],$opt["period"]);
+                                                                                $name       = $opt["name"];
+                                                                                $show_name  = $name." <strong>".$amount."</strong>";
+                                                                                if(($opt["amount"] && $opt["period"] == "none") || $opt["amount"])
+                                                                                    $show_name .= " | <strong>".$periodic."</strong>";
+                                                                                ?>
+                                                                                <option value="<?php echo $opt["id"]; ?>"><?php echo $show_name; ?></option>
+
+                                                                                <?php
+                                                                            }
+                                                                        ?>
+                                                                    </select>
+                                                                <?php
+                                                                    }
+                                                                    elseif($addon["type"] == "quantity"){
+                                                                    $min = isset($properties["min"]) ? $properties["min"] : '0';
+                                                                    $max = isset($properties["max"]) ? $properties["max"] : '0';
+                                                                    $stp = isset($properties["step"]) ? $properties["step"] : '1';
+                                                                    if($min == 0) $min = 1;
+                                                                ?>
+                                                                    <select name="addons[<?php echo $addon["id"]; ?>]" id="addon-<?php echo $addon["id"]; ?>-selection" style="margin-bottom: 5px;">
+                                                                        <?php if(!$compulsory): ?>
+                                                                            <option value=""><?php echo ___("needs/idont-want"); ?></option>
+                                                                        <?php endif; ?>
+                                                                        <?php
+                                                                            foreach ($options AS $k=>$opt){
+                                                                                $amount     = Money::formatter_symbol($opt["amount"],$opt["cid"],!$addon["override_usrcurrency"]);
+                                                                                if(!$opt["amount"]) $amount = ___("needs/free-amount");
+                                                                                $periodic = View::period($opt["period_time"],$opt["period"]);
+                                                                                $name       = $opt["name"];
+                                                                                $show_name  = $name." <strong>".$amount."</strong>";
+                                                                                if(($opt["amount"] && $opt["period"] == "none") || $opt["amount"])
+                                                                                    $show_name .= " | <strong>".$periodic."</strong>";
+                                                                                ?>
+                                                                                <option value="<?php echo $opt["id"]; ?>"><?php echo $show_name; ?></option>
+
+                                                                                <?php
+                                                                            }
+                                                                        ?>
+                                                                    </select>
+                                                                    <script type="text/javascript">
+                                                                        $(document).ready(function(){
+                                                                            $("#addon-<?php echo $addon["id"]; ?>-selection").change(function() {
+                                                                                if( $(this).val() === '') {
+                                                                                    $('#addon-<?php echo $addon["id"]; ?>-slider-content').slideUp(250);
+                                                                                }else{
+                                                                                    $('#addon-<?php echo $addon["id"]; ?>-slider-content').slideDown(250);
+                                                                                }
+                                                                            });
+                                                                            $("#addon-<?php echo $addon["id"]; ?>-slider-value").ionRangeSlider({
+                                                                                min: <?php echo $min; ?>,
+                                                                                max: <?php echo $max; ?>,
+                                                                                from:<?php echo $min; ?>,
+                                                                                step:<?php echo $stp; ?>,
+                                                                                grid: true,
+                                                                                skin: "big",
+                                                                            });
+                                                                        });
+                                                                    </script>
+                                                                    <div id="addon-<?php echo $addon["id"]; ?>-slider-content" style="<?php echo $compulsory ? '' : 'display: none;'; ?>">
+                                                                        <input id="addon-<?php echo $addon["id"]; ?>-slider-value" name="addons_values[<?php echo $addon["id"]; ?>]" type="range" min="<?php echo $min; ?>" max="<?php echo $max; ?>" step="<?php echo $stp; ?>" value="<?php echo $min; ?>">
+
+                                                                    </div>
+                                                                    <?php
+
+                                                                }
+                                                            ?>
+                                                        </td>
+                                                    </tr>
+                                                    <?php
+                                                }
+                                            ?>
+                                        </table>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="sunucusipside">
+                                <div class="skonfigside" style="width: 100%;">
+                                    <div style="padding:20px;">
+                                        <h4><?php echo __("website/osteps/order-summary"); ?></h4>
+                                        <div id="service_amounts">
+
+                                        </div>
+                                        <div class="line"></div>
+                                        <div class="sunucretler">
+                                            <h3><span><?php echo __("website/osteps/total-amount"); ?>: <strong id="total_amount">0</strong></span></h3>
+                                        </div>
+                                    </div>
+                                </div>
+                                <a href="javascript:void 0;" style="cursor: no-drop" class="graybtn gonderbtn" id="BuyAddons_submit_disable"><?php echo __("website/osteps/continue-button"); ?></a>
+                                <a style="display: none;" href="javascript:void 0;" class="gonderbtn" id="BuyAddons_submit"><?php echo __("website/osteps/continue-button"); ?></a>
+                                <div class="clear"></div>
+                            </div>
+
+                        </form>
+
+
+                        <script type="text/javascript">
+                            $(document).ready(function(){
+                                var changes = true;
+                                ReloadOrderSummary();
+
+                                $("#BuyAddons").change(function(){
+                                    changes = true;
+                                });
+                                setInterval(function(){
+                                    if(changes)
+                                    {
+                                        ReloadOrderSummary();
+                                        changes = false;
+                                    }
+                                },500);
+
+                                $("#BuyAddons_submit").click(function(){
+                                    $("#BuyAddons input[name=operation]").val("buy_addons");
+                                    MioAjaxElement(this,{
+                                        waiting_text: "<?php echo __("website/others/button1-pending"); ?>",
+                                        result: "t_form_handle",
+                                    })
+                                });
+
+                            });
+
+                            function ReloadOrderSummary(){
+                                $("#BuyAddons input[name=operation]").val("buy_addons_summary");
+                                var form_data = $("#BuyAddons").serialize();
+                                var request = MioAjax({
+                                    action: "<?php echo $links["controller"]; ?>",
+                                    method: "POST",
+                                    data:form_data
+                                },true,true);
+
+                                request.done(function (result){
+                                    if(result){
+                                        var solve = getJson(result),content='';
+                                        if(solve){
+                                            if(solve.status == "successful"){
+                                                $("#service_amounts").html('');
+                                                if(solve.data != undefined){
+                                                    $(solve.data).each(function(key,item){
+                                                        content = '<span>- ';
+                                                        content += item.name;
+                                                        content += '\t<strong>'+item.amount+'</strong>';
+                                                        content += '</span>';
+                                                        $("#service_amounts").append(content);
+                                                    });
+                                                    $("#BuyAddons_submit").css("display","inline-block");
+                                                    $("#BuyAddons_submit_disable").css("display","none");
+                                                }
+                                                else
+                                                {
+                                                    $("#BuyAddons_submit").css("display","none");
+                                                    $("#BuyAddons_submit_disable").css("display","inline-block");
+                                                }
+
+                                                if(solve.total_amount != undefined)
+                                                    $("#total_amount").html(solve.total_amount);
+                                            }else
+                                                console.log(solve);
+                                        }else console.log(result);
+                                    }else console.log("Result not found");
+                                });
+
+                            }
+                        </script>
+
+                    </div>
+
+
+                </div>
                 <?php
+            }
+        ?>
+
+
+        <h4 class="addservicetitle"><?php echo __("website/account_products/purchased-services"); ?></h4>
+
+        <table width="100%" id="addons_table" class="table table-striped table-borderedx table-condensed nowrap">
+            <thead style="background:#ebebeb;">
+            <tr>
+                <th align="left">#</th>
+                <th align="left"><?php echo __("website/account_products/addons-table-addon-info"); ?></th>
+                <th align="center"><?php echo __("website/account_products/addons-table-date"); ?></th>
+                <th align="center"><?php echo __("website/account_products/addons-table-amount"); ?></th>
+                <th align="center"><?php echo __("website/account_products/addons-table-status"); ?></th>
+            </tr>
+            </thead>
+            <tbody align="center" style="border-top:none;">
+            <?php
+                if(isset($addons) && $addons)
+                {
                     foreach($addons AS $k=>$row){
                         $list_cdatetime     = substr($row["cdate"],0,4)!="1881" ? DateManager::format(Config::get("options/date-format"),$row["cdate"]) : '-';
                         $list_rdatetime     = substr($row["renewaldate"],0,4)!="1881" ? DateManager::format(Config::get("options/date-format"),$row["renewaldate"]) : '-';
@@ -442,24 +733,31 @@
                         $amount_period  = "<strong>".$amount."</strong>";
                         if($period) $amount_period.= "<br>".$period."";
 
+                        if(stristr($row["option_name"],'x '))
+                        {
+                            $split = explode("x ",$row["option_name"]);
+                            $row["option_quantity"] = $split[0];
+                            $row["option_name"] = $split[1];
+                        }
+
                         ?>
                         <tr>
                             <td align="left"><?php echo $k; ?></td>
-                            <td align="left"><?php echo $row["addon_name"]."<br>".$row["option_name"]; ?></td>
+                            <td align="left"><?php echo $row["addon_name"]."<br>".($row["option_quantity"] > 0 ? $row["option_quantity"]."x " : '').$row["option_name"]; ?></td>
                             <td align="center"><?php echo $list_rdatetime."<br>".$list_duedatetime; ?></td>
                             <td align="center"><?php echo $amount_period; ?></td>
                             <td align="center"><?php echo $status; ?></td>
                         </tr>
                         <?php
                     }
-                ?>
-                </tbody>
-            </table>
+                }
+            ?>
+            </tbody>
+        </table>
 
 
 
-        </div>
-    <?php endif; ?>
+    </div>
 
     <?php if(isset($requirements) && $requirements): ?>
         <div id="requirements" class="tabcontent">
@@ -563,7 +861,7 @@
                             <div align="center">
                                 <span id="upgradeConfirm_text"></span>
 
-                                <div class="clear"></div>
+                                <div class="clear"></div><div class="line"></div>
 
                                 <a style="float:none" href="javascript:void(0);" id="upgradeConfirm_ok" class="gonderbtn yesilbtn"><i class="fa fa-check"></i> <?php echo ___("needs/iconfirm"); ?></a>
                                 <div class="clear"></div>
@@ -953,7 +1251,7 @@
                         <p><?php echo __("website/account_products/canceled-desc"); ?></p>
                     </div>
                 </div>
-                <form action="<?php echo $links["controller"]; ?>" method="post" id="CanceledProduct">
+                <form action="<?php echo $links["controller"]; ?>" method="post" id="CanceledProduct" style="<?php echo isset($p_cancellation) && $p_cancellation ? 'display:none;' : ''; ?>">
                     <input type="hidden" name="operation" value="canceled_product">
 
                     <textarea name="reason" cols="" rows="3" placeholder="<?php echo __("website/account_products/canceled-reason"); ?>"></textarea>
@@ -965,11 +1263,8 @@
                     <div class="clear"></div>
                 </form>
                 <div id="CanceledProduct_success" style="display: none;">
-                    <div style="margin-top:30px;margin-bottom:70px;text-align:center;">
-                        <i style="font-size:70px;" class="fa fa-check"></i>
-                        <h5><?php echo __("website/account_products/canceled-sent"); ?></h5>
-                        <br>
-                    </div>
+                    <i class="fa fa-check-circle-o" aria-hidden="true"></i>
+                    <h4><?php echo __("website/account_products/canceled-sent"); ?></h4>
                 </div>
                 <script type="text/javascript">
                     function CanceledProduct_submit(result) {
@@ -997,6 +1292,57 @@
                         }
                     }
                 </script>
+
+                <?php
+                    if(isset($p_cancellation) && $p_cancellation)
+                    {
+                        $p_cancellation["data"] = Utility::jdecode($p_cancellation["data"],true);
+                        ?>
+                        <div style="margin-top:30px;margin-bottom:70px;text-align:center;">
+                            <i class="fa fa-info-circle" aria-hidden="true" style="font-size: 54px;margin-bottom: 15px;"></i>
+                            <h4 style="margin-bottom: 15px;"><strong><?php echo __("admin/events/cancelled-product-request"); ?></strong></h4>
+                            <div class="line"></div>
+                            <h5><strong><?php echo __("admin/orders/modal-reason-message"); ?></strong><br><?php echo $p_cancellation["data"]["reason"]; ?></h5>
+                            <div class="line"></div>
+                            <h5><strong><?php echo __("admin/tools/reminders-creation-date"); ?></strong><br><?php echo DateManager::format(Config::get("options/date-format")." - H:i",$p_cancellation["cdate"]); ?></h5>
+                            <?php
+                                if($p_cancellation["status"] != "approved")
+                                {
+                                    ?>
+                                    <a class="green lbtn" onclick="remove_cancelled_product(this);" href="javascript:void 0;" style="margin-top: 25px;"><?php echo __("website/account_products/remove-cancellation-request"); ?></a>
+                                    <script type="text/javascript">
+                                        function remove_cancelled_product(el){
+                                            var request = MioAjax({
+                                                button_element:el,
+                                                waiting_text:"<?php echo addslashes(__("website/others/button1-pending")); ?>",
+                                                action: "<?php echo $links["controller"]; ?>",
+                                                method: "POST",
+                                                data:{operation:"remove_cancelled_product"}
+                                            },true,true);
+                                            request.done(function(result){
+                                                if(result !== ''){
+                                                    var solve = getJson(result);
+                                                    if(solve !== false)
+                                                    {
+                                                        if(solve.status === "error")
+                                                            alert_error(solve.message,{timer:3000});
+                                                        else if(solve.status === "successful")
+                                                            window.location.href = location.href;
+                                                    }
+                                                }
+                                                else console.log(result);
+                                            });
+                                        }
+                                    </script>
+                                    <?php
+                                }
+                            ?>
+                        </div>
+                        <?php
+                    }
+                ?>
+
+
             </div>
         </div>
     <?php endif; ?>

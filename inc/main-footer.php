@@ -89,7 +89,7 @@
         <div class="footinfos footcopyright">
             <img class="footlogo" src="<?php echo $footer_logo_link;?>" width="245" height="auto" alt="logo" title="logo">
             <div class="clear"></div>
-            <span><?php echo __("website/index/footer-copyright"); ?></span>
+            <span><?php echo __("website/index/footer-copyright",['2019' => DateManager::Now("Y")]); ?></span>
             <div class="clear"></div>
 
             <h4><?php echo isset($eaddresses[0]) ? $eaddresses[0] : ''; ?></h4>

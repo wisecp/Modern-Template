@@ -49,7 +49,7 @@
         if(!$editable["gsm"] && User::ActionCount($udata["id"],"alteration","changed-gsm-number")) $gsm_disabled = true;
     }
 
-    $hoptions = ["jquery-ui",'jquery-mask'];
+    $hoptions = ["jquery-ui",'jquery-mask','voucher_codes'];
 
 ?>
 <link rel="stylesheet" href="<?php echo $sadress;?>assets/plugins/phone-cc/css/intlTelInput.css">
@@ -59,6 +59,18 @@
     var telInput;
     var countryCode;
     $(document).ready(function(){
+
+        $("#password_primary,#password_again").bind('paste keypress keyup keydown change',function(){
+            var pw1 = $("#password_primary").val();
+            var pw2 = $("#password_again").val();
+
+            var level = checkStrength(pw1);
+
+            if(pw1 !== pw2) level = 'weak';
+
+            $('.level-block').css("display","none");
+            $("#"+level).css("display","block");
+        });
 
         telInput = $("#gsm");
 
@@ -140,12 +152,12 @@
         $("input[name='kind']").trigger("change");
 
         <?php
-            if(isset($requiredFields) && $requiredFields){
+        if(isset($requiredFields) && $requiredFields){
 
-            }
-            elseif($remainingVerifications["force"] > 0){
-                ?>$('.tablinks[data-k=verification]').click();<?php
-            }
+        }
+        elseif($remainingVerifications["force"] > 0){
+        ?>$('.tablinks[data-k=verification]').click();<?php
+        }
         ?>
 
     });
@@ -468,14 +480,10 @@
                     ?>
                     <div class="red-info">
                         <div class="padding15">
-                            <i class="fa fa-info-circle" aria-hidden="true" style="    font-size: 92px;
-    float: left;
-    margin-right: 30px;
-    margin-left: 20px;
-    margin-top: 5px;"></i>
-                            <div class="required-field-info">
+                            <i class="fa fa-info-circle" aria-hidden="true"></i>
+                            <div class="">
                                 <h5><strong><?php echo __("website/account_info/required-field-title"); ?></strong></h5>
-                                <p><?php echo __("website/account_info/required-field"); ?></p>
+                                <p style="margin:10px 0px;"><?php echo __("website/account_info/required-field"); ?></p>
                                 <?php
                                     foreach($requiredFields AS $key => $name){
                                         if(strstr($key,"field_"))
@@ -488,7 +496,7 @@
                                             $id= "#empty";
 
                                         ?>
-                                        <div><strong>- <?php echo $name; ?></strong></div>
+                                        <p><strong>- <?php echo $name; ?></strong></p>
 
                                         <script type="text/javascript">
                                             $(document).ready(function(){
@@ -639,20 +647,20 @@
 
                             <?php if(Config::get("options/sign/up/kind/corporate/company_tax_number")): ?>
                                 <div class="hesapbilgisi corporate-info">
-                                <div class="yuzde25"><div class="hesapbilgititle"><?php echo __("website/sign/up-form-ctaxno"); ?></div></div>
-                                <div class="yuzde75">
-                                    <input id="company_tax_number" name="company_tax_number" type="text" placeholder="<?php echo __("website/sign/up-form-ctaxno"); ?>" value="<?php echo (isset($udata["company_tax_number"])) ? $udata["company_tax_number"] : NULL; ?>">
+                                    <div class="yuzde25"><div class="hesapbilgititle"><?php echo __("website/sign/up-form-ctaxno"); ?></div></div>
+                                    <div class="yuzde75">
+                                        <input id="company_tax_number" name="company_tax_number" type="text" placeholder="<?php echo __("website/sign/up-form-ctaxno"); ?>" value="<?php echo (isset($udata["company_tax_number"])) ? $udata["company_tax_number"] : NULL; ?>">
+                                    </div>
                                 </div>
-                            </div>
                             <?php endif; ?>
 
                             <?php if(Config::get("options/sign/up/kind/corporate/company_tax_office")): ?>
                                 <div class="hesapbilgisi corporate-info">
-                                <div class="yuzde25"><div class="hesapbilgititle"><?php echo __("website/sign/up-form-ctaxoff"); ?></div></div>
-                                <div class="yuzde75">
-                                    <input id="company_tax_office" name="company_tax_office" type="text" placeholder="<?php echo __("website/sign/up-form-ctaxoff"); ?>" value="<?php echo (isset($udata["company_tax_office"])) ? $udata["company_tax_office"] : NULL; ?>">
+                                    <div class="yuzde25"><div class="hesapbilgititle"><?php echo __("website/sign/up-form-ctaxoff"); ?></div></div>
+                                    <div class="yuzde75">
+                                        <input id="company_tax_office" name="company_tax_office" type="text" placeholder="<?php echo __("website/sign/up-form-ctaxoff"); ?>" value="<?php echo (isset($udata["company_tax_office"])) ? $udata["company_tax_office"] : NULL; ?>">
+                                    </div>
                                 </div>
-                            </div>
                             <?php endif; ?>
                         <?php endif; ?>
                         <?php
@@ -756,6 +764,7 @@
 
 
                     <div class="clear"></div>
+                    <div class="line"></div>
 
                     <a href="javascript:void(0);" class="yesilbtn gonderbtn mio-ajax-submit" mio-ajax-options='{"result":"ModifyAccount_submit","waiting_text":"<?php echo addslashes(__("website/others/button1-pending")); ?>"}'><?php echo __("website/account_info/update-button"); ?></a>
 
@@ -953,7 +962,7 @@
                     </div>
                 </div>
 
-                <br><br>
+                <div class="clear"></div>
                 <a href="javascript:void(0);" class="yesilbtn gonderbtn mio-ajax-submit" mio-ajax-options='{"waiting_text":"<?php echo addslashes(__("website/others/button1-pending")); ?>","result":"ModifyPreferences_submit"}'><?php echo __("website/account_info/update-button"); ?></a>
                 <div id="result" class="error" style="display: none; margin-top: 10px; text-align: center;"></div>
             </form>
@@ -1004,9 +1013,36 @@
                 <input type="hidden" name="operation" value="ModifyPassword">
                 <h5 style="margin:20px 0px;"><?php echo __("website/account_info/info-tab4-text1"); ?></h5>
 
+                <!--
                 <div class="formcon"><strong class="yuzde30"><?php echo __("website/account_info/set-a-password"); ?></strong><input class="yuzde50inpt" type="password" name="password" placeholder="******"></div>
 
                 <div class="formcon"><strong class="yuzde30"><?php echo __("website/account_info/set-a-password-again"); ?></strong><input class="yuzde50inpt" type="password" name="password_again" placeholder="******"></div>
+                -->
+
+                <div class="formcon">
+                    <strong class="yuzde30"><?php echo __("website/account_info/set-a-password"); ?></strong>
+                    <input class="yuzde50inpt" name="password" type="password" id="password_primary" placeholder="******" required>
+                </div>
+                <div class="formcon">
+                    <strong class="yuzde30"><?php echo __("website/account_info/set-a-password-again"); ?></strong>
+                    <input class="yuzde50inpt" name="password_again" type="password" id="password_again" placeholder="******" required>
+                </div>
+
+                <div class="formcon">
+                    <div class="yuzde30">
+
+                    </div>
+                    <div class="yuzde70">
+                        <a class="sbtn" href="javascript:void 0;" onclick="$('#password_primary').attr('type','text'); $('#password_primary,#password_again').val(voucher_codes.generate({length:16,charset: 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%&*()-_=+[]\|;:,./?'})).trigger('change');"><i class="fa fa-refresh"></i> <?php echo __("website/account_products/new-random-password"); ?></a>
+
+                        <div style="width: 200px;display: inline-block;">
+                            <div id="weak" style="display:block;" class="level-block"><?php echo __("website/sign/up-form-password-level"); ?>: <strong><?php echo __("website/sign/up-form-password-level1"); ?></strong></div>
+                            <div id="good" class="level-block" style="display:none"><?php echo __("website/sign/up-form-password-level"); ?>: <strong><?php echo __("website/sign/up-form-password-level2"); ?></strong></div>
+                            <div id="strong" class="level-block" style="display: none;"><?php echo __("website/sign/up-form-password-level"); ?>: <strong><?php echo __("website/sign/up-form-password-level3"); ?></strong></div>
+                        </div>
+                    </div>
+                </div>
+
 
                 <span style="    font-size: 14px;    margin: 15px 0px;    float: left;"><?php echo __("website/account_info/info-tab4-text2"); ?></span>
                 <div class="clear"></div>
@@ -1271,9 +1307,9 @@
                                                                 ?>
                                                                 <strong><span style="color: #F44336;"><i class="fa fa-times-circle-o" aria-hidden="true"></i> <?php echo __("website/account_info/verification-text5"); ?></span></strong>
                                                                 <?php
-                                                                    if($record["status_msg"]){
-                                                                        ?><br><span>(<?php echo $record["status_msg"]; ?>)</span><?php
-                                                                    }
+                                                                if($record["status_msg"]){
+                                                                    ?><br><span>(<?php echo $record["status_msg"]; ?>)</span><?php
+                                                                }
                                                                 ?>
                                                                 <div class="clear" style="margin-bottom: 5px;"></div>
                                                                 <?php

@@ -16,10 +16,10 @@
                     [10, 25, 50, -1], [10, 25, 50, "<?php echo __("website/others/datatable-all"); ?>"]
                 ],
                 responsive: true,
-                "language":{"url":"<?php echo APP_URI; ?>/<?php echo ___("package/code"); ?>/datatable/lang.json"}
+                "oLanguage":<?php include __DIR__.DS."datatable-lang.php"; ?>
             });
         });
-    </script>
+</script>
 <style type="text/css">
         #products tbody tr td:nth-child(2) {
             text-align: left;
@@ -85,6 +85,8 @@
                                         - <?php echo $row["options"]["ip"]; ?>
                                     <?php endif; ?>
 
+                            <?php elseif(isset($row["options"]["code"]) && $row["options"]["code"]): ?>
+                                <?php echo "<br>".$row["options"]["code"]; ?>
                             <?php elseif(isset($row["options"]["ip"]) && $row["options"]["ip"]): ?>
                                 <?php echo "<br>".$row["options"]["ip"]; ?>
                             <?php endif; ?>

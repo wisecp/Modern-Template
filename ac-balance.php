@@ -122,11 +122,11 @@
     <div class="balancepage">
 
         <div class="green-info">
-            <div class="padding15">
+            <div class="padding20">
                 <i class="fa fa-info-circle" aria-hidden="true"></i>
-                <div class="balanceinfo">
-                    <?php echo __("website/balance/balanceinfo");?>
-                </div>
+               
+                  <p>  <?php echo __("website/balance/balanceinfo");?></p>
+               
             </div>
         </div>
 

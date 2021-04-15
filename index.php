@@ -95,12 +95,17 @@
                                                 $amount         = implode(" ",$split_amount);
                                             }
 
-                                            $is_img = View::$init->get_template_dir()."images".DS."tldlogos".DS.$list["name"].".jpg";
-                                            $is_img = file_exists($is_img);
+                                            $is_img = false;
+                                            $is_svg = "images".DS."tldlogos".DS.$list["name"].".svg";
+                                            $is_png = "images".DS."tldlogos".DS.$list["name"].".png";
+                                            $is_jpg = "images".DS."tldlogos".DS.$list["name"].".jpg";
+                                            if(file_exists(View::$init->get_template_dir().$is_svg)) $is_img = $is_svg;
+                                            elseif(file_exists(View::$init->get_template_dir().$is_png)) $is_img = $is_png;
+                                            elseif(file_exists(View::$init->get_template_dir().$is_jpg)) $is_img = $is_jpg;
                                             ?>
                                             <div class="spottlds">
                                                 <?php if($is_img): ?>
-                                                    <img src="<?php echo $tadress; ?>images/tldlogos/<?php echo $list["name"]; ?>.jpg" alt=".<?php echo $list["name"]; ?>">
+                                                    <img src="<?php echo Utility::image_link_determiner($tadress.$is_img); ?>" alt=".<?php echo $list["name"]; ?>">
                                                 <?php else: ?>
                                                     .<?php echo $list["name"]; ?>
                                                 <?php endif; ?>
@@ -232,7 +237,6 @@
                                                     $columns = [];
 
                                                 $list_template  = isset($cats[$key]["options"]["list_template"]) ? $cats[$key]["options"]["list_template"] : 1;
-                                                $have_raid = false;
 
                                                 ?>
                                                 <div class="miotab-content" id="cat<?php echo $key; ?>">
@@ -246,40 +250,30 @@
                                                                 ?>
                                                             <script type="text/javascript">
                                                                 $(document).ready(function() {
-                                                                    $('.datatable').DataTable({
-                                                                        "columnDefs": [
-                                                                            {
-                                                                                "targets": [0],
-                                                                                "visible":false,
-                                                                            },
-                                                                        ],
+                                                                    $('.horizontal-list').DataTable({
+                                                                        paging:false,
+                                                                        lengthChange: false,
                                                                         responsive: true,
                                                                         info: false,
                                                                         searching: false,
-                                                                        "language":{
-                                                                            "url":"<?php echo APP_URI."/".___("package/code")."/datatable/lang.json";?>"
-                                                                        }
+                                                                        oLanguage:<?php include __DIR__.DS."datatable-lang.php"; ?>
                                                                     });
                                                                 });
                                                             </script>
                                                                 <?php
                                                             }
                                                             ?>
-                                                            <table class="datatable"  width="100%" border="0">
+                                                            <table class="horizontal-list" width="100%" border="0" data-order='[[6, "asc"]]'>
                                                                 <thead style="background:#ebebeb;">
                                                                 <tr>
-                                                                    <th align="center">#</th>
-                                                                    <th align="center" bgcolor="#ebebeb"><strong><?php echo __("website/products/server-list-title"); ?></strong></td>
-                                                                    <th align="center" bgcolor="#ebebeb"><strong><img src="<?php echo $tadress;?>images/islemci.svg" width="auto" height="auto"><br><?php echo __("website/products/server-list-processor"); ?></strong></th>
-                                                                    <th align="center" bgcolor="#ebebeb"><strong><img src="<?php echo $tadress;?>images/ram.svg" width="auto" height="auto"><br><?php echo __("website/products/server-list-ram"); ?></strong></th>
-                                                                    <th align="center" bgcolor="#ebebeb"><strong><img src="<?php echo $tadress;?>images/disk.svg" width="auto" height="auto"><br><?php echo __("website/products/server-list-disk"); ?></strong></th>
-                                                                    <th align="center" bgcolor="#ebebeb"><strong><img src="<?php echo $tadress;?>images/trafik.svg" width="auto" height="auto"><br><?php echo __("website/products/server-list-bandwidth"); ?></strong></th>
-                                                                    <?php if($have_raid): ?>
-                                                                        <th align="center" bgcolor="#ebebeb"><strong><img src="<?php echo $tadress;?>images/raid.svg" width="auto" height="auto"><br><?php echo __("website/products/server-list-raid"); ?></strong></th>
-                                                                    <?php endif; ?>
-                                                                    <th align="center" bgcolor="#ebebeb"><strong><img src="<?php echo $tadress;?>images/lokasyon.svg" width="auto" height="auto"><br><?php echo __("website/products/server-list-location"); ?></strong></th>
-                                                                    <th align="center" bgcolor="#ebebeb"><strong><img src="<?php echo $tadress;?>images/tutar.svg" width="auto" height="auto"><br><?php echo __("website/products/server-list-amount"); ?></strong></th>
-                                                                    <th align="center" bgcolor="#ebebeb"><strong><?php echo __("website/products/server-list-buy"); ?></strong></td>
+                                                                    <th data-orderable="false" align="center" bgcolor="#ebebeb"><strong><?php echo __("website/products/server-list-title"); ?></strong></td>
+                                                                    <th data-orderable="false" align="center" bgcolor="#ebebeb"><strong><?php echo __("website/products/server-list-processor"); ?></strong></th>
+                                                                    <th data-orderable="false" align="center" bgcolor="#ebebeb"><strong><?php echo __("website/products/server-list-ram"); ?></strong></th>
+                                                                    <th data-orderable="false" align="center" bgcolor="#ebebeb"><strong><?php echo __("website/products/server-list-disk"); ?></strong></th>
+                                                                    <th data-orderable="false" align="center" bgcolor="#ebebeb"><strong><?php echo __("website/products/server-list-bandwidth"); ?></strong></th>
+                                                                    <th data-orderable="false" align="center" bgcolor="#ebebeb"><strong><?php echo __("website/products/server-list-location"); ?></strong></th>
+                                                                    <th align="center" bgcolor="#ebebeb"><strong><?php echo __("website/products/server-list-amount"); ?></strong></th>
+                                                                    <th data-orderable="false" align="center" bgcolor="#ebebeb"><strong><?php echo __("website/products/server-list-buy"); ?></strong></td>
                                                                 </tr>
                                                                 </thead>
 
@@ -288,9 +282,20 @@
                                                                     foreach($xproducts AS $k=>$product):
                                                                         $opt  = $product["options1"];
                                                                         $optl = $product["options2"];
+                                                                        $p_n  = 0;
+                                                                        $prices     = (!isset($product["prices"])) ? [] : $product["prices"];
+                                                                        if(isset($prices[0]) && $prices[0]["amount"]){
+                                                                            $period = View::period($prices[0]["time"],$prices[0]["period"]);
+                                                                            $price      = Money::formatter_symbol($prices[0]["amount"],$prices[0]["cid"],!$product["override_usrcurrency"]);
+                                                                            $p_n        = Money::formatter($prices[0]["amount"],$prices[0]["cid"],false,!$product["override_usrcurrency"]);
+                                                                        }
+                                                                        else{
+                                                                            $price = ___("needs/free-amount");
+                                                                            $period = NULL;
+                                                                        }
+
                                                                         ?>
                                                                         <tr>
-                                                                            <td align="center"><?php echo $k; ?></td>
                                                                             <td align="center" valign="middle">
                                                                                 <?php echo $product["title"]; ?><br>
                                                                                 <?php if($product["cover_image"]): ?>
@@ -304,21 +309,8 @@
                                                                             <td align="center" valign="middle"><?php echo (isset($opt["ram"]) && $opt["ram"] != '') ? $opt["ram"] : "-"; ?></td>
                                                                             <td align="center" valign="middle"><?php echo (isset($opt["disk-space"]) && $opt["disk-space"] != '') ? $opt["disk-space"] : "-"; ?></td>
                                                                             <td align="center" valign="middle"><?php echo (isset($opt["bandwidth"]) && $opt["bandwidth"] != '') ? $opt["bandwidth"] : "-"; ?></td>
-                                                                            <?php if($have_raid): ?>
-                                                                                <td align="center" valign="middle"><?php echo (isset($opt["raid"]) && $opt["raid"] != '') ? $opt["raid"] : "-"; ?></td>
-                                                                            <?php endif; ?>
                                                                             <td align="center" valign="middle"><?php echo (isset($optl["location"]) && $optl["location"] != '') ? $optl["location"] : "-"; ?></td>
-                                                                            <td align="center" valign="middle">
-                                                                                <?php
-                                                                                    $prices     = (!isset($product["prices"])) ? [] : $product["prices"];
-                                                                                    if(isset($prices[0]) && $prices[0]["amount"]){
-                                                                                        $period = View::period($prices[0]["time"],$prices[0]["period"]);
-                                                                                        $price      = Money::formatter_symbol($prices[0]["amount"],$prices[0]["cid"],!$product["override_usrcurrency"]);
-                                                                                    }else{
-                                                                                        $price = ___("needs/free-amount");
-                                                                                        $period = NULL;
-                                                                                    }
-                                                                                ?>
+                                                                            <td align="center" valign="middle" data-order="<?php echo $p_n; ?>">
                                                                                 <h4>
                                                                                     <strong><?php echo $price; ?></strong>
                                                                                     <?php if($period): ?>

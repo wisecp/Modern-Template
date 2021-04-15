@@ -12,7 +12,7 @@
     }
 ?>
 
-<div class="clientcopyright"><span><?php echo __("website/index/footer-copyright"); ?></span></div>
+<div class="clientcopyright"><span><?php echo __("website/index/footer-copyright",['2019' => DateManager::Now("Y")]); ?></span></div>
 
 
 <?php View::show_brand(); ?>

@@ -42,6 +42,8 @@
     <link rel="stylesheet" href="<?php echo $sadress; ?>assets/plugins/ion.rangeSlider/css/ion.rangeSlider.min.css">
 <?php endif; ?>
 
+<?php if(___("package/rtl")): ?><link rel="stylesheet" href="<?php echo $sadress."assets/style/theme-rtl.css?v=".License::get_version();?>&lang=<?php echo Bootstrap::$lang->clang; ?>"><?php endif; ?>
+
 <!-- Css -->
 
 <!-- Js -->
@@ -112,6 +114,10 @@ $(document).ready(function() {
 <?php endif; ?>
 <?php if(isset($hoptions) && in_array("ion.rangeSlider",$hoptions)): ?>
     <script src="<?php echo $sadress; ?>assets/plugins/ion.rangeSlider/js/ion.rangeSlider.min.js"></script>
+<?php endif; ?>
+
+<?php if(isset($hoptions) && in_array("voucher_codes",$hoptions)): ?>
+    <script src="<?php echo $sadress; ?>assets/plugins/js/voucher_codes.js"></script>
 <?php endif; ?>
 
 <?php

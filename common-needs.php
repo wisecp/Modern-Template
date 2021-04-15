@@ -33,7 +33,7 @@
         'refund' => '<div class="listingstatus"><span>'.__("website/account_invoices/status-refund").'</span></div>',
         'waiting' => '<div class="listingstatus"><span class="process">'.__("website/account_invoices/status-waiting").'</span></div>',
         'unpaid' => '<div class="listingstatus"><span class="wait">'.__("website/account_invoices/status-unpaid").'</span></div>',
-        'cancelled' => '<span>'.__("website/account_invoices/status-cancelled").'</span>',
+        'cancelled' => '<div class="listingstatus"><span>'.__("website/account_invoices/status-cancelled").'</span></div>',
         'paid' => '<div class="listingstatus"><span class="active">'.__("website/account_invoices/status-paid").'</span></div>',
     ];
 

@@ -20,15 +20,12 @@
                     }
 
                 ],
-                "aaSorting" : [[4, 'asc']],
+                "aaSorting" : [[0, 'desc']],
                 "lengthMenu": [
                     [10, 25, 50, -1], [10, 25, 50, "<?php echo __("website/others/datatable-all"); ?>"]
                 ],
-                "bProcessing": true,
-                "bServerSide": true,
-                "sAjaxSource": "<?php echo $links["ajax"]; ?>",
                 responsive: true,
-                "language":{"url":"<?php echo APP_URI; ?>/<?php echo ___("package/code"); ?>/datatable/lang.json"}
+                "oLanguage":<?php include __DIR__.DS."datatable-lang.php"; ?>
             });
         });
     </script>
@@ -68,7 +65,7 @@
     </div>
 
     <div class="faturalarim">
-        <table id="invoices" class="table table-striped table-borderedx table-condensed nowrap">
+        <table id="invoices" class="table table-striped table-borderedx table-condensed nowrap" width="100%">
             <thead style="background:#ebebeb;">
             <tr>
                 <th align="center"><?php echo __("website/account_invoices/invoice-num"); ?></th>
@@ -79,7 +76,26 @@
                 <th width="10%" align="center"><?php echo __("website/account_invoices/invoice-operation"); ?></th>
             </tr>
             </thead>
-            <tbody align="center" style="border-top:none;"></tbody>
+            <tbody align="center" style="border-top:none;">
+            <?php
+                if(isset($list_ajax) && $list_ajax)
+                {
+                    foreach($list_ajax AS $r)
+                    {
+                        ?>
+                       <tr>
+                           <td align="center"><?php echo $r[0]; ?></td>
+                           <td align="center"><?php echo $r[1]; ?></td>
+                           <td align="center"><?php echo $r[2]; ?></td>
+                           <td align="center"><?php echo $r[3]; ?></td>
+                           <td align="center"><?php echo $r[4]; ?></td>
+                           <td align="center"><?php echo $r[5]; ?></td>
+                       </tr>
+                        <?php
+                    }
+                }
+            ?>
+            </tbody>
         </table>
     </div>
 

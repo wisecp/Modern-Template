@@ -41,11 +41,14 @@
 
         if(!$haveStock){
             ?>
-            <div class="pakettitle" style="margin-top:0px;">
-                <h1 style="color:red;">
-                    <i class="fa fa-ban"></i>
-                    <strong><?php echo __("website/products/out-of-stock"); ?></strong></h1>
+            <!-- out of stock -->
+            <div style="margin-top: 70px;margin-bottom:70px;text-align:center;display: inline-block;width: 100%;">
+                <i style="font-size:70px;margin-bottom: 15px;" class="fa fa-info-circle"></i>
+                <h2 style="font-weight:bold;"><?php echo __("website/osteps/out-of-stock-1"); ?></h2>
+                <br>
+                <h4><?php echo __("website/osteps/out-of-stock-2"); ?>  <br> <br><strong><?php echo __("website/osteps/out-of-stock-3"); ?></strong></h4>
             </div>
+            <!-- out of stock end-->
             <?php
         }
     ?>
@@ -226,7 +229,11 @@
                                                     }
                                                 }
                                             </script>
-                                            <h5><?php echo __("website/domain/slogan",['{price}' => Money::formatter_symbol($firstTLD["register"]["amount"],$firstTLD["register"]["cid"],!$domain_override_usrcurrency)]); ?></h5>
+                                            <?php
+                                                $firstTLD_amount = $firstTLD["register"]["amount"];
+                                                if($firstTLD["promo_status"] && (substr($firstTLD["promo_duedate"],0,4) == '1881' || DateManager::strtotime($firstTLD["promo_duedate"]." 23:59:59") > DateManager::strtotime()) && $firstTLD["promo_register_price"]>0) $firstTLD_amount = $firstTLD["promo_register_price"];
+                                            ?>
+                                            <h5><?php echo __("website/domain/slogan",['{price}' => Money::formatter_symbol($firstTLD_amount,$firstTLD["register"]["cid"],!$domain_override_usrcurrency)]); ?></h5>
                                         </div>
 
 
@@ -464,6 +471,7 @@
                                         $min = isset($properties["min"]) ? $properties["min"] : '0';
                                         $max = isset($properties["max"]) ? $properties["max"] : '0';
                                         $stp = isset($properties["step"]) ? $properties["step"] : '1';
+                                        if($min == 0) $min = 1;
                                     ?>
                                         <select name="addons[<?php echo $addon["id"]; ?>]" id="addon-<?php echo $addon["id"]; ?>-selection" style="margin-bottom: 5px;">
                                             <?php if(!$compulsory): ?>

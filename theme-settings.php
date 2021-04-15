@@ -47,7 +47,7 @@
                         $active = $settings["clientArea-type"]==$k;
                         ?>
                         <input type="radio" class="radio-custom" name="clientArea_type" value="<?php echo $k; ?>" id="Modern_clientArea_<?php echo $k; ?>"<?php echo $active ? ' checked' : NULL; ?>>
-                        <label style="margin-right: 10px;" class="radio-custom-label" for="Modern_clientArea_<?php echo $k; ?>">
+                        <label style="margin-right: 10px;<?php echo $k == 2 ? 'display:none' :  ''; ?>" class="radio-custom-label" for="Modern_clientArea_<?php echo $k; ?>">
                             <?php echo $v["name"]; ?>
                         </label>
                         <?php

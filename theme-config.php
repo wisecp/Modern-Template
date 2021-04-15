@@ -6,7 +6,7 @@ return [
         'version'     => '1.0',
         'provider'    => 'WISECP',
         'website'     => 'https://www.wisecp.com',
-        'image'       => 'cover.jpg',
+        'image'       => 'https://deneme.wisecp.com/templates/website/Modern/cover.jpg',
     ],
     'checking-version-url' => '',
     'header-types'         => [
@@ -32,6 +32,7 @@ return [
     'settings'             => [
         'header-type'     => 1,
         'clientArea-type' => 1,
+        'new-login-area'  => 1,
         'color1'          => '009595',
         'color2'          => '345a6c',
         'text-color'      => '607d8b',

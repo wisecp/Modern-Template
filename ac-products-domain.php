@@ -16,7 +16,7 @@
                     [10, 25, 50, -1], [10, 25, 50, "<?php echo __("website/others/datatable-all"); ?>"]
                 ],
                 responsive: true,
-                "language":{"url":"<?php echo APP_URI; ?>/<?php echo ___("package/code"); ?>/datatable/lang.json"}
+                "oLanguage":<?php include __DIR__.DS."datatable-lang.php"; ?>
             });
         });
     </script>
@@ -72,7 +72,8 @@
                             <td align="center"><?php echo $situations[$row["status"]]; ?></td>
                             <td align="center">
                                 <?php
-                                    if($row["status"] == "waiting" || $row["status"] == "inprocess" || $row["status"] == "cancelled"){
+                                    if($row["status"] == "waiting" || $row["status"] == "inprocess" || $row["status"] == "cancelled" || $row["status"] == "inactive")
+                                    {
                                         ?>
                                         <a title="<?php echo __("website/account_products/manage"); ?>" style="-webkit-filter:grayscale(100%);filter: grayscale(100%);color: #777;opacity: 0.5;filter: alpha(opacity=50);" class="incelebtn"><i class="fa fa-cog" aria-hidden="true"></i> <?php echo __("website/account_products/manage"); ?></a>
                                         <?php

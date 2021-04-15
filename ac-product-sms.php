@@ -130,10 +130,14 @@
     <div id="ozet" class="smshzmblok tabcontent">
 
         <div class="hizmetblok" style="border:none;min-height: 250px;<?php echo $support_api ? '' : ' width:48%;'; ?>">
-            <div class="domaindetayinfo">
-                <i class="fa fa-envelope-o" aria-hidden="true"></i>
-                <h4><strong><?php echo $proanse["name"]; ?></strong></h4>
+            <div class="service-first-block" style="    min-height: auto;">
+                 <div id="order_image" style="display: inline-block;margin-right: 32px;">
+                        <img style="width:110px;" src="<?php echo $tadress."images/smscover.svg"; ?>" width="auto" height="auto">
+                    </div>
+                    <div style="display: inline-block;vertical-align: top;margin-top: 16px;">
+                <h4 style="    font-size: 24px;"><strong><?php echo $proanse["name"]; ?></strong></h4>
                 <h4 style="margin-bottom:10px;"><?php echo __("website/account_products/current-credit"); ?>: <strong id="getCredit"><i class="fa fa-spinner" style="font-size:20px; -webkit-animation:fa-spin 2s infinite linear;animation: fa-spin 2s infinite linear;"></i></strong></h4>
+                </div>
                 <?php if($proanse["status"] == "active" && !isset($proanse["disable_renewal"])){ ?>
                     <div id="credit_list" style="display:none;">
                         <select id="selection_credit">
@@ -174,13 +178,18 @@
                             });
                         </script>
                     </div>
-                    <a href="javascript:$('#credit_list').slideToggle(400);void 0;" class="mavibtn gonderbtn"><?php echo __("website/account_products/add-credit"); ?></a>
+                    <div id="order-service-detail-btns" style="margin-top:15px;">
 
-                    <a style="width:48%;" href="javascript:$('a[data-rank=2]').click();void 0;" class="yesilbtn gonderbtn"><?php echo __("website/account_products/tab-send"); ?></a>
+                        <a href="javascript:$('a[data-rank=2]').click();void 0;" class="yesilbtn gonderbtn"><i class="fa fa-paper-plane-o" aria-hidden="true"></i> <?php echo __("website/account_products/tab-send"); ?></a>
+
+                    <a href="javascript:$('#credit_list').slideToggle(400);void 0;" class="mavibtn gonderbtn"><i class="fa fa-refresh"></i> <?php echo __("website/account_products/add-credit"); ?></a>
+
+                    
 
                 <?php }else{ ?>
                     <a class="graybtn gonderbtn" style="cursor:no-drop;"><?php echo __("website/account_products/add-credit"); ?></a>
                 <?php } ?>
+                </div>
             </div>
         </div>
 
@@ -1028,9 +1037,7 @@
 
                             ],
                             responsive: true,
-                            "language":{
-                                "url":"<?php echo APP_URI."/".___("package/code")."/datatable/lang.json";?>"
-                            }
+                            "oLanguage":<?php include __DIR__.DS."datatable-lang.php"; ?>
                         });
 
                     });
