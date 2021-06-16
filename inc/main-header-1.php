@@ -657,18 +657,18 @@
                                         if(!empty($slide['title'])){
                                             ?>
                                             <!-- LAYER NR. 15 -->
-                                            <div class="tp-caption   tp-resizeme" 
-             id="slide-176-layer-2" 
-             data-x="['center','center','center','center']" data-hoffset="['0','0','0','0']" 
-             data-y="['middle','middle','middle','middle']" data-voffset="['-78','-78','-69','-99']" 
+                                            <div class="tp-caption   tp-resizeme"
+             id="slide-176-layer-2"
+             data-x="['center','center','center','center']" data-hoffset="['0','0','0','0']"
+             data-y="['middle','middle','middle','middle']" data-voffset="['-78','-78','-69','-99']"
                         data-fontsize="['55','55','50','35']"
             data-lineheight="['90','90','70','50']"
             data-width="['90%','90%','90%','95%']"
             data-height="none"
             data-whitespace="['nowrap','nowrap','normal','normal']"
- 
-            data-type="text" 
-            data-responsive_offset="on" 
+
+            data-type="text"
+            data-responsive_offset="on"
 
             data-frames='[{"delay":1000,"speed":2000,"frame":"0","from":"sX:0.9;sY:0.9;opacity:0;fb:20px;","to":"o:1;fb:0;","ease":"Power3.easeInOut"},{"delay":"wait","speed":540,"frame":"999","to":"sX:0.9;sY:0.9;opacity:0;fb:20px;","ease":"Power3.easeInOut"}]'
             data-textAlign="['center','center','center','center']"
@@ -686,19 +686,19 @@
                                         if(!empty($slide['description'])){
                                             ?>
                                             <!-- LAYER NR. 16 -->
-                                            <div class="tp-caption   tp-resizeme" 
-             id="slide-176-layer-3" 
-             data-x="['center','center','center','center']" data-hoffset="['0','0','0','0']" 
-             data-y="['middle','middle','middle','middle']" data-voffset="['39','39','49','6']" 
+                                            <div class="tp-caption   tp-resizeme"
+             id="slide-176-layer-3"
+             data-x="['center','center','center','center']" data-hoffset="['0','0','0','0']"
+             data-y="['middle','middle','middle','middle']" data-voffset="['39','39','49','6']"
                         data-fontsize="['24','24','20','18']"
             data-lineheight="['35','35','35','30']"
             data-fontweight="['300','300','300','400']"
             data-width="['90%','90%','90%','95%']"
             data-height="none"
             data-whitespace="normal"
- 
-            data-type="text" 
-            data-responsive_offset="on" 
+
+            data-type="text"
+            data-responsive_offset="on"
 
             data-frames='[{"delay":1000,"speed":2000,"frame":"0","from":"sX:0.9;sY:0.9;opacity:0;fb:20px;","to":"o:1;fb:0;","ease":"Power3.easeInOut"},{"delay":"wait","speed":560,"frame":"999","to":"sX:0.9;sY:0.9;opacity:0;fb:20px;","ease":"Power3.easeInOut"}]'
             data-textAlign="['center','center','center','center']"
@@ -1089,18 +1089,18 @@
                                         if(!empty($slide['title'])){
                                             ?>
                                             <!-- LAYER NR. 32 -->
-                                            <div class="tp-caption   tp-resizeme" 
-             id="slide-176-layer-2" 
-             data-x="['center','center','center','center']" data-hoffset="['0','0','0','0']" 
-             data-y="['middle','middle','middle','middle']" data-voffset="['-78','-78','-69','-99']" 
+                                            <div class="tp-caption   tp-resizeme"
+             id="slide-176-layer-2"
+             data-x="['center','center','center','center']" data-hoffset="['0','0','0','0']"
+             data-y="['middle','middle','middle','middle']" data-voffset="['-78','-78','-69','-99']"
                         data-fontsize="['55','55','50','35']"
             data-lineheight="['90','90','70','50']"
             data-width="['90%','90%','90%','95%']"
             data-height="none"
             data-whitespace="['nowrap','nowrap','normal','normal']"
- 
-            data-type="text" 
-            data-responsive_offset="on" 
+
+            data-type="text"
+            data-responsive_offset="on"
 
             data-frames='[{"delay":1000,"speed":2000,"frame":"0","from":"sX:0.9;sY:0.9;opacity:0;fb:20px;","to":"o:1;fb:0;","ease":"Power3.easeInOut"},{"delay":"wait","speed":540,"frame":"999","to":"sX:0.9;sY:0.9;opacity:0;fb:20px;","ease":"Power3.easeInOut"}]'
             data-textAlign="['center','center','center','center']"
@@ -1118,19 +1118,19 @@
                                         if(!empty($slide['description'])){
                                             ?>
                                             <!-- LAYER NR. 33 -->
-                                            <div class="tp-caption   tp-resizeme" 
-             id="slide-176-layer-3" 
-             data-x="['center','center','center','center']" data-hoffset="['0','0','0','0']" 
-             data-y="['middle','middle','middle','middle']" data-voffset="['39','39','49','6']" 
+                                            <div class="tp-caption   tp-resizeme"
+             id="slide-176-layer-3"
+             data-x="['center','center','center','center']" data-hoffset="['0','0','0','0']"
+             data-y="['middle','middle','middle','middle']" data-voffset="['39','39','49','6']"
                         data-fontsize="['24','24','20','18']"
             data-lineheight="['35','35','35','30']"
             data-fontweight="['300','300','300','400']"
             data-width="['90%','90%','90%','95%']"
             data-height="none"
             data-whitespace="normal"
- 
-            data-type="text" 
-            data-responsive_offset="on" 
+
+            data-type="text"
+            data-responsive_offset="on"
 
             data-frames='[{"delay":1000,"speed":2000,"frame":"0","from":"sX:0.9;sY:0.9;opacity:0;fb:20px;","to":"o:1;fb:0;","ease":"Power3.easeInOut"},{"delay":"wait","speed":560,"frame":"999","to":"sX:0.9;sY:0.9;opacity:0;fb:20px;","ease":"Power3.easeInOut"}]'
             data-textAlign="['center','center','center','center']"

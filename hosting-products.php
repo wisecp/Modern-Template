@@ -220,7 +220,6 @@
                         foreach($categories AS $cat){
                             $list = $get_list($cat["id"],$cat["kind"]);
                             if($list){
-                                ?><h5 style="font-weight: bold;font-size: 24px;"><?php echo $cat["title"]; ?></h5><?php
                                 $products($cat,$list);
                             }
                         }

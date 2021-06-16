@@ -132,10 +132,10 @@
                 ?>
                 <div class="sunucular" data-aos="fade-up">
                     <div>
-                        <table class="horizontal-list" width="100%" border="0" data-order='[[<?php echo sizeof($columns) +2; ?>, "asc"]]'>
+                        <table class="horizontal-list" width="100%" border="0" data-order='[[<?php echo sizeof($columns) +1; ?>, "asc"]]'>
                             <thead style="background:#ebebeb;">
                             <tr>
-                                <th data-orderable="false" align="center" bgcolor="#ebebeb"><strong><?php echo __("website/products/special-list-title"); ?></strong></td>
+                                <th data-orderable="false" align="center" bgcolor="#ebebeb"><strong><?php echo __("website/products/special-list-title"); ?></strong></th>
                                 <?php
                                     if($columns){
                                         foreach($columns AS $col){
@@ -147,7 +147,7 @@
                                 ?>
 
                                 <th align="center" bgcolor="#ebebeb"><strong><?php echo __("website/products/special-list-amount"); ?></strong></th>
-                                <th data-orderable="false" align="center" bgcolor="#ebebeb"><strong><?php echo __("website/products/special-list-buy"); ?></strong></td>
+                                <th data-orderable="false" align="center" bgcolor="#ebebeb"><strong><?php echo __("website/products/special-list-buy"); ?></strong></th>
                             </tr>
                             </thead>
 
@@ -161,7 +161,7 @@
                                     if(isset($prices[0]) && $prices[0]["amount"]){
                                         $period = View::period($prices[0]["time"],$prices[0]["period"]);
                                         $price      = Money::formatter_symbol($prices[0]["amount"],$prices[0]["cid"],!$product["override_usrcurrency"]);
-                                        $p_n        = Money::formatter($prices[0]["amount"],$prices[0]["cid"],false,!$product["override_usrcurrency"]);
+                                        $p_n        = round(Money::exChange($prices[0]["amount"],$prices[0]["cid"],!$product["override_usrcurrency"] ? Money::getUCID() : false),2);
                                     }else{
                                         $price = NULL;
                                         $period = NULL;
@@ -195,7 +195,7 @@
                                             }
                                         ?>
 
-                                        <td align="center" valign="middle" data-order="<?php echo $prices[0]["amount"]; ?>" data-order="<?php echo $p_n; ?>">
+                                        <td align="center" valign="middle" data-order="<?php echo $p_n; ?>">
                                             <h4>
                                                 <?php
                                                     if($price != NULL){
@@ -239,7 +239,6 @@
 
     $(document).ready(function() {
         $('.horizontal-list').DataTable({
-            paging:false,
             lengthChange: false,
             responsive: true,
             info: false,

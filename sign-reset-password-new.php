@@ -46,7 +46,7 @@
 .notverification a{color:#b5b5b5;font-weight:600}
 #uyeolgiris{position:fixed;overflow:auto;margin-bottom:0;width:100%;height:100%;bottom:0px;background-image:url(<?php echo $tadress;?>images/signinsignupbg2020.jpg);background-color:rgba(50, 90, 108, 0.55);background-repeat:no-repeat;    background-size: 100%;}
 #uyeolgirisbody .footer{display:none}
-.uyeol{position:fixed;width:50%;border-radius:0;margin-bottom:0px;right:0;top:0;bottom:0}
+.uyeol{position:absolute;width:50%;border-radius:0;margin-bottom:0px;right:0;top:0;bottom:0}
 .uyeolgirisslogan{float:left;width:50%;text-align:left;margin-top:0;}
 .uyeolgirishead{text-align:center;width:100%;margin-top:5%;margin-bottom:0;float:none; -webkit-animation-name: fadeIn;
   animation-name: fadeIn;
@@ -75,7 +75,7 @@
 .uyeolgirisslogan-con{width:70%;margin:auto;margin-top:35%;}
 .uyeolgirisslogan-con .gonderbtn{color:#fff;border:2px solid #fff;margin-top:35px}
 .uyeolgirisslogan-con .gonderbtn:hover{color:#333;background:white}
-.signupcon{padding:20px}
+.signupcon{padding:20px;    background: white;}
 .socialconnect a{color:#7c7c7c;font-size:14px;background:#e7e7e7}
 .socialconnect .facebookconnect{color:#7c7c7c;background:#eee}
 .socialconnect .facebookconnect:hover{color:#fff}
@@ -117,7 +117,8 @@
 .signup-stage-line {    margin-bottom: -45px;}
 .clean-theme-signup-box .yuzde50 {    width: 46%;}
 #Reset_Password_Form {    width: 100%;}
-#Signforget_Form{width:100%;}
+.captcha-content{width:310px;transform:scale(0.8);margin-left:auto;margin-top:0;margin-bottom:10px}
+.signin-signup-foot-btn{margin-bottom:25px}
 }
 
 </style>

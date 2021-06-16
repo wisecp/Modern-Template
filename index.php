@@ -287,7 +287,7 @@
                                                                         if(isset($prices[0]) && $prices[0]["amount"]){
                                                                             $period = View::period($prices[0]["time"],$prices[0]["period"]);
                                                                             $price      = Money::formatter_symbol($prices[0]["amount"],$prices[0]["cid"],!$product["override_usrcurrency"]);
-                                                                            $p_n        = Money::formatter($prices[0]["amount"],$prices[0]["cid"],false,!$product["override_usrcurrency"]);
+                                                                            $p_n        = round(Money::exChange($prices[0]["amount"],$prices[0]["cid"],!$product["override_usrcurrency"] ? Money::getUCID() : false),2);
                                                                         }
                                                                         else{
                                                                             $price = ___("needs/free-amount");

@@ -1,9 +1,9 @@
 <?php defined('CORE_FOLDER') OR exit('You can not get in here!');
     $hoptions = [
         'page' => "server-products",
-        'jquery-ui',
         'dataTables',
-    ];
+        'jquery-ui',
+    ]; 
 
     $currency_symbols = [];
     foreach(Money::getCurrencies() AS $currency){
@@ -20,7 +20,7 @@
             $ltemplate = isset($cat["options"]["list_template"]) ? $cat["options"]["list_template"] : 2;
             ?>
             <?php if($ltemplate == 1): ?>
-                <h5 class="servercattitle"><?php echo $cat["title"]; ?></h5>
+                <h5 class="servercattitle" data-aos="fade-up"><?php echo $cat["title"]; ?></h5>
                 <div class="tablopaketler" style="background: none;" id="category_<?php echo $cat["id"]; ?>">
                     <?php
                         foreach($list AS $product){
@@ -126,7 +126,7 @@
             <?php elseif($ltemplate== 2): ?>
                 <div class="sunucular" data-aos="fade-up">
 
-                    <h5 class="servercattitle"><?php echo $cat["title"]; ?></h5>
+                    <h5 class="servercattitle" data-aos="fade-up"><?php echo $cat["title"]; ?></h5>
 
                     <div>
                         <table class="horizontal-list" width="100%" border="0" data-order='[[6, "asc"]]'>
@@ -182,7 +182,7 @@
                                             <h4>
                                                 <strong><?php echo $price; ?></strong>
                                                 <?php if($period): ?>
-                                                   <span style="font-size: 16px;">(<?php echo $period; ?>)</span>
+                                                    <span style="font-size: 16px;">(<?php echo $period; ?>)</span>
                                                 <?php endif; ?>
                                             </h4>
                                         </td>
@@ -245,10 +245,11 @@
 
         $categories = $get_categories($category["id"],$category["kind"]);
         if($categories){
+            $catSize = sizeof($categories);
             $category_products  = [];
             $categories_list    = [];
             ?>
-            <div class="categoriesproduct" data-aos="fade-up">
+            <div class="categoriesproduct"<?php echo $catSize==1 ? 'style="display:none;"' : ''; ?> data-aos="fade-up">
                 <?php
                     $selection = isset($category2) && $category2 ? $showCategory : false;
                     foreach($categories AS $k=>$cat){
@@ -261,7 +262,7 @@
                         if(!$list && !$subs) continue;
                         $selected = false;
 
-                        if($category["id"])
+                        if($list)
                             $cat["route"] = $category_tab_route($cat["route"]);
                         else
                             $cat["route"] = $category_route($cat["route"]);
@@ -269,11 +270,19 @@
                         if($category["id"]){
                             if(!$selection && $k == 0) $selection = $cat;
                             if($selection && $cat["id"] == $selection["id"]) $selected = true;
-                        }
-                        elseif(!$selection && $k == 0){
-                            $category = $cat;
-                            $selected = true;
-                            $selection = $cat;
+                        }else{
+                            if(isset($category2) && $category2 && $category2["id"] == $cat["id"]){
+                                $selected = true;
+                                $selection = $cat;
+                            }elseif(!$selection && $category_products[$cat["id"]] && $k == 0){
+                                $selected = true;
+                                $selection = $cat;
+                            }
+                            elseif(!$selection && $k == 0){
+                                $category = $cat;
+                                $selected = true;
+                                $selection = $cat;
+                            }
                         }
                         ?>
                         <a href="<?php echo $cat["route"]; ?>" class="lbtn"<?php echo $selected ? ' id="category-button-active"' : ''; ?>>
@@ -291,15 +300,19 @@
             <?php
         }
 
-        if($category["id"] && isset($selection) && $selection){
+        if(isset($selection) && $selection){
             if(isset($category_products[$selection["id"]])){
                 $list = $category_products[$selection["id"]];
                 $products($selection,$list);
-                $categories = isset($categories_list[$selection["id"]]) ? $categories_list[$selection["id"]] : false;
-                if($categories){
-                    foreach($categories AS $cat){
-                        $list = $get_list($cat["id"],$cat["kind"]);
-                        if($list) $products($cat,$list);
+                if($category["id"]){
+                    $categories = isset($categories_list[$selection["id"]]) ? $categories_list[$selection["id"]] : false;
+                    if($categories){
+                        foreach($categories AS $cat){
+                            $list = $get_list($cat["id"],$cat["kind"]);
+                            if($list){
+                                $products($cat,$list);
+                            }
+                        }
                     }
                 }
             }
@@ -313,6 +326,7 @@
 <div id="wrapper">
 
     <div class="detail-products-features" data-aos="fade-up"><?php echo $content; ?></div>
+    <div class="clear"></div><br>
 
     <?php if(isset($faq) && $faq): ?>
         <div class="sss"  data-aos="fade-up">

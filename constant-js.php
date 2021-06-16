@@ -11,9 +11,9 @@
             var ckplcy_cookie_popup_html = '<div id="mio-cookie-popup">\n' +
                 '  <div class="mio-cookie-popup__c-p-card mio-cookie-popup__card">\n' +
                 '    <div class="mio-cookie-popup__content">\n' +
-                '      <h3><?php echo __("website/index/cookie-policy-1"); ?></h3>\n' +
-                '      <p><?php echo __("website/index/cookie-policy-2",['{page_link}' => Models::$init->link_detector('pages/'.Config::get("options/cookie-policy/page"))]); ?></p>\n' +
-                '      <button class="mio-cookie-popup__c-p-button"><?php echo __("website/index/cookie-policy-3"); ?></button>\n' +
+                '      <h3><?php echo str_replace("'",'&#x27;',__("website/index/cookie-policy-1")); ?></h3>\n' +
+                '      <p><?php echo str_replace("'",'&#x27;',__("website/index/cookie-policy-2",['{page_link}' => Models::$init->link_detector('pages/'.Config::get("options/cookie-policy/page"))])); ?></p>\n' +
+                '      <button class="mio-cookie-popup__c-p-button"><?php echo str_replace("'",'&#x27;',__("website/index/cookie-policy-3")); ?></button>\n' +
                 '    </div>\n' +
                 '  </div>\n' +
                 '</div>';

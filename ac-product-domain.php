@@ -102,67 +102,74 @@
                     <h4 style="margin-bottom:10px;"><?php echo __("website/account_products/remaining-day"); ?>: <strong><?php echo $remaining_day; ?></strong></h4>
                 <?php } ?>
                 <?php
-                    if($proanse["status"] == "active" || $proanse["status"] == "suspended"){
 
-                        ?>
+                ?>
 
-                         <?php if(isset($options["whois_privacy"]) && $options["whois_privacy"]): ?>
+                    <?php if(isset($options["whois_privacy"]) && $options["whois_privacy"]): ?>
 
-                     	  	 <div class="service-status-con" style="display:block;" id="server_status_other"><span class="statusother"><i class="fa fa-shield" aria-hidden="true" style="margin-right: 5px;"></i> <?php echo __("website/account_products/whois-hidden"); ?></span>
-                     	  	 </div>
-                     	   <?php endif; ?>
-                        
+                        <div class="service-status-con" style="display:block;" id="server_status_other"><span class="statusother"><i class="fa fa-shield" aria-hidden="true" style="margin-right: 5px;"></i> <?php echo __("website/account_products/whois-hidden"); ?></span>
+                        </div>
+                    <?php endif; ?>
+
                 </div>
 
             </div>
         </div>
 
 
-        <div class="hizmetblok" style="border:none;min-height:auto;    padding-bottom: 25px;">
-                 <div id="order-service-detail-btns">
-                 	<div id="renewal_list" style="display:none;">
-                            <select id="selection_renewal">
-                                <option value=""><?php echo __("website/account_products/renewal-list-option"); ?></option>
-                                <?php
-                                    if(isset($renewal_list) && $renewal_list){
-                                        foreach($renewal_list AS $year=>$cash){
-                                            ?>
-                                            <option value="<?php echo $year; ?>">(<?php echo $year." ".__("website/account_products/registration-year");?>) <?php echo $cash; ?></option>
-                                            <?php
+        <div class="hizmetblok" style="border:none;min-height:auto;padding-bottom: 25px;">
+            <div id="order-service-detail-btns">
+                <?php
+                    if((!isset($subscription) || $subscription["status"] == "cancelled"))
+                    {
+                        if($proanse["status"] == "active" || $proanse["status"] == "suspended"){
+                            ?>
+                            <div id="renewal_list" style="display:none;">
+                                <select id="selection_renewal">
+                                    <option value=""><?php echo __("website/account_products/renewal-list-option"); ?></option>
+                                    <?php
+                                        if(isset($renewal_list) && $renewal_list){
+                                            foreach($renewal_list AS $year=>$cash){
+                                                ?>
+                                                <option value="<?php echo $year; ?>">(<?php echo $year." ".__("website/account_products/registration-year");?>) <?php echo $cash; ?></option>
+                                                <?php
+                                            }
                                         }
-                                    }
-                                ?>
-                            </select>
-                            <script type="text/javascript">
-                                $(document).ready(function(){
-                                    $("#selection_renewal").change(function(){
-                                        var selection = $(this).val();
-                                        if(selection != ''){
-                                            var result = MioAjax({
-                                                action: "<?php echo $links["controller"]; ?>",
-                                                method: "POST",
-                                                data:{operation:"domain_renewal",period:selection}
-                                            },true);
+                                    ?>
+                                </select>
+                                <script type="text/javascript">
+                                    $(document).ready(function(){
+                                        $("#selection_renewal").change(function(){
+                                            var selection = $(this).val();
+                                            if(selection != ''){
+                                                var result = MioAjax({
+                                                    action: "<?php echo $links["controller"]; ?>",
+                                                    method: "POST",
+                                                    data:{operation:"domain_renewal",period:selection}
+                                                },true);
 
-                                            if(result){
-                                                var solve = getJson(result);
-                                                if(solve){
-                                                    if(solve.status == "successful"){
-                                                        window.location.href = solve.redirect;
+                                                if(result){
+                                                    var solve = getJson(result);
+                                                    if(solve){
+                                                        if(solve.status == "successful"){
+                                                            window.location.href = solve.redirect;
+                                                        }
                                                     }
                                                 }
                                             }
-                                        }
+                                        });
                                     });
-                                });
-                            </script>
-                        </div>
-                     <a href="javascript:$('#renewal_list').slideToggle(400);void 0;" class="metalbtn gonderbtn"><i class="fa fa-refresh"></i> <?php echo __("website/account_products/renewal-now-button"); ?></a>
-                        <?php
-                    }else{
-                        ?>
-                        <a class="graybtn gonderbtn" style="cursor:no-drop;"><?php echo __("website/account_products/renewal-now-button"); ?></a>
-                        <?php
+                                </script>
+                            </div>
+                            <a href="javascript:$('#renewal_list').slideToggle(400);void 0;" class="metalbtn gonderbtn"><i class="fa fa-refresh"></i> <?php echo __("website/account_products/renewal-now-button"); ?></a>
+                            <?php
+                        }
+                        else
+                        {
+                            ?>
+                            <a class="graybtn gonderbtn" style="cursor:no-drop;"><?php echo __("website/account_products/renewal-now-button"); ?></a>
+                            <?php
+                        }
                     }
                 ?>
 
@@ -202,43 +209,70 @@
                     <td><strong><?php echo __("website/account_products/service-status"); ?></strong></td>
                     <td><?php echo $product_situations[$proanse["status"]]; ?></td>
                 </tr>
+
                 <?php
-                    $c_s_m = Config::get("modules/card-storage-module");
-                    if($c_s_m && $c_s_m != "none")
+
+                    if(isset($subscription) && $subscription["status"] != "cancelled")
                     {
-                        $o_a_p = isset($proanse["auto_pay"]) ? $proanse["auto_pay"]  : 0;
                         ?>
                         <tr>
                             <td><strong><?php echo __("website/account_products/auto-pay-1"); ?></strong></td>
                             <td>
-                                <input onchange="change_auto_pay_status(this);" type="checkbox" class="sitemio-checkbox" id="auto_pay" value="1"<?php echo $o_a_p ? ' checked' : ''; ?>>
-                                <label class="sitemio-checkbox-label" for="auto_pay"></label>
-
+                                <div id="subscription_status">
+                                    <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+                                </div>
                                 <script type="text/javascript">
-                                    function change_auto_pay_status(el){
-                                        let status = $(el).prop('checked') ? 1 : 0;
-
-                                        if(status === 1 && '<?php echo isset($stored_cards) && $stored_cards ? "true" : "false"; ?>' === "false")
-                                        {
-                                            alert_error("<?php echo __("website/account_products/auto-pay-3"); ?>",{timer:5000});
-                                            $(el).prop('checked',false);
-                                            return false;
-                                        }
-
-                                        MioAjax({
-                                            action:"<?php echo $links["controller"]; ?>",
-                                            method:"POST",
-                                            data:{operation:"set_auto_pay_status",status:status}
-                                        },true,true);
-                                        alert_success("<?php echo __("website/account_products/auto-pay-4"); ?>",{timer:3000});
-                                    }
+                                    $(document).ready(function(){
+                                        $.get("<?php echo $links["controller"]; ?>?operation=subscription_detail",function(data){
+                                            $("#subscription_status").html(data);
+                                        });
+                                    });
                                 </script>
-
                             </td>
                         </tr>
                         <?php
                     }
+
+                    if(!isset($subscription) || $subscription["status"] == "cancelled")
+                    {
+                        $c_s_m = Config::get("modules/card-storage-module");
+                        if($c_s_m && $c_s_m != "none")
+                        {
+                            $o_a_p = isset($proanse["auto_pay"]) ? $proanse["auto_pay"]  : 0;
+                            ?>
+                            <tr>
+                                <td><strong><?php echo __("website/account_products/auto-pay-1"); ?></strong></td>
+                                <td>
+                                    <input onchange="change_auto_pay_status(this);" type="checkbox" class="sitemio-checkbox" id="auto_pay" value="1"<?php echo $o_a_p ? ' checked' : ''; ?>>
+                                    <label class="sitemio-checkbox-label" for="auto_pay"></label>
+
+                                    <script type="text/javascript">
+                                        function change_auto_pay_status(el){
+                                            let status = $(el).prop('checked') ? 1 : 0;
+
+                                            if(status === 1 && '<?php echo isset($stored_cards) && $stored_cards ? "true" : "false"; ?>' === "false")
+                                            {
+                                                alert_error("<?php echo __("website/account_products/auto-pay-3"); ?>",{timer:5000});
+                                                $(el).prop('checked',false);
+                                                return false;
+                                            }
+
+                                            MioAjax({
+                                                action:"<?php echo $links["controller"]; ?>",
+                                                method:"POST",
+                                                data:{operation:"set_auto_pay_status",status:status}
+                                            },true,true);
+                                            alert_success("<?php echo __("website/account_products/auto-pay-4"); ?>",{timer:3000});
+                                        }
+                                    </script>
+
+                                </td>
+                            </tr>
+                            <?php
+                        }
+                    }
                 ?>
+
                 <tr>
                     <td><strong><?php echo __("website/account_products/payment-period"); ?></strong></td>
                     <td><?php echo View::period($proanse["period_time"],$proanse["period"]); ?></td>

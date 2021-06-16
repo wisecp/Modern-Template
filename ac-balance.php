@@ -210,29 +210,27 @@
     <div class="clear"></div>
 </div>
 <div id="Convert" data-izimodal-title="<?php echo __("website/balance/convert-modal-title") ?>" style="display: none;">
-    <div class="padding20">
-        <p id="ConvertBody"></p>
+    <div class="padding30">
+        <p style="    font-size: inherit;" id="ConvertBody"></p>  
 
-        <div class="yuzde50">
-            <a href="javascript:close_modal('Convert'),BuyCredit(true);void 0;" class="yesilbtn gonderbtn"><?php echo __("website/balance/convert-modal-ok"); ?></a>
+        <div class="line"></div>
+
+        <div align="center">
+            <a style="width:240px;" href="javascript:close_modal('Convert'),BuyCredit(true);void 0;" class="yesilbtn gonderbtn"><?php echo __("website/balance/convert-modal-ok"); ?></a>
         </div>
-        <div class="yuzde50">
-            <a href="javascript:close_modal('Convert');void 0;" class="redbtn gonderbtn"><?php echo __("website/balance/convert-modal-no"); ?></a>
-        </div>
+       
 
         <div class="clear"></div>
     </div>
 </div>
 <div id="Confirm" data-izimodal-title="<?php echo __("website/balance/confirm-modal-title") ?>" style="display: none;">
-    <div class="padding20">
-       <?php echo __("website/balance/confirm-modal-content") ?>
-<br>
-        <div class="yuzde50">
-            <a href="javascript:close_modal('Confirm'),BuyCredit(true,true);void 0;" class="yesilbtn gonderbtn"><?php echo __("website/balance/confirm-modal-ok"); ?></a>
+    <div class="padding30">
+      <p> <?php echo __("website/balance/confirm-modal-content") ?></p>
+<div class="line"></div>
+        <div align="center" class="">
+            <a style="width: 240px;" href="javascript:close_modal('Confirm'),BuyCredit(true,true);void 0;" class="yesilbtn gonderbtn"><?php echo __("website/balance/confirm-modal-ok"); ?></a>
         </div>
-        <div class="yuzde50">
-            <a href="javascript:close_modal('Confirm');void 0;" class="redbtn gonderbtn"><?php echo __("website/balance/confirm-modal-no"); ?></a>
-        </div>
+      
 
         <div class="clear"></div>
     </div>

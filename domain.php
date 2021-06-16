@@ -322,13 +322,13 @@
                                 });
 
                                 if(item.status == "available")
-                                    var LookupDomainStatus = '<?php echo __("website/domain/lookup-domain-status-available",[
+                                    var LookupDomainStatus = '<?php echo str_replace("'",'&#x27;',__("website/domain/lookup-domain-status-available",[
                                         "'" => "\'",
-                                    ]); ?>';
+                                    ])); ?>';
                                 else if(item.status == "unknown")
                                     var LookupDomainStatus = situations["unknown"];
                                 else
-                                    var LookupDomainStatus = '<?php echo __("website/domain/lookup-domain-status-unavailable"); ?>';
+                                    var LookupDomainStatus = '<?php echo str_replace("'",'&#x27;',__("website/domain/lookup-domain-status-unavailable")); ?>';
 
                                 LookupDomainStatus = LookupDomainStatus.replace("{domain}",item.domain);
                                 if(item.status == "available"){
@@ -399,7 +399,7 @@
         }
 
     }
-    
+
     function openWhois(domain)
     {
         var title = 'WHOIS';
@@ -415,7 +415,7 @@
         /*--------------*/
         window.open(url, title, 'scrollbars=yes, width=' + w + ', height=' + h + ', top=' + top + ', left=' + left);
     }
-    
+
     function transferModal(domain)
     {
         scrollUp();
@@ -542,7 +542,7 @@
                             array_pop($split_amount);
                             $amount2         = implode(" ",$split_amount);
                         }
-                        
+
                         ?>
                         <div class="uzantibox spotlight-tlds" data-name="<?php echo $row["name"]; ?>" style="position: relative;   ">
 
@@ -692,8 +692,8 @@
                 <th align="center" bgcolor="#F2F2F2"><strong><?php echo __("website/domain/tld-renewal"); ?></strong></th>
                 <th align="center" bgcolor="#F2F2F2"><strong><?php echo __("website/domain/tld-transfer"); ?></strong></th>
             </tr>
-        </thead>
-        <tbody>
+            </thead>
+            <tbody>
 
             <?php
                 if(isset($tldList) && is_array($tldList) && sizeof($tldList)){

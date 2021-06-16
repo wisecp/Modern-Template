@@ -235,20 +235,23 @@
                         </div>
                     <?php endif; ?>
 
-                    <?php if(isset($options["panel_type"]) && $options["panel_type"] == "WHM" && $options["panel_link"]): ?>
-                        <a target="_blank" href="<?php echo isset($options["panel_link"]) ? $options["panel_link"] : NULL; ?>" class="turuncbtn gonderbtn"><?php echo __("website/account_products/login-whm"); ?></a>
-                    <?php elseif(isset($options["panel_type"]) && $options["panel_type"] == "Plesk"): ?>
-                        <a target="_blank" href="<?php echo isset($options["panel_link"]) ? $options["panel_link"] : NULL; ?>" class="mavibtn gonderbtn"><?php echo __("website/account_products/login-plesk"); ?></a>
-                    <?php elseif(isset($options["panel_type"]) && $options["panel_type"] && $options["panel_link"]): ?>
-                        <a target="_blank" href="<?php echo isset($options["panel_link"]) ? $options["panel_link"] : NULL; ?>" class="mavibtn gonderbtn"><?php echo __("website/account_products/login-panel"); ?></a>
-                    <?php endif; ?>
-
-
                     <?php
-                        if(isset($product) && $product && $proanse["period"] != "none" && ($proanse["status"] == "active" || $proanse["status"] == "suspended") && !isset($proanse["disable_renewal"])){
+
+                        if((!isset($subscription) || $subscription["status"] == "cancelled") && isset($product) && $product && $proanse["period"] != "none" && ($proanse["status"] == "active" || $proanse["status"] == "suspended") && (!isset($proanse["disable_renewal"]) || !$proanse["disable_renewal"]) && (!isset($proanse["options"]["disable_renewal"]) || !$proanse["options"]["disable_renewal"])){
                             ?>
                             <div class="clear"></div>
                             <div id="order-service-detail-btns">
+
+
+                                <?php if(isset($options["panel_type"]) && $options["panel_type"] == "WHM" && $options["panel_link"]): ?>
+                                    <a target="_blank" href="<?php echo isset($options["panel_link"]) ? $options["panel_link"] : NULL; ?>" class="turuncbtn gonderbtn"><?php echo __("website/account_products/login-whm"); ?></a>
+                                <?php elseif(isset($options["panel_type"]) && $options["panel_type"] == "Plesk"): ?>
+                                    <a target="_blank" href="<?php echo isset($options["panel_link"]) ? $options["panel_link"] : NULL; ?>" class="mavibtn gonderbtn"><?php echo __("website/account_products/login-plesk"); ?></a>
+                                <?php elseif(isset($options["panel_type"]) && $options["panel_type"] && $options["panel_link"]): ?>
+                                    <a target="_blank" href="<?php echo isset($options["panel_link"]) ? $options["panel_link"] : NULL; ?>" class="mavibtn gonderbtn"><?php echo __("website/account_products/login-panel"); ?></a>
+                                <?php endif; ?>
+
+
                                 <div id="renewal_list" style="display:none;">
                                     <select id="selection_renewal">
                                         <option value=""><?php echo __("website/account_products/renewal-list-option"); ?></option>
@@ -328,43 +331,71 @@
                         <td><strong><?php echo __("website/account_products/service-status"); ?></strong></td>
                         <td><?php echo $product_situations[$proanse["status"]]; ?></td>
                     </tr>
+
                     <?php
-                        $c_s_m = Config::get("modules/card-storage-module");
-                        if($c_s_m && $c_s_m != "none")
+
+                        if(isset($subscription) && $subscription["status"] != "cancelled")
                         {
-                            $o_a_p = isset($proanse["auto_pay"]) ? $proanse["auto_pay"]  : 0;
                             ?>
                             <tr>
                                 <td><strong><?php echo __("website/account_products/auto-pay-1"); ?></strong></td>
                                 <td>
-                                    <input onchange="change_auto_pay_status(this);" type="checkbox" class="sitemio-checkbox" id="auto_pay" value="1"<?php echo $o_a_p ? ' checked' : ''; ?>>
-                                    <label class="sitemio-checkbox-label" for="auto_pay"></label>
-
+                                    <div id="subscription_status">
+                                        <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+                                    </div>
                                     <script type="text/javascript">
-                                        function change_auto_pay_status(el){
-                                            let status = $(el).prop('checked') ? 1 : 0;
-
-                                            if(status === 1 && '<?php echo isset($stored_cards) && $stored_cards ? "true" : "false"; ?>' === "false")
-                                            {
-                                                alert_error("<?php echo __("website/account_products/auto-pay-3"); ?>",{timer:5000});
-                                                $(el).prop('checked',false);
-                                                return false;
-                                            }
-
-                                            MioAjax({
-                                                action:"<?php echo $links["controller"]; ?>",
-                                                method:"POST",
-                                                data:{operation:"set_auto_pay_status",status:status}
-                                            },true,true);
-                                            alert_success("<?php echo __("website/account_products/auto-pay-4"); ?>",{timer:3000});
-                                        }
+                                        $(document).ready(function(){
+                                            $.get("<?php echo $links["controller"]; ?>?operation=subscription_detail",function(data){
+                                                $("#subscription_status").html(data);
+                                            });
+                                        });
                                     </script>
-
                                 </td>
                             </tr>
                             <?php
                         }
+
+
+                        if(!isset($subscription) || $subscription["status"] == "cancelled")
+                        {
+                            $c_s_m = Config::get("modules/card-storage-module");
+                            if($c_s_m && $c_s_m != "none")
+                            {
+                                $o_a_p = isset($proanse["auto_pay"]) ? $proanse["auto_pay"]  : 0;
+                                ?>
+                                <tr>
+                                    <td><strong><?php echo __("website/account_products/auto-pay-1"); ?></strong></td>
+                                    <td>
+                                        <input onchange="change_auto_pay_status(this);" type="checkbox" class="sitemio-checkbox" id="auto_pay" value="1"<?php echo $o_a_p ? ' checked' : ''; ?>>
+                                        <label class="sitemio-checkbox-label" for="auto_pay"></label>
+
+                                        <script type="text/javascript">
+                                            function change_auto_pay_status(el){
+                                                let status = $(el).prop('checked') ? 1 : 0;
+
+                                                if(status === 1 && '<?php echo isset($stored_cards) && $stored_cards ? "true" : "false"; ?>' === "false")
+                                                {
+                                                    alert_error("<?php echo __("website/account_products/auto-pay-3"); ?>",{timer:5000});
+                                                    $(el).prop('checked',false);
+                                                    return false;
+                                                }
+
+                                                MioAjax({
+                                                    action:"<?php echo $links["controller"]; ?>",
+                                                    method:"POST",
+                                                    data:{operation:"set_auto_pay_status",status:status}
+                                                },true,true);
+                                                alert_success("<?php echo __("website/account_products/auto-pay-4"); ?>",{timer:3000});
+                                            }
+                                        </script>
+
+                                    </td>
+                                </tr>
+                                <?php
+                            }
+                        }
                     ?>
+
                     <tr>
                         <td><strong><?php echo __("website/account_products/payment-period"); ?></strong></td>
                         <td><?php echo View::period($proanse["period_time"],$proanse["period"]); ?></td>
@@ -492,6 +523,45 @@
                                 <td><?php echo $options["login"]["password"]; ?></td>
                             </tr>
                         <?php endif; ?>
+
+                    </table>
+                </div>
+            <?php endif; ?>
+
+            <?php if(isset($options["assigned_ips"]) && strlen($options["assigned_ips"]) >= 5): ?>
+                <div class="hizmetblok" id="assigned_ips">
+                    <table width="100%" border="0">
+                        <tr>
+                            <td colspan="2" bgcolor="#ebebeb" ><strong><?php echo __("admin/orders/assigned-ips"); ?></strong></td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="2">
+                                <?php
+                                    echo nl2br($options["assigned_ips"]);
+                                ?>
+                            </td>
+                        </tr>
+
+                    </table>
+                </div>
+            <?php endif; ?>
+
+
+            <?php if(isset($options["descriptions"]) && strlen(strip_tags($options["descriptions"])) >= 5): ?>
+                <div class="hizmetblok" id="additional_descriptions">
+                    <table width="100%" border="0">
+                        <tr>
+                            <td colspan="2" bgcolor="#ebebeb" ><strong><?php echo __("website/account_products/additional-descriptions"); ?></strong></td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="2">
+                                <?php
+                                    echo Filter::link_convert(nl2br($options["descriptions"]));
+                                ?>
+                            </td>
+                        </tr>
 
                     </table>
                 </div>

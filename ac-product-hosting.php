@@ -669,42 +669,68 @@
                     <td><?php echo $product_situations[$proanse["status"]]; ?></td>
                 </tr>
                 <?php
-                    $c_s_m = Config::get("modules/card-storage-module");
-                    if($c_s_m && $c_s_m != "none")
+
+                    if(isset($subscription) && $subscription["status"] != "cancelled")
                     {
-                        $o_a_p = isset($proanse["auto_pay"]) ? $proanse["auto_pay"]  : 0;
                         ?>
                         <tr>
                             <td><strong><?php echo __("website/account_products/auto-pay-1"); ?></strong></td>
                             <td>
-                                <input onchange="change_auto_pay_status(this);" type="checkbox" class="sitemio-checkbox" id="auto_pay" value="1"<?php echo $o_a_p ? ' checked' : ''; ?>>
-                                <label class="sitemio-checkbox-label" for="auto_pay"></label>
-
+                                <div id="subscription_status">
+                                    <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+                                </div>
                                 <script type="text/javascript">
-                                    function change_auto_pay_status(el){
-                                        let status = $(el).prop('checked') ? 1 : 0;
-
-                                        if(status === 1 && '<?php echo isset($stored_cards) && $stored_cards ? "true" : "false"; ?>' === "false")
-                                        {
-                                            alert_error("<?php echo __("website/account_products/auto-pay-3"); ?>",{timer:5000});
-                                            $(el).prop('checked',false);
-                                            return false;
-                                        }
-
-                                        MioAjax({
-                                            action:"<?php echo $links["controller"]; ?>",
-                                            method:"POST",
-                                            data:{operation:"set_auto_pay_status",status:status}
-                                        },true,true);
-                                        alert_success("<?php echo __("website/account_products/auto-pay-4"); ?>",{timer:3000});
-                                    }
+                                    $(document).ready(function(){
+                                        $.get("<?php echo $links["controller"]; ?>?operation=subscription_detail",function(data){
+                                            $("#subscription_status").html(data);
+                                        });
+                                    });
                                 </script>
-
                             </td>
                         </tr>
                         <?php
                     }
+
+                    if(!isset($subscription) || $subscription["status"] == "cancelled")
+                    {
+                        $c_s_m = Config::get("modules/card-storage-module");
+                        if($c_s_m && $c_s_m != "none")
+                        {
+                            $o_a_p = isset($proanse["auto_pay"]) ? $proanse["auto_pay"]  : 0;
+                            ?>
+                            <tr>
+                                <td><strong><?php echo __("website/account_products/auto-pay-1"); ?></strong></td>
+                                <td>
+                                    <input onchange="change_auto_pay_status(this);" type="checkbox" class="sitemio-checkbox" id="auto_pay" value="1"<?php echo $o_a_p ? ' checked' : ''; ?>>
+                                    <label class="sitemio-checkbox-label" for="auto_pay"></label>
+
+                                    <script type="text/javascript">
+                                        function change_auto_pay_status(el){
+                                            let status = $(el).prop('checked') ? 1 : 0;
+
+                                            if(status === 1 && '<?php echo isset($stored_cards) && $stored_cards ? "true" : "false"; ?>' === "false")
+                                            {
+                                                alert_error("<?php echo __("website/account_products/auto-pay-3"); ?>",{timer:5000});
+                                                $(el).prop('checked',false);
+                                                return false;
+                                            }
+
+                                            MioAjax({
+                                                action:"<?php echo $links["controller"]; ?>",
+                                                method:"POST",
+                                                data:{operation:"set_auto_pay_status",status:status}
+                                            },true,true);
+                                            alert_success("<?php echo __("website/account_products/auto-pay-4"); ?>",{timer:3000});
+                                        }
+                                    </script>
+
+                                </td>
+                            </tr>
+                            <?php
+                        }
+                    }
                 ?>
+
                 <tr>
                     <td><strong><?php echo __("website/account_products/payment-period"); ?></strong></td>
                     <td><?php echo View::period($proanse["period_time"],$proanse["period"]); ?></td>
@@ -819,7 +845,7 @@
                                 <?php
                             }
 
-                            if(isset($product) && $product && $proanse["period"] != "none" && ($proanse["status"] == "active" || $proanse["status"] == "suspended") && !isset($proanse["disable_renewal"])){
+                            if((!isset($subscription) || $subscription["status"] == "cancelled") && isset($product) && $product && $proanse["period"] != "none" && ($proanse["status"] == "active" || $proanse["status"] == "suspended") && (!isset($proanse["disable_renewal"]) || !$proanse["disable_renewal"]) && (!isset($proanse["options"]["disable_renewal"]) || !$proanse["options"]["disable_renewal"]) ){
                                 ?>
                                 <div class="clear"></div>
                                 <div id="renewal_list" style="display:none;">
