@@ -1,82 +1,82 @@
 <?php defined('CORE_FOLDER') OR exit('You can not get in here!');
-$master_content_none = true;
-$logo            = Utility::image_link_determiner(Config::get("theme/notifi-header-logo"));
-if(!$logo) $logo = Utility::image_link_determiner(Config::get("theme/header-logo"));
-$status         = __("website/account_invoices/status-".$invoice["status"]);
-$status         = Utility::strtoupper($status);
-$cdate          = DateManager::format(Config::get("options/date-format"),$invoice["cdate"]);
-$duedate        = DateManager::format(Config::get("options/date-format"),$invoice["duedate"]);
-$datepaid       = substr($invoice["datepaid"],0,4) == "1881" ? '' : DateManager::format(Config::get("options/date-format")." H:i",$invoice["datepaid"]);
-$refunddate     = substr($invoice["refunddate"],0,4) == "1881" ? '' : DateManager::format(Config::get("options/date-format")." H:i",$invoice["refunddate"]);
-$sharing        = isset($sharing) ? $sharing : false;
-if($sharing) $censored = isset($udata) && $udata["id"] == $invoice["user_id"] ? false : true;
-else $censored       = false;
-if(isset($admin)) $censored = false;
+    $master_content_none = true;
+    $logo            = Utility::image_link_determiner(Config::get("theme/notifi-header-logo"));
+    if(!$logo) $logo = Utility::image_link_determiner(Config::get("theme/header-logo"));
+    $status         = __("website/account_invoices/status-".$invoice["status"]);
+    $status         = Utility::strtoupper($status);
+    $cdate          = DateManager::format(Config::get("options/date-format"),$invoice["cdate"]);
+    $duedate        = DateManager::format(Config::get("options/date-format"),$invoice["duedate"]);
+    $datepaid       = substr($invoice["datepaid"],0,4) == "1881" ? '' : DateManager::format(Config::get("options/date-format")." H:i",$invoice["datepaid"]);
+    $refunddate     = substr($invoice["refunddate"],0,4) == "1881" ? '' : DateManager::format(Config::get("options/date-format")." H:i",$invoice["refunddate"]);
+    $sharing        = isset($sharing) ? $sharing : false;
+    if($sharing) $censored = isset($udata) && $udata["id"] == $invoice["user_id"] ? false : true;
+    else $censored       = false;
+    if(isset($admin)) $censored = false;
 
-$GLOBALS["censured"] = $censored;
+    $GLOBALS["censured"] = $censored;
 
-function censored($type='',$data=''){
-    $data     = trim($data);
-    $censored = $GLOBALS["censured"];
-    if($censored){
-        $str_arr    = Utility::str_split($data);
-        $str        = NULL;
-        $size       = sizeof($str_arr)-1;
-
-        if($type == "company_tax_number" || $type == "identity"){
-            $lastCharC = $size-8;
-        }elseif($type == "company_tax_office"){
-            $lastCharC = $size <5 ? $size-3 : $size-4;
-        }elseif($type == "phone"){
-            $lastCharC = $size-4;
-        }
-
-        if($type == "email"){
-            $split      = explode("@",$data);
-            $prefix     = $split[0];
-            $suffix     = $split[1];
-            $dots       = explode(".",$suffix);
-            $str_arr    = str_split($prefix);
+    function censored($type='',$data=''){
+        $data     = trim($data);
+        $censored = $GLOBALS["censured"];
+        if($censored){
+            $str_arr    = Utility::str_split($data);
+            $str        = NULL;
             $size       = sizeof($str_arr)-1;
-            $charC      = $size < 5 ? $size-3 : $size-6;
-            for($i=0; $i<=$size; $i++){
-                $char = isset($str_arr[$i]) ? $str_arr[$i] : '';;
-                if($i>$charC) $str .= '*';
-                else $str .= $char;
-            }
-            $str    .= "@";
 
-            $str_arr    = str_split($dots[0]);
-            $size       = sizeof($str_arr);
-            $str        .= str_repeat("*",$size);
-            unset($dots[0]);
-            $str .= ".".implode(".",$dots);
-        }elseif(isset($firstCharC)){
-            for($i=0; $i<=$size; $i++){
-                $char = isset($str_arr[$i]) ? $str_arr[$i] : '';;
-                if($i<$firstCharC) $str .= '*';
-                else $str .= $char;
+            if($type == "company_tax_number" || $type == "identity"){
+                $lastCharC = $size-8;
+            }elseif($type == "company_tax_office"){
+                $lastCharC = $size <5 ? $size-3 : $size-4;
+            }elseif($type == "phone"){
+                $lastCharC = $size-4;
             }
-        }elseif(isset($lastCharC)){
-            for($i=0; $i<=$size; $i++){
-                $char = isset($str_arr[$i]) ? $str_arr[$i] : '';;
-                if($i>$lastCharC) $str .= '*';
-                else $str .= $char;
-            }
-        }else return $data;
 
-        return $str;
-    }else
-        return $data;
-}
+            if($type == "email"){
+                $split      = explode("@",$data);
+                $prefix     = $split[0];
+                $suffix     = $split[1];
+                $dots       = explode(".",$suffix);
+                $str_arr    = str_split($prefix);
+                $size       = sizeof($str_arr)-1;
+                $charC      = $size < 5 ? $size-3 : $size-6;
+                for($i=0; $i<=$size; $i++){
+                    $char = isset($str_arr[$i]) ? $str_arr[$i] : '';;
+                    if($i>$charC) $str .= '*';
+                    else $str .= $char;
+                }
+                $str    .= "@";
+
+                $str_arr    = str_split($dots[0]);
+                $size       = sizeof($str_arr);
+                $str        .= str_repeat("*",$size);
+                unset($dots[0]);
+                $str .= ".".implode(".",$dots);
+            }elseif(isset($firstCharC)){
+                for($i=0; $i<=$size; $i++){
+                    $char = isset($str_arr[$i]) ? $str_arr[$i] : '';;
+                    if($i<$firstCharC) $str .= '*';
+                    else $str .= $char;
+                }
+            }elseif(isset($lastCharC)){
+                for($i=0; $i<=$size; $i++){
+                    $char = isset($str_arr[$i]) ? $str_arr[$i] : '';;
+                    if($i>$lastCharC) $str .= '*';
+                    else $str .= $char;
+                }
+            }else return $data;
+
+            return $str;
+        }else
+            return $data;
+    }
 
 ?>
 <!DOCTYPE html>
 <html>
 <head>
     <?php
-    $hoptions = ["jquery-ui","jsPDF"];
-    include __DIR__.DS."inc/ac-head.php";
+        $hoptions = ["jquery-ui","jsPDF"];
+        include __DIR__.DS."inc/ac-head.php";
     ?>
 
     <script type="text/javascript">
@@ -134,57 +134,20 @@ function censored($type='',$data=''){
 <?php endif; ?>
 
 <style>
-    .invoice-detail-left {float:left;width:50%;}
-    .invoice-detail-right {float:right;width:50%;}
-    .custbillinfo {
-        float: left;
-        width: 100%;
-        font-size: 14px;
-    }
-    .invoicestatus{
-        width: 100%;
-        margin-top: 20px;
-    }
-    .invoiceidx {
-        width: 100%;
-        font-size: 24px;
-        font-weight: 600;
-        text-align: left;
-        margin: 10px 0px;
-    }
-    .companybillinfo{
-        width: 100%;
-    }
-    .invoicetimes {
-        width: 60%;
-
-    }
-    .invoicepaymethod{
-        font-family: 'Titillium Web',sans-serif; font-weight: 500;
-        font-size: 16px;margin-top: 10px;
-    }
-    .invoicedesc .formcon {
-        background: rgb(229 229 228 / 49%);
-        border-bottom: 1px solid #e1e1e1;
-    }
-    .invoicedesc{
-        margin-bottom: 25px;
-    }
-    @media only screen and (min-width:320px) and (max-width:1024px) {
-        .invoice-detail-right {
-            width: 100%;
-        }
-        .invoicetimes {
-            margin-top: 0px;
-            width: 100%;
-        }
-        .companybillinfo {
-            margin-bottom: 10px;
-        }
-        .invoice-detail-left {
-            width: 100%;
-            margin-top: 35px;
-        }
+    .invoice-detail-left{float:left;width:50%}
+    .invoice-detail-right{float:right;width:50%}
+    .custbillinfo{float:left;width:100%;font-size:14px}
+    .invoicestatus{width:100%;margin-top:20px}
+    .invoiceidx{width:100%;font-size:24px;font-weight:600;text-align:left;margin:10px 0px}
+    .companybillinfo{width:100%}
+    .invoicetimes{width:60%}
+    .invoicepaymethod{font-family:'Titillium Web',sans-serif;font-weight:500;font-size:16px;margin-top:10px;    color: inherit;}
+    .invoicedesc .formcon{background:rgb(229 229 228 / 49%);border-bottom:1px solid #e1e1e1}
+    .invoicedesc{margin-bottom:25px}
+    @media only screen and (min-width:320px) and (max-width:1024px){.invoice-detail-right{width:100%}
+        .invoicetimes{margin-top:0px;width:100%}
+        .companybillinfo{margin-bottom:10px}
+        .invoice-detail-left{width:100%;margin-top:35px}
     }
 </style>
 
@@ -342,18 +305,18 @@ function censored($type='',$data=''){
 
                 <?php
 
-                if(isset($items) && $items){
-                    foreach($items AS $item){
-                        $amount = $item["total_amount"];
-                        $cid    = isset($item["currency"]) ? $item["currency"] : $item["cid"];
-                        ?>
-                        <div class="formcon" style="background:white;">
-                            <div class="yuzde70"><span class="padding10"><?php echo implode("<br>- ",explode(EOL,$item["description"])); ?></span></div>
-                            <div class="yuzde30"><span><?php echo Money::formatter_symbol($amount,$cid); ?></span></div>
-                        </div>
-                        <?php
+                    if(isset($items) && $items){
+                        foreach($items AS $item){
+                            $amount = $item["total_amount"];
+                            $cid    = isset($item["currency"]) ? $item["currency"] : $item["cid"];
+                            ?>
+                            <div class="formcon" style="background:white;">
+                                <div class="yuzde70"><span class="padding10"><?php echo implode("<br>- ",explode(EOL,$item["description"])); ?></span></div>
+                                <div class="yuzde30"><span><?php echo Money::formatter_symbol($amount,$cid); ?></span></div>
+                            </div>
+                            <?php
+                        }
                     }
-                }
 
                 ?>
 
@@ -375,69 +338,69 @@ function censored($type='',$data=''){
                 </div>
 
                 <?php
-                if($invoice["discounts"]){
-                    $discounts = $invoice["discounts"] ? Utility::jdecode($invoice["discounts"],true) : [];
-                    if($discounts){
-                        $total_discount_amount = 0;
-                        $items  = $discounts["items"];
+                    if($invoice["discounts"]){
+                        $discounts = $invoice["discounts"] ? Utility::jdecode($invoice["discounts"],true) : [];
+                        if($discounts){
+                            $total_discount_amount = 0;
+                            $items  = $discounts["items"];
 
-                        if(isset($items["coupon"]) && $items["coupon"]){
-                            foreach($items["coupon"] AS $item){
-                                $name   = $item["name"]." - ".$item["dvalue"];
-                                $total_discount_amount += $item["amountd"];
+                            if(isset($items["coupon"]) && $items["coupon"]){
+                                foreach($items["coupon"] AS $item){
+                                    $name   = $item["name"]." - ".$item["dvalue"];
+                                    $total_discount_amount += $item["amountd"];
+                                    ?>
+                                    <div class="formcon" style="padding: 0px;">
+                                        <div class="yuzde70" style="text-align:right;"><span><?php echo $name; ?></span></div>
+                                        <div class="yuzde30"><span><strong>-<?php echo $item["amount"]; ?></strong></span></div>
+                                    </div>
+                                    <?php
+                                }
+                            }
+
+                            if(isset($items["promotions"]) && $items["promotions"]){
+                                foreach($items["promotions"] AS $item){
+                                    $name   = $item["name"]." - ".$item["dvalue"];
+                                    $total_discount_amount += $item["amountd"];
+                                    ?>
+                                    <div class="formcon" style="padding: 0px;">
+                                        <div class="yuzde70" style="text-align:right;"><span><?php echo $name; ?></span></div>
+                                        <div class="yuzde30"><span><strong>-<?php echo $item["amount"]; ?></strong></span></div>
+                                    </div>
+                                    <?php
+                                }
+                            }
+
+
+                            if(isset($items["dealership"]) && $items["dealership"]){
+                                foreach($items["dealership"] AS $item){
+                                    $name   = $item["name"]." - %".$item["rate"];
+                                    $total_discount_amount += $item["amountd"];
+                                    ?>
+                                    <div class="formcon" style="padding: 0px;">
+                                        <div class="yuzde70" style="text-align:right;"><span><?php echo $name; ?></span></div>
+                                        <div class="yuzde30"><span><strong>-<?php echo $item["amount"]; ?></strong></span></div>
+                                    </div>
+                                    <?php
+                                }
+                            }
+
+                            if($total_discount_amount){
+                                $discounted_total_amount = $invoice["subtotal"] - $total_discount_amount;
                                 ?>
-                                <div class="formcon" style="padding: 0px;">
-                                    <div class="yuzde70" style="text-align:right;"><span><?php echo $name; ?></span></div>
-                                    <div class="yuzde30"><span><strong>-<?php echo $item["amount"]; ?></strong></span></div>
+                                <div class="formcon" style="font-weight: bold;color: #4caf50;">
+                                    <div class="yuzde70" style="text-align:right;"><span><?php echo __("website/account_invoices/total-discount-amount"); ?></span></div>
+                                    <div class="yuzde30"><span style="color: #4caf50;"><strong>-<?php echo Money::formatter_symbol($total_discount_amount,$invoice["currency"]); ?></strong></span></div>
+                                </div>
+
+                                <div class="formcon">
+                                    <div class="yuzde70" style="text-align:right;"><span><?php echo __("website/account_invoices/discounted-total"); ?></span></div>
+                                    <div class="yuzde30"><span><strong><?php echo Money::formatter_symbol($discounted_total_amount,$invoice["currency"]); ?></strong></span></div>
                                 </div>
                                 <?php
                             }
+
                         }
-
-                        if(isset($items["promotions"]) && $items["promotions"]){
-                            foreach($items["promotions"] AS $item){
-                                $name   = $item["name"]." - ".$item["dvalue"];
-                                $total_discount_amount += $item["amountd"];
-                                ?>
-                                <div class="formcon" style="padding: 0px;">
-                                    <div class="yuzde70" style="text-align:right;"><span><?php echo $name; ?></span></div>
-                                    <div class="yuzde30"><span><strong>-<?php echo $item["amount"]; ?></strong></span></div>
-                                </div>
-                                <?php
-                            }
-                        }
-
-
-                        if(isset($items["dealership"]) && $items["dealership"]){
-                            foreach($items["dealership"] AS $item){
-                                $name   = $item["name"]." - %".$item["rate"];
-                                $total_discount_amount += $item["amountd"];
-                                ?>
-                                <div class="formcon" style="padding: 0px;">
-                                    <div class="yuzde70" style="text-align:right;"><span><?php echo $name; ?></span></div>
-                                    <div class="yuzde30"><span><strong>-<?php echo $item["amount"]; ?></strong></span></div>
-                                </div>
-                                <?php
-                            }
-                        }
-
-                        if($total_discount_amount){
-                            $discounted_total_amount = $invoice["subtotal"] - $total_discount_amount;
-                            ?>
-                            <div class="formcon" style="font-weight: bold;color: #4caf50;">
-                                <div class="yuzde70" style="text-align:right;"><span><?php echo __("website/account_invoices/total-discount-amount"); ?></span></div>
-                                <div class="yuzde30"><span style="color: #4caf50;"><strong>-<?php echo Money::formatter_symbol($total_discount_amount,$invoice["currency"]); ?></strong></span></div>
-                            </div>
-
-                            <div class="formcon">
-                                <div class="yuzde70" style="text-align:right;"><span><?php echo __("website/account_invoices/discounted-total"); ?></span></div>
-                                <div class="yuzde30"><span><strong><?php echo Money::formatter_symbol($discounted_total_amount,$invoice["currency"]); ?></strong></span></div>
-                            </div>
-                            <?php
-                        }
-
                     }
-                }
                 ?>
 
                 <div id="tax_wrap" class="formcon" style="<?php echo $invoice["tax"]>0 && $invoice["taxrate"]>0 ? '' : 'display:none;'; ?>">

@@ -1,7 +1,12 @@
 <?php defined('CORE_FOLDER') OR exit('You can not get in here!');
     if(!isset($hoptions)) $hoptions = [];
     if(isset($hoptions["page"]) && $hoptions["page"] != "index" && isset($meta["title"]))
-        $meta["title"] .= " - ".__("website/index/meta/title");
+    {
+        $suffix         = __("website/index/meta/title-suffix");
+        $home_title     = __("website/index/meta/title");
+        if(strlen($suffix) > 1)
+            $meta["title"] = str_replace(['{home_title}','{page_title}'],[$home_title,$meta["title"]],$suffix);
+    }
 ?>
 <!-- Meta Tags -->
 <title><?php echo isset($meta["title"]) ? $meta["title"] : NULL; ?></title>
@@ -32,43 +37,32 @@
 <?php
     View::main_style();
 ?>
-
 <link rel="stylesheet" href="<?php echo $tadress;?>css/wisecp.css?v=<?php echo License::get_version(); ?>"/>
-
 <link href="https://fonts.googleapis.com/css?family=Raleway:300,400,500,700,800|Titillium+Web:200,300,400,600,700&amp;subset=latin-ext" rel="stylesheet">
 <link rel="stylesheet" href="<?php echo $tadress;?>css/font-awesome.min.css">
 <link rel="stylesheet" href="<?php echo $tadress;?>css/ionicons.min.css"/>
 <link rel="stylesheet" href="<?php echo $tadress;?>css/animate.css" media="none" onload="if(media!='all')media='all'">
 <link rel="stylesheet" href="<?php echo $tadress;?>css/aos.css" />
-
-
 <?php if(isset($hoptions) && in_array("aos",$hoptions)): ?>
 <?php endif; ?>
-<?php if(in_array("highlightjs",$hoptions)): ?>
-    <link rel="stylesheet" href="<?php echo $sadress; ?>assets/plugins/highlightjs/styles/zenburn.css">
+<?php if(in_array("highlightjs",$hoptions)): ?><link rel="stylesheet" href="<?php echo $sadress; ?>assets/plugins/highlightjs/styles/zenburn.css">
 <?php endif; ?>
-<?php if(in_array("jquery-ui",$hoptions)): ?>
-    <link rel="stylesheet" href="<?php echo $sadress; ?>assets/plugins/css/jquery-ui.css">
+<?php if(in_array("jquery-ui",$hoptions)): ?><link rel="stylesheet" href="<?php echo $sadress; ?>assets/plugins/css/jquery-ui.css">
 <?php endif; ?>
 <?php if(in_array("intlTelInput",$hoptions)): ?>
     <link rel="stylesheet" href="<?php echo $sadress; ?>assets/plugins/phone-cc/css/intlTelInput.css">
 <?php endif; ?>
-<?php if(in_array("dataTables",$hoptions)): ?>
-    <link rel="stylesheet" href="<?php echo $sadress; ?>assets/plugins/dataTables/css/jquery.dataTables.min.css">
+<?php if(in_array("dataTables",$hoptions)): ?><link rel="stylesheet" href="<?php echo $sadress; ?>assets/plugins/dataTables/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="<?php echo $sadress; ?>assets/plugins/dataTables/css/dataTables.responsive.min.css">
 <?php endif; ?>
-<?php if(in_array("select2",$hoptions)): ?>
-    <link rel="stylesheet" href="<?php echo $sadress; ?>assets/plugins/select2/css/select2.min.css">
+<?php if(in_array("select2",$hoptions)): ?><link rel="stylesheet" href="<?php echo $sadress; ?>assets/plugins/select2/css/select2.min.css">
 <?php endif; ?>
-<?php if(in_array("jQtags",$hoptions)): ?>
-    <link rel="stylesheet" href="<?php echo $sadress; ?>assets/plugins/tags/jquery.tagsinput.min.css">
+<?php if(in_array("jQtags",$hoptions)): ?><link rel="stylesheet" href="<?php echo $sadress; ?>assets/plugins/tags/jquery.tagsinput.min.css">
 <?php endif; ?>
-<?php if(in_array("ion.rangeSlider",$hoptions)): ?>
-    <link rel="stylesheet" href="<?php echo $sadress; ?>assets/plugins/ion.rangeSlider/css/ion.rangeSlider.min.css">
+<?php if(in_array("ion.rangeSlider",$hoptions)): ?><link rel="stylesheet" href="<?php echo $sadress; ?>assets/plugins/ion.rangeSlider/css/ion.rangeSlider.min.css">
 <?php endif; ?>
-
-<?php if(___("package/rtl")): ?><link rel="stylesheet" href="<?php echo $sadress."assets/style/theme-rtl.css?v=".License::get_version();?>&lang=<?php echo Bootstrap::$lang->clang; ?>"><?php endif; ?>
-
+<?php if(___("package/rtl")): ?><link rel="stylesheet" href="<?php echo $sadress."assets/style/theme-rtl.css?v=".License::get_version();?>&lang=<?php echo Bootstrap::$lang->clang; ?>">
+<?php endif; ?><link rel="stylesheet" href="<?php echo $sadress; ?>assets/style/theme-extra.css?v=<?php echo License::get_version(); ?>"  type="text/css">
 <!-- Css -->
 
 <!-- Js -->

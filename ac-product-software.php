@@ -126,7 +126,19 @@
                             <select id="selection_renewal">
                                 <option value=""><?php echo __("website/account_products/renewal-list-option"); ?></option>
                                 <?php
-                                    if(isset($product["price"])){
+                                    if(isset($options["pricing-type"]) && $options["pricing-type"] == 2)
+                                    {
+                                        ?>
+                                        <option value="special-pricing">
+                                            <?php
+                                                echo View::period($proanse["period_time"],$proanse["period"]);
+                                                echo " ";
+                                                echo Money::formatter_symbol($proanse["amount"],$proanse["amount_cid"]);
+                                            ?>
+                                        </option>
+                                        <?php
+                                    }
+                                    elseif(isset($product["price"])){
                                         foreach($product["price"] AS $k=>$v){
                                             ?>
                                             <option value="<?php echo $k; ?>"><?php
@@ -163,8 +175,7 @@
                                 });
                             </script>
                         </div>
-                        <a href="javascript:$('#renewal_list').slideToggle(400);void 0;"
-                           class="mavibtn gonderbtn"><i class="fa fa-refresh"></i> <?php echo __("website/account_products/renewal-now-button"); ?></a>
+                        <a id="renewal_list_btn" href="<?php echo isset($invoice) && $invoice["status"] == "unpaid" ? $invoice["detail_link"] : "javascript:$('#renewal_list').slideToggle(400);void 0;"; ?>" class="mavibtn gonderbtn"><i class="fa fa-refresh"></i> <?php echo __("website/account_products/renewal-now-button"); ?></a>
                         <div class="clear"></div>
                         <?php
                     }

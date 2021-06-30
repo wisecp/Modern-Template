@@ -1,4 +1,11 @@
-<?php defined('CORE_FOLDER') OR exit('You can not get in here!'); ?><!-- Meta Tags -->
+<?php
+    defined('CORE_FOLDER') OR exit('You can not get in here!');
+    $suffix         = __("website/index/meta/title-suffix");
+    $home_title     = __("website/index/meta/title");
+    if(strlen($suffix) > 1)
+        $meta["title"] = str_replace(['{home_title}','{page_title}'],[$home_title,$meta["title"]],$suffix);
+?>
+<!-- Meta Tags -->
 <?php View::main_meta(); ?>
 <title><?php echo $meta["title"]; ?></title>
 <meta http-equiv="content-language" content="<?php echo ___("package/code");?>">
@@ -20,30 +27,21 @@
 <link rel="stylesheet" href="<?php echo $tadress;?>css/ionicons.min.css"/>
 <link rel="stylesheet" href="<?php echo $tadress;?>css/animate.css" media="none" onload="if(media!='all')media='all'">
 <link rel="stylesheet" href="<?php echo $tadress;?>css/aos.css" />
-
-
 <?php if(isset($hoptions) && in_array("jquery-ui",$hoptions)): ?>
 <link rel="stylesheet" href="<?php echo $sadress;?>assets/plugins/css/jquery-ui.css">
 <?php endif; ?>
-
-<?php if(isset($hoptions) && in_array("datatables",$hoptions)): ?>
-<link rel="stylesheet" href="<?php echo $tadress;?>css/jquery.dataTables.min.css" />
+<?php if(isset($hoptions) && in_array("datatables",$hoptions)): ?><link rel="stylesheet" href="<?php echo $tadress;?>css/jquery.dataTables.min.css" />
 <link rel="stylesheet" href="<?php echo $tadress;?>css/dataTables.responsive.min.css" />
 <?php endif; ?>
-
-<?php if(isset($hoptions) && in_array("iziModal",$hoptions)): ?>
-    <link rel="stylesheet" type="text/css" href="<?php echo $sadress; ?>assets/plugins/iziModal/css/iziModal.min.css?v=<?php echo License::get_version(); ?>">
+<?php if(isset($hoptions) && in_array("iziModal",$hoptions)): ?><link rel="stylesheet" type="text/css" href="<?php echo $sadress; ?>assets/plugins/iziModal/css/iziModal.min.css?v=<?php echo License::get_version(); ?>">
 <?php endif; ?>
-
-<?php if(isset($hoptions) && in_array("select2",$hoptions)): ?>
-    <link rel="stylesheet" href="<?php echo $sadress; ?>assets/plugins/select2/css/select2.min.css">
+<?php if(isset($hoptions) && in_array("select2",$hoptions)): ?><link rel="stylesheet" href="<?php echo $sadress; ?>assets/plugins/select2/css/select2.min.css">
 <?php endif; ?>
-<?php if(isset($hoptions) && in_array("ion.rangeSlider",$hoptions)): ?>
-    <link rel="stylesheet" href="<?php echo $sadress; ?>assets/plugins/ion.rangeSlider/css/ion.rangeSlider.min.css">
+<?php if(isset($hoptions) && in_array("ion.rangeSlider",$hoptions)): ?><link rel="stylesheet" href="<?php echo $sadress; ?>assets/plugins/ion.rangeSlider/css/ion.rangeSlider.min.css">
 <?php endif; ?>
-
-<?php if(___("package/rtl")): ?><link rel="stylesheet" href="<?php echo $sadress."assets/style/theme-rtl.css?v=".License::get_version();?>&lang=<?php echo Bootstrap::$lang->clang; ?>"><?php endif; ?>
-
+<?php if(___("package/rtl")): ?><link rel="stylesheet" href="<?php echo $sadress."assets/style/theme-rtl.css?v=".License::get_version();?>&lang=<?php echo Bootstrap::$lang->clang; ?>">
+<?php endif; ?>
+<link rel="stylesheet" href="<?php echo $sadress; ?>assets/style/theme-extra.css?v=<?php echo License::get_version(); ?>"  type="text/css">
 <!-- Css -->
 
 <!-- Js -->

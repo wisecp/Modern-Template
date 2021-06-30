@@ -595,12 +595,12 @@
 
             <center>
                 <p></p>
-                <div class="clear"></div>
-                <div class="line"></div>
-                <a href="javascript:balance_warning('ok');void 0;" class="gonderbtn yesilbtn"><?php echo __("website/basket/balance-warning-ok"); ?></a>
             </center>
 
         </div>
+    <div class="modal-foot-btn">
+        <a href="javascript:balance_warning('ok');void 0;" class="green lbtn"><?php echo __("website/basket/balance-warning-ok"); ?></a>
+    </div>
     </div>
 <div id="InsufficientBalance" style="display: none;" data-izimodal-title="<?php echo __("website/basket/pay-button"); ?>">
         <div class="padding20">
