@@ -1,3 +1,4 @@
+
 <?php defined('CORE_FOLDER') OR exit('You can not get in here!');
     $hoptions = [
         'page' => "basket-pay",
@@ -97,7 +98,7 @@
                                 var amount_info = amount_divider(ditem.amount);
                                 d_content  = '<tr>';
                                 d_seee     = d_see.replace('{rate}',ditem.rate);
-                                d_content += '<td><strong>'+d_seee+'</strong><br>('+ditem.name+') </td>';
+                                d_content += '<td><strong>'+d_seee+'</strong>'+(ditem.name !== null ? '<br>('+ditem.name+')' : '')+' </td>';
                                 d_content += '<td align="right"><h5><div class="amount_spot_view"><i class="currpos'+amount_info.symbol_pos+'">'+amount_info.symbol+'</i> -'+amount_info.amount+'</div></h5></td>';
                                 d_content += '</tr>';
                                 $("#dealership_discounts").append(d_content);
@@ -126,6 +127,7 @@
                             var see,see_text;
                             see     = $("#tax-see");
                             see_text = see.html();
+                            see_text = see_text.replace('{rates}',solve.tax_rates ?? '');
                             see_text = see_text.replace('{rate}',solve.tax_rate);
                             see.html(see_text);
                             if(solve.total_tax_amount != undefined){

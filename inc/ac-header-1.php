@@ -3,25 +3,49 @@
 ?>
 <div class="mpanelinfo">
     <div id="wrapper">
-
         <script type="text/javascript">
             var dashboard_styleToggle=false;
-            function dashboard_style_toggle(){
-                if(dashboard_styleToggle){
-                    $(".leftbar").css({'margin-left':'-80%'});
-                    $("#button_close").css("display","none");
-                    $(".mobmenuclose").css("display","none");
-                    $("body").css("overflow","auto");
-                    $("#dashboard_button_open").fadeIn(0);
-                    dashboard_styleToggle = false;
-                }else{
-                    $(".leftbar").css({'margin-left':'0px'});
-                    $(".mobmenuclose").css("display","block");
-                    $("body").css("overflow","hidden");
+            var is_rtl = <?php echo (int) ___("package/rtl"); ?>;
 
-                    $("#dashboard_button_close").fadeIn(100);
-                    dashboard_styleToggle = true;
+            function dashboard_style_toggle(){
+
+                if(is_rtl)
+                {
+                    if(dashboard_styleToggle){
+                        $(".leftbar").css({'right':'-80%'});
+                        $("#button_close").css("display","none");
+                        $(".mobmenuclose").css("display","none");
+                        $("body").css("overflow","auto");
+                        $("#dashboard_button_open").fadeIn(0);
+                        dashboard_styleToggle = false;
+                    }else{
+                        $(".leftbar").css({'right':'0px'});
+                        $(".mobmenuclose").css("display","block");
+                        $("body").css("overflow","hidden");
+
+                        $("#dashboard_button_close").fadeIn(100);
+                        dashboard_styleToggle = true;
+                    }
                 }
+                else
+                {
+                    if(dashboard_styleToggle){
+                        $(".leftbar").css({'margin-left':'-80%'});
+                        $("#button_close").css("display","none");
+                        $(".mobmenuclose").css("display","none");
+                        $("body").css("overflow","auto");
+                        $("#dashboard_button_open").fadeIn(0);
+                        dashboard_styleToggle = false;
+                    }else{
+                        $(".leftbar").css({'margin-left':'0px'});
+                        $(".mobmenuclose").css("display","block");
+                        $("body").css("overflow","hidden");
+
+                        $("#dashboard_button_close").fadeIn(100);
+                        dashboard_styleToggle = true;
+                    }
+                }
+
             }
 
             function read_all_notifications(btn_el){

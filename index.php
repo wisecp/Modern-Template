@@ -18,6 +18,7 @@
     $get_pcategory  = $functions["get_product_category"];
     $get_products   = $functions["get_products"];
     $get_picture    = $functions["get_picture"];
+    $get_categoryi  =  $functions["get_category_icon"];
     $folder         = Config::get("pictures/blocks/folder");
 
     foreach ($blocks AS $name=>$item){
@@ -57,6 +58,7 @@
             else
                 $first_price = 0;
             ?>
+            <div class="clear"></div>
             <div class="homedomainarea-con" data-aos="fade-up">
                 <div class="homedomainarea">
                     <div class="padding30">
@@ -70,49 +72,46 @@
 
                             <?php
                                 if(isset($tldList) && is_array($tldList) && sizeof($tldList)>0){
-                                    for($i=0; $i<=7; $i++){
-                                        if(isset($tldList[$i])){
-                                            $list = $tldList[$i];
-                                            $amount = $list["reg_price"]["amount"];
+                                    foreach($tldList AS $i => $list){
+                                        $amount = $list["reg_price"]["amount"];
 
-                                            if($list["promo_status"] && (substr($list["promo_duedate"],0,4) == '1881' || DateManager::strtotime($list["promo_duedate"]." 23:59:59") > DateManager::strtotime()) && $list["promo_register_price"]>0){
-                                                $amount = $list["promo_register_price"];
-                                            }
-
-                                            $amount     = Money::formatter_symbol($amount,$list["reg_price"]["cid"],!$domain_override_uscurrency);
-                                            $amount_symbol_position = '';
-                                            $split_amount   = explode(" ",$amount);
-                                            $amount_symbol  = '';
-                                            if(in_array(current($split_amount),$currency_symbols)){
-                                                $amount_symbol_position = "left";
-                                                $amount_symbol  = current($split_amount);
-                                                array_shift($split_amount);
-                                                $amount         = implode(" ",$split_amount);
-                                            }elseif(in_array(end($split_amount),$currency_symbols)){
-                                                $amount_symbol_position = "right";
-                                                $amount_symbol  = end($split_amount);
-                                                array_pop($split_amount);
-                                                $amount         = implode(" ",$split_amount);
-                                            }
-
-                                            $is_img = false;
-                                            $is_svg = "images".DS."tldlogos".DS.$list["name"].".svg";
-                                            $is_png = "images".DS."tldlogos".DS.$list["name"].".png";
-                                            $is_jpg = "images".DS."tldlogos".DS.$list["name"].".jpg";
-                                            if(file_exists(View::$init->get_template_dir().$is_svg)) $is_img = $is_svg;
-                                            elseif(file_exists(View::$init->get_template_dir().$is_png)) $is_img = $is_png;
-                                            elseif(file_exists(View::$init->get_template_dir().$is_jpg)) $is_img = $is_jpg;
-                                            ?>
-                                            <div class="spottlds">
-                                                <?php if($is_img): ?>
-                                                    <img src="<?php echo Utility::image_link_determiner($tadress.$is_img); ?>" alt=".<?php echo $list["name"]; ?>">
-                                                <?php else: ?>
-                                                    .<?php echo $list["name"]; ?>
-                                                <?php endif; ?>
-                                                <h5><div class="amount_spot_view"><i class="currpos<?php echo $amount_symbol_position; ?>"><?php echo $amount_symbol; ?></i> <?php echo $amount; ?></div></h5>
-                                            </div>
-                                            <?php
+                                        if($list["promo_status"] && (substr($list["promo_duedate"],0,4) == '1881' || DateManager::strtotime($list["promo_duedate"]." 23:59:59") > DateManager::strtotime()) && $list["promo_register_price"]>0){
+                                            $amount = $list["promo_register_price"];
                                         }
+
+                                        $amount     = Money::formatter_symbol($amount,$list["reg_price"]["cid"],!$domain_override_uscurrency);
+                                        $amount_symbol_position = '';
+                                        $split_amount   = explode(" ",$amount);
+                                        $amount_symbol  = '';
+                                        if(in_array(current($split_amount),$currency_symbols)){
+                                            $amount_symbol_position = "left";
+                                            $amount_symbol  = current($split_amount);
+                                            array_shift($split_amount);
+                                            $amount         = implode(" ",$split_amount);
+                                        }elseif(in_array(end($split_amount),$currency_symbols)){
+                                            $amount_symbol_position = "right";
+                                            $amount_symbol  = end($split_amount);
+                                            array_pop($split_amount);
+                                            $amount         = implode(" ",$split_amount);
+                                        }
+
+                                        $is_img = false;
+                                        $is_svg = "images".DS."tldlogos".DS.$list["name"].".svg";
+                                        $is_png = "images".DS."tldlogos".DS.$list["name"].".png";
+                                        $is_jpg = "images".DS."tldlogos".DS.$list["name"].".jpg";
+                                        if(file_exists(View::$init->get_template_dir().$is_svg)) $is_img = $is_svg;
+                                        elseif(file_exists(View::$init->get_template_dir().$is_png)) $is_img = $is_png;
+                                        elseif(file_exists(View::$init->get_template_dir().$is_jpg)) $is_img = $is_jpg;
+                                        ?>
+                                        <div class="spottlds">
+                                            <?php if($is_img): ?>
+                                                <img src="<?php echo Utility::image_link_determiner($tadress.$is_img); ?>" alt=".<?php echo $list["name"]; ?>">
+                                            <?php else: ?>
+                                                .<?php echo $list["name"]; ?>
+                                            <?php endif; ?>
+                                            <h5><div class="amount_spot_view"><i class="currpos<?php echo $amount_symbol_position; ?>"><?php echo $amount_symbol; ?></i> <?php echo $amount; ?></div></h5>
+                                        </div>
+                                        <?php
                                     }
                                 }
                             ?>
@@ -173,6 +172,8 @@
                 $categories = [];
                 foreach($citems AS $citem){
                     $ccategory = $get_pcategory($citem);
+                    $cat_icon = $get_categoryi($citem);
+                    if($cat_icon) $ccategory["icon"] = $cat_icon;
                     if($ccategory) $categories[] = $ccategory;
                 }
                 $cat_size   = sizeof($categories);
@@ -190,6 +191,7 @@
 
 
                     ?>
+                    <div class="clear"></div>
                     <div id="group_<?php echo $group["id"]; ?>">
                         <div class="tablopaketler products_list">
                             <div id="wrapper">
@@ -212,7 +214,13 @@
                                                 ?>
                                                 <a href="javascript:void(0);" class="gonderbtn"
                                                    data-target="cat<?php echo $category["id"]; ?>"
-                                                ><?php echo $category["title"]; ?></a>
+                                                >
+                                                    <?php if(isset($category["options"]["icon"]) && $category["options"]["icon"]): ?>
+                                                        <i class="<?php echo $category["options"]["icon"]; ?>" aria-hidden="true"></i>
+                                                    <?php elseif(isset($category["icon"]) && $category["icon"]): ?>
+                                                        <img src="<?php echo $category["icon"]; ?>" style="height: 50px;width: auto;float: left;margin-right: 10px;">
+                                                    <?php endif; ?>
+                                                    <?php echo $category["title"]; ?></a>
                                                 <?php
                                             }
                                         ?>
@@ -608,89 +616,6 @@
 
         if($name=="customer-feedback" && $item["status"]==1){
             ?>
-            <?php if($item["send-opinion"] == 1): ?>
-                <div id="gorusgonder" style="display: none;" data-izimodal-title="<?php echo __("website/cfeedback/add_title"); ?>">
-                    <div class="padding10">
-                        <form action="<?php echo $cfeedback_form_action;?>" method="POST" id="FeedbackForm" enctype="multipart/form-data">
-                            <?php echo Validation::get_csrf_token('cfeedback'); ?>
-
-                            <!--h2><?php echo __("website/cfeedback/add_title"); ?></h2-->
-                            <p><?php echo __("website/cfeedback/add_info"); ?></p>
-                            <input class="yuzde30" name="full_name" type="text" placeholder="<?php echo __("website/cfeedback/form-fullname"); ?>">
-                            <input class="yuzde30" name="company_name" type="text" placeholder="<?php echo __("website/cfeedback/form-company_name"); ?>">
-                            <input class="yuzde30" name="email" type="text" placeholder="<?php echo __("website/cfeedback/form-email"); ?>">
-                            <textarea style="width: 98%;    height: 90px;resize: none;" maxlength="425" name="message" placeholder="<?php echo __("website/cfeedback/form-message"); ?>"></textarea>
-                            <?php echo __("website/cfeedback/form-image"); ?>: <input style="width:200px" name="image" type="file">
-                            <div class="clear"></div>
-                            <?php if(isset($captcha) && $captcha): ?>
-                                <div style="float:left;margin-right:5px;"><?php echo $captcha->getOutput(); ?></div>
-                                <?php if($captcha->input): ?>
-                                    <input class="captchainput" name="<?php echo $captcha->input_name; ?>" type="text" placeholder="<?php echo ___("needs/form-captcha-label"); ?>">
-                                <?php endif; ?>
-                            <?php endif; ?>
-
-                            <hr>
-                            <a style="float:right;" class="gonderbtn" id="FeedbackForm_submit" href="javascript:void(0);"><?php echo __("website/cfeedback/form-submit"); ?></a>
-
-                            <div id="FeedbackForm_output" style="display:none;color:red;font-weight:bold;"></div>
-                        </form>
-
-                        <!-- SUCCESS -->
-                        <div id="FeeadbackForm_Successful" style="display: none">
-                            <div style="margin-top:30px;margin-bottom:70px;text-align:center;">
-                                <i style="font-size:80px;color:green;" class="fa fa-check"></i>
-                                <h4 style="color:green;font-weight:bold;"><?php echo __("website/cfeedback/successful-text1"); ?></h4>
-                                <br>
-                                <h5><?php echo __("website/cfeedback/successful-text2"); ?></h5>
-                            </div>
-                        </div>
-                        <!-- SUCCESS -->
-
-                        <script type="text/javascript">
-                            $(document).ready(function(){
-
-                                $("#FeedbackForm_submit").on("click",function(){
-                                    MioAjaxElement($(this),{
-                                        waiting_text: '<?php echo __("website/others/button1-pending"); ?>',
-                                        progress_text: '<?php echo __("website/others/button1-upload"); ?>',
-                                        result:"feedback_result",
-                                    });
-                                });
-
-                            });
-                            function feedback_result(result) {
-                                <?php if(isset($captcha)) echo $captcha->submit_after_js(); ?>
-                                if(result != ''){
-                                    var solve = getJson(result);
-                                    if(solve !== false){
-                                        if(solve.status == "error"){
-                                            if(solve.for != undefined && solve.for != ''){
-                                                $("#FeedbackForm "+solve.for).focus();
-                                                $("#FeedbackForm "+solve.for).attr("style","border-bottom:2px solid red; color:red;");
-                                                $("#FeedbackForm "+solve.for).change(function(){
-                                                    $(this).removeAttr("style");
-                                                });
-                                            }
-
-                                            if(solve.message != undefined && solve.message != '')
-                                                $("#FeedbackForm_output").fadeIn(500).html(solve.message);
-                                            else
-                                                $("#FeedbackForm_output").fadeOut(500).html('');
-                                        }else if(solve.status == "successful"){
-                                            $("#FeedbackForm_output").fadeOut(500).html('');
-                                            $("#FeedbackForm").slideUp(200,function(){
-                                                $("#FeeadbackForm_Successful").slideDown(200);
-                                            });
-                                        }
-                                    }else
-                                        console.log(result);
-                                }
-                            }
-                        </script>
-                        <div class="clear"></div>
-                    </div>
-                </div>
-            <?php endif; ?>
             <div class="musterigorusleri">
                 <div id="wrapper">
                     <?php
@@ -701,7 +626,7 @@
                                     if(!empty($item["title"])):
                                         ?>
                                         <h1><strong><?php echo $item["title"]; ?></strong></h1>
-                                        <?php
+                                    <?php
                                     endif;
                                     if(!empty($item["description"])):
                                         ?>
@@ -710,14 +635,104 @@
 
                                 <div class="clear"></div>
                                 <?php if($item["send-opinion"] == 1): ?>
-                                    <a class="gonderbtn" href="javascript:void 0;" onclick="open_modal('gorusgonder');"><?php echo __("website/cfeedback/btn1"); ?></a>
+                                    <a class="gonderbtn" href="javascript:void 0;" onclick="$('#gorusgonder').slideToggle(300);"><?php echo __("website/cfeedback/btn1"); ?></a>
+                                <?php endif; ?>
+
+                                <?php if($item["send-opinion"] == 1): ?>
+                                    <div id="gorusgonder" style="display: none;" >
+                                        <div class="yuzde50">
+                                            <h3 class="pakettitle"><?php echo __("website/cfeedback/add_title"); ?></h3>
+                                            <div class="padding10">
+                                                <form action="<?php echo $cfeedback_form_action;?>" method="POST" id="FeedbackForm" enctype="multipart/form-data">
+                                                    <?php echo Validation::get_csrf_token('cfeedback'); ?>
+
+                                                    <!--h2><?php echo __("website/cfeedback/add_title"); ?></h2-->
+                                                    <p><?php echo __("website/cfeedback/add_info"); ?></p>
+                                                    <input class="yuzde30" name="full_name" type="text" placeholder="<?php echo __("website/cfeedback/form-fullname"); ?>">
+                                                    <input class="yuzde30" name="company_name" type="text" placeholder="<?php echo __("website/cfeedback/form-company_name"); ?>">
+                                                    <input class="yuzde30" name="email" type="text" placeholder="<?php echo __("website/cfeedback/form-email"); ?>">
+                                                    <textarea style="width: 98%;    height: 90px;resize: none;" maxlength="425" name="message" placeholder="<?php echo __("website/cfeedback/form-message"); ?>"></textarea>
+                                                    <?php echo __("website/cfeedback/form-image"); ?>: <input style="width:200px" name="image" type="file">
+                                                    <div class="clear"></div>
+                                                    <?php if(isset($captcha) && $captcha): ?>
+                                                        <div style="float:left;margin-right:5px;"><?php echo $captcha->getOutput(); ?></div>
+                                                        <?php if($captcha->input): ?>
+                                                            <input class="captchainput" name="<?php echo $captcha->input_name; ?>" type="text" placeholder="<?php echo ___("needs/form-captcha-label"); ?>">
+                                                        <?php endif; ?>
+                                                    <?php endif; ?>
+
+                                                    <hr>
+                                                    <a style="float:right;" class="gonderbtn" id="FeedbackForm_submit" href="javascript:void(0);"><?php echo __("website/cfeedback/form-submit"); ?></a>
+
+                                                    <div id="FeedbackForm_output" style="display:none;color:red;font-weight:bold;"></div>
+                                                </form>
+
+                                                <!-- SUCCESS -->
+                                                <div id="FeeadbackForm_Successful" style="display: none">
+                                                    <div style="margin-top:30px;margin-bottom:70px;text-align:center;">
+                                                        <i style="font-size:80px;color:green;" class="fa fa-check"></i>
+                                                        <h4 style="color:green;font-weight:bold;"><?php echo __("website/cfeedback/successful-text1"); ?></h4>
+                                                        <br>
+                                                        <h5><?php echo __("website/cfeedback/successful-text2"); ?></h5>
+                                                    </div>
+                                                </div>
+                                                <!-- SUCCESS -->
+
+                                                <script type="text/javascript">
+                                                    $(document).ready(function(){
+
+                                                        $("#FeedbackForm_submit").on("click",function(){
+                                                            MioAjaxElement($(this),{
+                                                                waiting_text: '<?php echo __("website/others/button1-pending"); ?>',
+                                                                progress_text: '<?php echo __("website/others/button1-upload"); ?>',
+                                                                result:"feedback_result",
+                                                            });
+                                                        });
+
+                                                    });
+                                                    function feedback_result(result) {
+                                                        <?php if(isset($captcha)) echo $captcha->submit_after_js(); ?>
+                                                        if(result != ''){
+                                                            var solve = getJson(result);
+                                                            if(solve !== false){
+                                                                if(solve.status == "error"){
+                                                                    if(solve.for != undefined && solve.for != ''){
+                                                                        $("#FeedbackForm "+solve.for).focus();
+                                                                        $("#FeedbackForm "+solve.for).attr("style","border-bottom:2px solid red; color:red;");
+                                                                        $("#FeedbackForm "+solve.for).change(function(){
+                                                                            $(this).removeAttr("style");
+                                                                        });
+                                                                    }
+
+                                                                    if(solve.message != undefined && solve.message != '')
+                                                                        $("#FeedbackForm_output").fadeIn(500).html(solve.message);
+                                                                    else
+                                                                        $("#FeedbackForm_output").fadeOut(500).html('');
+                                                                }else if(solve.status == "successful"){
+                                                                    $("#FeedbackForm_output").fadeOut(500).html('');
+                                                                    $("#FeedbackForm").slideUp(200,function(){
+                                                                        $("#FeeadbackForm_Successful").slideDown(200);
+                                                                    });
+                                                                }
+                                                            }else
+                                                                console.log(result);
+                                                        }
+                                                    }
+                                                </script>
+                                                <div class="clear"></div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 <?php endif; ?>
 
 
+
                             </div>
+
                         <?php endif; ?>
                     <div class="clear"></div>
                     <div class="list_carousel" data-aos="fade-up">
+
                         <ul id="foo2">
 
                             <?php
@@ -754,6 +769,7 @@
 
 
             <div class="clear"></div>
+
             <?php
         }
 

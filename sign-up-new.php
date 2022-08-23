@@ -32,18 +32,6 @@
                 utilsScript: "<?php echo $sadress; ?>assets/plugins/phone-cc/js/utils.js"
             });
 
-            var reset = function() {
-                telInput.removeClass("error");
-            };
-            telInput.on("keyup change",reset);
-            telInput.blur(function() {
-                reset();
-                if($.trim(telInput.val())){
-                    if (telInput.intlTelInput("isValidNumber")) telInput.removeClass("error");
-                    else telInput.addClass("error");
-                }
-            });
-
             $(".stage-click").click(function(){
                 let stage = $(this).data("stage");
 
@@ -111,15 +99,6 @@
 ::-webkit-scrollbar-track{-webkit-box-shadow:inset 0 0 6px rgba(0,0,0,0.3);background-color:#F5F5F5}
 ::-webkit-scrollbar{width:9px;background-color:#F5F5F5}
 ::-webkit-scrollbar-thumb{background-color:#607D8B}
-.verificationcontent{padding:30px}
-.verificationcontent p{font-size:18px;text-align:center}
-.verificationcontent h1{text-align:center;font-size:24px;font-weight:bold;color:#8bc34a}
-.verificationcontent h1 i{font-size:80px}
-.verificationcontent form{text-align:center}
-.verificationcontent input{text-align:center;width:200px;font-size:16px;font-weight:bold}
-.secureoptions{width:265px;margin:auto;margin-top:35px;font-size:16px;font-weight:600;margin-bottom:15px}
-.notverification{font-size:13px;color:#b5b5b5;width:100%;text-align:center;display:inline-block;margin-top:20px}
-.notverification a{color:#b5b5b5;font-weight:600}
 #uyeolgiris{position:fixed;overflow:auto;margin-bottom:0;width:100%;height:100%;bottom:0px;background-image:url(<?php echo $tadress;?>images/signinsignupbg2020.jpg);background-color:rgba(50, 90, 108, 0.55);background-repeat:no-repeat;    background-size: 100%;}
 #uyeolgirisbody .footer{display:none}
 .uyeol{position:absolute;width:50%;border-radius:0;margin-bottom:0px;right:0;top:0;bottom:0}
@@ -141,7 +120,6 @@
 .uyeolgirisyap .btn{width:200px;background:transparent;    padding: 12px 0px;}
 .clientcopyright{width:100%;text-align:center;font-size:13px;margin-top:15px;margin-bottom:30px;color:#b4b4b4;display:inline-block}
 .clientcopyright a{color:#b4b4b4}
-.socialconnect{float:right;border:none;padding-bottom:0px;margin-bottom:0px;width:55%}
 .footsosyal{margin-top:15px}
 .footsosyal a{color:#a1a1a1}
 .footsosyal a:hover{background:#eee}
@@ -154,11 +132,6 @@
 .uyeolgirisslogan-con .gonderbtn{color:#fff;border:2px solid #fff;margin-top:35px}
 .uyeolgirisslogan-con .gonderbtn:hover{color:#333;background:white}
 .signupcon{padding:20px;    background: white;}
-.socialconnect a{color:#7c7c7c;font-size:14px;background:#e7e7e7}
-.socialconnect .facebookconnect{color:#7c7c7c;background:#eee}
-.socialconnect .facebookconnect:hover{color:#fff}
-.socialconnect .googleconnect{background:#eee;color:#7c7c7c}
-.socialconnect .googleconnect:hover{color:#fff}
 .signinsignup-title{display:inline-block;font-size:28px;font-weight:600;margin-top:12px}
 ::-webkit-input-placeholder{color:#7898ae}
 :-moz-placeholder{color:#7898ae}
@@ -415,12 +388,12 @@
                                         <div class="clean-theme-signup-box-title"><?php echo __("admin/users/create-notification-permissions"); ?></div>
 
                                         <div class="yuzde100">
-                                            <input id="email_notifications" class="checkbox-custom" name="email_notifications" value="1" type="checkbox" checked="">
+                                            <input id="email_notifications" class="checkbox-custom" name="email_notifications" value="1" type="checkbox">
                                             <label for="email_notifications" class="checkbox-custom-label"></label>
                                             <?php echo __("website/account_info/email-notifications"); ?>
                                         </div>
                                         <div class="yuzde100">
-                                            <input id="sms_notifications" class="checkbox-custom" name="sms_notifications" value="1" type="checkbox" checked="">
+                                            <input id="sms_notifications" class="checkbox-custom" name="sms_notifications" value="1" type="checkbox">
                                             <label for="sms_notifications" class="checkbox-custom-label"></label>
                                             <?php echo __("website/account_info/sms-notifications"); ?>
                                         </div>

@@ -23,7 +23,9 @@
 
     <div class="mpaneltitle">
         <h4><strong><i class="fa fa-life-ring" aria-hidden="true"></i> <?php echo __("website/account_tickets/page-title"); ?></strong>        </h4>
-        <a href="<?php echo $links["create-request"]; ?>" class="green destekolsbtn lbtn"><?php echo __("website/account_tickets/create-request"); ?></a>
+        <?php if(isset($links["create-request"]) && $links["create-request"]): ?>
+            <a href="<?php echo $links["create-request"]; ?>" class="green destekolsbtn lbtn"><?php echo __("website/account_tickets/create-request"); ?></a>
+        <?php endif; ?>
 
     </div>
 
@@ -52,8 +54,23 @@
             <?php
                 if(isset($list) && $list){
                     $zone = User::getLastLoginZone();
+                    $statuses   = Tickets::custom_statuses();
                     foreach($list AS $k=>$row){
                         $title  = $row["userunread"] ? $row["title"] : '<strong>'.$row["title"].'</strong>';
+
+                        $custom = $row["cstatus"] > 0 ? ($statuses[$row["cstatus"]] ?? []) : [];
+
+                        $status_str = $situations[$row["status"]] ?? '';
+
+                        if($custom)
+                            $status_str = str_replace([
+                                '{color}',
+                                '{name}',
+                            ], [
+                                $custom["color"],
+                                $custom["languages"][$ui_lang]["name"],
+                            ],$situations["custom"]);
+
                         ?>
                         <tr>
                             <td align="left"><?php echo $k; ?></td>
@@ -70,7 +87,7 @@
                                 ?>
                             </td>
                             <td align="center"><?php echo UserManager::formatTimeZone($row["ctime"],$zone,Config::get("options/date-format")." - H:i"); ?></td>
-                            <td align="center"><?php echo $situations[$row["status"]]; ?></td>
+                            <td align="center"><?php echo $status_str; ?></td>
                             <td align="center"><?php echo '<a href="'.$row["detail_link"].'" class="incelebtn"><i class="fa fa-search" aria-hidden="true"></i> '.__("website/account_products/view-button").'</a>'; ?></td>
                         </tr>
                         <?php

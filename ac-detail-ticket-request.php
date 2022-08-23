@@ -6,6 +6,23 @@
         3 => __("website/account_tickets/priority-high"),
     ];
     $zone = User::getLastLoginZone();
+    $statuses       = Tickets::custom_statuses();
+
+    $status_str         = $situations[$ticket["status"]] ?? '';
+
+    $custom = $ticket["cstatus"] > 0 ? ($statuses[$ticket["cstatus"]] ?? []) : [];
+    $status_str = $situations[$ticket["status"]] ?? '';
+
+    if($custom)
+        $status_str = str_replace([
+            '{color}',
+            '{name}',
+        ], [
+            $custom["color"],
+            $custom["languages"][$ui_lang]["name"],
+        ],$situations["custom"]);
+
+
 ?>
 <style type="text/css">
     .new-reply{ opacity: 0;}
@@ -33,7 +50,9 @@
                 }else if(solve.status == "successful"){
                     $("#attachment_files").val('');
                     alert_success("<?php echo htmlentities(__("website/account_tickets/reply-successful"),ENT_QUOTES); ?>",{timer:3000});
-                    reply_toggle();
+                    $('.ticketdetail').slideUp();
+                    $("textarea[name=message]").val('');
+                    localStorage.removeItem(auto_save_msg_key);
                 }
             }else
                 console.log(result);
@@ -83,17 +102,13 @@
     function reply_toggle(){
         var el = $('.ticketdetail');
 
-        if(el.css("display") === "none"){
-            el.slideDown();
-        }else{
-            el.slideUp();
-            $("textarea[name=message]").val('');
-            localStorage.removeItem(auto_save_msg_key);
-        }
+        if(el.css("display") === "none") el.slideDown();
+        else el.slideUp();
     }
 
     $(document).ready(function(){
         $("#ticket_solved_button").on("click",function(){
+            if(!confirm("<?php echo ___("needs/apply-are-you-sure"); ?>")) return false;
             var request = MioAjax({
                 button_element:$(this),
                 action:'<?php echo $links["controller"] ?>?stage=solved',
@@ -184,7 +199,7 @@
             <div class="destekinfo">
                 <div class="destekinfocon">
                     <h5><strong><?php echo __("website/account_tickets/status"); ?></strong></h5>
-                    <h4 id="get_status"><?php echo $situations[$ticket["status"]]; ?></h4>
+                    <h4 id="get_status"><?php echo $status_str; ?></h4>
                 </div>
             </div> 
 

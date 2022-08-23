@@ -132,10 +132,10 @@
                 ?>
                 <div class="sunucular" data-aos="fade-up">
                     <div>
-                        <table class="horizontal-list" width="100%" border="0" data-order='[[<?php echo sizeof($columns) +1; ?>, "asc"]]'>
+                        <table class="horizontal-list" width="100%" border="0" data-order='[[0, "asc"]]'>
                             <thead style="background:#ebebeb;">
                             <tr>
-                                <th data-orderable="false" align="center" bgcolor="#ebebeb"><strong><?php echo __("website/products/special-list-title"); ?></strong></th>
+                                <th align="center" bgcolor="#ebebeb"><strong><?php echo __("website/products/special-list-title"); ?></strong></th>
                                 <?php
                                     if($columns){
                                         foreach($columns AS $col){
@@ -170,7 +170,7 @@
 
                                     ?>
                                     <tr>
-                                        <td align="center" valign="middle">
+                                        <td align="center" valign="middle" data-order="<?php echo $product["rank"]; ?>">
                                             <strong><?php echo $product["title"]; ?></strong>
                                             <?php if($product["cover_image"]): ?><br>
                                                 <img src="<?php echo $product["cover_image"];?>" width="auto" height="42">

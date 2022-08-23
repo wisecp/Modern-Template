@@ -65,7 +65,7 @@
     </div>
 
     <div class="faturalarim">
-        <table id="invoices" class="table table-striped table-borderedx table-condensed nowrap" width="100%">
+        <table id="invoices" class="table table-striped table-borderedx table-condensed nowrap" width="100%" data-order='[[0, "asc"]]'>
             <thead style="background:#ebebeb;">
             <tr>
                 <th align="center"><?php echo __("website/account_invoices/invoice-num"); ?></th>
@@ -80,11 +80,11 @@
             <?php
                 if(isset($list_ajax) && $list_ajax)
                 {
-                    foreach($list_ajax AS $r)
+                    foreach($list_ajax AS $k => $r)
                     {
                         ?>
                        <tr>
-                           <td align="center"><?php echo $r[0]; ?></td>
+                           <td align="center" data-order="<?php echo $k; ?>"><?php echo $r[0]; ?></td>
                            <td align="center"><?php echo $r[1]; ?></td>
                            <td align="center"><?php echo $r[2]; ?></td>
                            <td align="center"><?php echo $r[3]; ?></td>

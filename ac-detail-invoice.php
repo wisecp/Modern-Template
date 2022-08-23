@@ -2,6 +2,7 @@
     $master_content_none = true;
     $logo            = Utility::image_link_determiner(Config::get("theme/notifi-header-logo"));
     if(!$logo) $logo = Utility::image_link_determiner(Config::get("theme/header-logo"));
+    if(Config::get("theme/invoice-detail-logo")) $logo = Utility::image_link_determiner(Config::get("theme/invoice-detail-logo"));
     $status         = __("website/account_invoices/status-".$invoice["status"]);
     $status         = Utility::strtoupper($status);
     $cdate          = DateManager::format(Config::get("options/date-format"),$invoice["cdate"]);
@@ -75,7 +76,7 @@
 <html>
 <head>
     <?php
-        $hoptions = ["jquery-ui","jsPDF"];
+        $hoptions = ["jquery-ui"];
         include __DIR__.DS."inc/ac-head.php";
     ?>
 
@@ -87,22 +88,15 @@
             }
         });
 
-        var base64Img = null;
-        margins = {
-            top: 70,
-            bottom: 40,
-            left: 30,
-            width: 550
-        };
-
         function dataPrint(type){
 
-            if(type == "normal"){
+            if(type === "normal"){
 
                 window.print();
-
-            }else if(type == "pdf"){
-                var pdf_name    = '<?php echo __("website/account_invoices/invoice"); ?>-<?php echo $invoice["id"]; ?>.pdf';
+            }
+            else if(type === "pdf")
+            {
+                window.open('<?php echo $links["controller"].($sharing ? '&' : '?'); ?>print=pdf', "_blank");
             }
         }
     </script>
@@ -144,6 +138,8 @@
     .invoicepaymethod{font-family:'Titillium Web',sans-serif;font-weight:500;font-size:16px;margin-top:10px;    color: inherit;}
     .invoicedesc .formcon{background:rgb(229 229 228 / 49%);border-bottom:1px solid #e1e1e1}
     .invoicedesc{margin-bottom:25px}
+    .invoice-detail-select-profile {margin-bottom: 15px;}
+    .invoice-detail-select-profile select{font-size:14px;}
     @media only screen and (min-width:320px) and (max-width:1024px){.invoice-detail-right{width:100%}
         .invoicetimes{margin-top:0px;width:100%}
         .companybillinfo{margin-bottom:10px}
@@ -155,17 +151,16 @@
     <div class="padding">
 
         <div id="exportData">
-
             <div class="invoice-detail-right">
                 <div class="companybillinfo">
                     <img title="Logo" alt="Logo" src="<?php echo $logo; ?>" width="200" height="auto">
                     <div class="clear"></div>
                     <span style="display: inline-block;">
                 <?php
-                echo str_replace(EOL,"<br>",$informations);
+                    echo str_replace(EOL,"<br>",$informations);
                 ?>
                     <br><?php echo $address; ?><br>
-                    <?php echo isset($pnumbers[0]) ? $pnumbers[0] : '*'; ?> - <?php echo isset($eaddresses[0]) ? $eaddresses[0] : '*'; ?>
+                    <?php echo implode(" - ",array_filter([isset($pnumbers[0]) ? $pnumbers[0] : '' ,isset($eaddresses[0]) ? $eaddresses[0] : ''])); ?>
             </span>
                 </div>
                 <div class="clear"></div>
@@ -186,16 +181,40 @@
                     <?php endif; ?>
 
                     <a href="javascript:dataPrint('normal');void 0;" class="sbtn"><i class="fa fa-print"></i> <?php echo __("website/account_invoices/print"); ?></a>
-                    <!--
-            <a href="javascript:dataPrint('pdf');" class="sbtn" title="<?php echo __("website/account_invoice/download-pdf"); ?>"><i class="fa fa-cloud-download" aria-hidden="true"></i></a>
-            -->
+
+                    <a href="javascript:dataPrint('pdf');" class="sbtn"><i class="fa fa-cloud-download" aria-hidden="true"></i> <?php echo __("website/account_invoices/download-pdf"); ?></a>
                 </div>
             </div>
-
             <div class="invoice-detail-left">
                 <div class="custbillinfo">
                     <h5><?php echo __("website/account_invoices/invoice-owner"); ?></h5>
                     <div class="line"></div>
+                    <?php
+                        if($invoice["status"] == "unpaid" && isset($acAddresses) && $acAddresses)
+                        {
+                            ?>
+                            <div class="invoice-detail-select-profile">
+                                <strong><?php echo __("website/account_invoices/select-address"); ?></strong>
+                                <?php
+                                    $change_link = $links["change_address"];
+                                ?>
+                                <select onchange="location = this.options[this.selectedIndex].value;">
+                                    <?php
+                                        foreach($acAddresses AS $addr)
+                                        {
+                                            $address_line = $addr["address_line"];
+                                            if($censored)
+                                                $address_line = Filter::censored($address_line);
+                                            ?>
+                                            <option<?php echo ($invoice["user_data"]["default_address"] ?? 0) == $addr["id"] ? ' selected' :  ''; ?> value="<?php echo $change_link.$addr["id"]; ?>"><?php echo $addr["name"]." - ".$address_line; ?></option>
+                                            <?php
+                                        }
+                                    ?>
+                                </select>
+                            </div>
+                            <?php
+                        }
+                    ?>
                     <span style="margin-bottom:10px;display: inline-block;">
                 <?php if($invoice["user_data"]["kind"] == "individual"): ?>
 
@@ -221,35 +240,35 @@
                 <?php endif; ?>
 
                         <?php
-                        if(isset($invoice["user_data"]["address"]) && $invoice["user_data"]["address"]){
-                            $adrs = $invoice["user_data"]["address"];
-                            echo "<br>";
-                            if(!$censored) echo $adrs["address"]." ";
-                            echo isset($adrs["zipcode"]) && $adrs["zipcode"] ? " ".$adrs["zipcode"]." / " : '';
-                            echo isset($adrs["counti"]) && $adrs["counti"] ? $adrs["counti"]." / " : '';
-                            echo isset($adrs["city"]) && $adrs["city"] ? $adrs["city"]." / " : '';
-                            echo AddressManager::get_country_name($adrs["country_code"]);
-                        }
+                            if(isset($invoice["user_data"]["address"]) && $invoice["user_data"]["address"]){
+                                $adrs = $invoice["user_data"]["address"];
+                                echo "<br>";
+                                if(!$censored) echo $adrs["address"]." / ";
+                                echo isset($adrs["counti"]) && $adrs["counti"] ? $adrs["counti"]." / " : '';
+                                echo isset($adrs["city"]) && $adrs["city"] ? $adrs["city"]." / " : '';
+                                echo AddressManager::get_country_name($adrs["country_code"]);
+                                echo isset($adrs["zipcode"]) && $adrs["zipcode"] ? " / ".$adrs["zipcode"] : '';
+                            }
                         ?>
 
                         <?php
-                        $phone = NULL;
-                        if($invoice["user_data"]["kind"] == "corporate")
-                            if(isset($invoice["user_data"]["landline_phone"]) && $invoice["user_data"]["landline_phone"])
-                                $phone  = $invoice["user_data"]["landline_phone"];
+                            $phone = NULL;
+                            if($invoice["user_data"]["kind"] == "corporate")
+                                if(isset($invoice["user_data"]["landline_phone"]) && $invoice["user_data"]["landline_phone"])
+                                    $phone  = $invoice["user_data"]["landline_phone"];
 
-                        if($invoice["user_data"]["kind"] == "individual"){
+                            if($invoice["user_data"]["kind"] == "individual"){
 
-                            if(isset($invoice["user_data"]["landline_phone"]) && $invoice["user_data"]["landline_phone"])
-                                $phone  = $invoice["user_data"]["landline_phone"];
+                                if(isset($invoice["user_data"]["landline_phone"]) && $invoice["user_data"]["landline_phone"])
+                                    $phone  = $invoice["user_data"]["landline_phone"];
 
-                            if(!$phone && isset($invoice["user_data"]["gsm"]) && $invoice["user_data"]["gsm"])
-                                $phone  = "+".$invoice["user_data"]["gsm_cc"].$invoice["user_data"]["gsm"];
-                        }
+                                if(!$phone && isset($invoice["user_data"]["gsm"]) && $invoice["user_data"]["gsm"])
+                                    $phone  = "+".$invoice["user_data"]["gsm_cc"].$invoice["user_data"]["gsm"];
+                            }
 
-                        echo "<br>";
-                        echo $phone ? censored('phone',$phone)." - " : '';
-                        echo censored('email',$invoice["user_data"]["email"]);
+                            echo "<br>";
+                            echo $phone ? censored('phone',$phone)." - " : '';
+                            echo censored('email',$invoice["user_data"]["email"]);
                         ?>
 
             </span>
@@ -263,7 +282,7 @@
                 </div>
                 <div class="clear"></div>
                 <div class="invoiceidx">
-                    <?php echo __("website/account_invoices/invoice-num"); ?> #<?php echo $invoice["number"] ? $invoice["number"] : $invoice["id"]; ?>
+                    <?php echo __("website/account_invoices/invoice-num"); ?> <?php echo $invoice["number"] ? $invoice["number"] : $invoice["id"]; ?>
                 </div>
                 <div class="invoicestatus">
                     <div class="padding20">
@@ -280,10 +299,10 @@
                         <?php endif; ?>
 
                         <?php
-                        if(!isset($pmethod_name) && $invoice["pmethod"] != "none") $pmethod_name = $invoice["pmethod"];
+                            if(!isset($pmethod_name) && $invoice["pmethod"] != "none") $pmethod_name = $invoice["pmethod"];
                         ?>
 
-                        <?php if(isset($pmethod_name) && $pmethod_name): ?>
+                        <?php if(isset($pmethod_name) && $pmethod_name && $invoice["status"] != "unpaid"): ?>
                             <span class="invoicepaymethod"><?php echo $pmethod_name; ?> <?php echo $datepaid; ?></span>
                         <?php endif; ?>
 
@@ -292,9 +311,7 @@
                 </div>
                 <div class="clear"></div>
             </div>
-
             <div class="clear"></div>
-
             <div class="invoicedesc">
 
 
@@ -326,8 +343,8 @@
                     <div class="yuzde30"><span id="sendbta_fee"><?php echo Money::formatter_symbol($invoice["sendbta_amount"],$invoice["currency"]); ?></span></div>
                 </div>
 
-                <div id="pmethod_commission_wrap" class="formcon" style="background:white;<?php echo $invoice["pmethod_commission"]>0 ? '' : 'display:none;'; ?>">
-                    <div class="yuzde70"><span id="pmethod_commission_label"><?php echo __("website/account_invoices/pmethod_commission",['{method}' => $invoice["pmethod"]]); ?> (%<?php echo $invoice["pmethod_commission_rate"]; ?>)</span></div>
+                <div id="pmethod_commission_wrap" class="formcon" style="background:white;<?php echo $invoice["pmethod_commission"] > 0.00 ? '' : 'display:none;'; ?>">
+                    <div class="yuzde70"><span id="pmethod_commission_label"><?php echo __("website/account_invoices/pmethod_commission",['{method}' => $pmethod_name]); ?> (%<?php echo $invoice["pmethod_commission_rate"]; ?>)</span></div>
                     <div class="yuzde30"><span id="pmethod_commission_fee"><?php echo Money::formatter_symbol($invoice["pmethod_commission"],$invoice["currency"]); ?></span></div>
                 </div>
 
@@ -404,7 +421,7 @@
                 ?>
 
                 <div id="tax_wrap" class="formcon" style="<?php echo $invoice["tax"]>0 && $invoice["taxrate"]>0 ? '' : 'display:none;'; ?>">
-                    <div class="yuzde70" style="text-align:right;"><span><?php echo __("website/account_invoices/tax-amount",['{rate}' => str_replace(".00","",$invoice["taxrate"]),]); ?></span></div>
+                    <div class="yuzde70" style="text-align:right;"><span><?php echo __("website/account_invoices/tax-amount",['{rate}' => str_replace(".00","",$invoice["taxrate"]),'{rates}' => $tax_rates ?? '']); ?></span></div>
                     <div class="yuzde30"><span><strong id="tax_fee"><?php echo Money::formatter_symbol($invoice["tax"],$invoice["currency"]); ?></strong></span></div>
                 </div>
 
@@ -416,7 +433,6 @@
                 <div class="clear"></div>
 
             </div>
-
         </div>
 
         <div class="clear"></div>
@@ -626,7 +642,7 @@
 
                         </div>
                         <div class="line"></div>
-                        <form id="payment_screen_redirect" action="<?php echo $links["controller"]; ?>" method="post">
+                        <form id="payment_screen_redirect" action="<?php echo $links["controller"]; ?>" method="get">
                             <input type="hidden" name="operation" value="payment-screen">
                             <input type="hidden" name="sendbta" value="<?php echo isset($selected_sendbta) ? $selected_sendbta : 0; ?>">
                             <input type="hidden" name="pmethod" value="<?php echo isset($selected_pmethod) ? $selected_pmethod : 'none'; ?>">
@@ -639,6 +655,15 @@
         <?php endif; ?>
 
 
+        <p>
+            <?php
+                echo Utility::text_replace(Config::get("options/invoice_special_note/".View::$init->ui_lang),[
+                    '{CLIENT_ID}' => $invoice["user_data"]["id"],
+                    '{CLIENT_TAX_NUMBER}' => $invoice["user_data"]["company_tax_number"],
+                    '{CLIENT_TAX_OFFICE}' => $invoice["user_data"]["company_tax_office"],
+                ]);
+            ?>
+        </p>
 
         <div class="clear"></div>
     </div>

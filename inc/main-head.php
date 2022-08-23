@@ -19,6 +19,9 @@
 <link rel="canonical" href="<?php echo $canonical_link;?>" />
 <link rel="icon" type="image/x-icon" href="<?php echo $favicon_link;?>" />
 <meta name="theme-color" content="<?php echo $meta_color; ?>">
+<?php if(isset($page) && isset($page["mockup"]) && $page["mockup"] != ''): ?>
+    <meta property="og:image" content="<?php echo $page["mockup"]; ?>">
+<?php endif; ?>
 
 <?php
     if(isset($lang_list) && $lang_list){
@@ -40,6 +43,8 @@
 <link rel="stylesheet" href="<?php echo $tadress;?>css/wisecp.css?v=<?php echo License::get_version(); ?>"/>
 <link href="https://fonts.googleapis.com/css?family=Raleway:300,400,500,700,800|Titillium+Web:200,300,400,600,700&amp;subset=latin-ext" rel="stylesheet">
 <link rel="stylesheet" href="<?php echo $tadress;?>css/font-awesome.min.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/v4-shims.css">
 <link rel="stylesheet" href="<?php echo $tadress;?>css/ionicons.min.css"/>
 <link rel="stylesheet" href="<?php echo $tadress;?>css/animate.css" media="none" onload="if(media!='all')media='all'">
 <link rel="stylesheet" href="<?php echo $tadress;?>css/aos.css" />
@@ -62,7 +67,7 @@
 <?php if(in_array("ion.rangeSlider",$hoptions)): ?><link rel="stylesheet" href="<?php echo $sadress; ?>assets/plugins/ion.rangeSlider/css/ion.rangeSlider.min.css">
 <?php endif; ?>
 <?php if(___("package/rtl")): ?><link rel="stylesheet" href="<?php echo $sadress."assets/style/theme-rtl.css?v=".License::get_version();?>&lang=<?php echo Bootstrap::$lang->clang; ?>">
-<?php endif; ?><link rel="stylesheet" href="<?php echo $sadress; ?>assets/style/theme-extra.css?v=<?php echo License::get_version(); ?>"  type="text/css">
+<?php endif; ?><link rel="stylesheet" href="<?php echo $sadress; ?>assets/style/theme-default.css?v=<?php echo License::get_version(); ?>"  type="text/css">
 <!-- Css -->
 
 <!-- Js -->

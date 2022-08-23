@@ -35,6 +35,9 @@
         });
 
         $("#continue_button").click(function(){
+            if(selected_payment_method === false || selected_payment_method === undefined)
+                return false;
+
             $(this).html('<?php echo __("website/others/button2-pending"); ?>');
             var selected_pmethod = $("#payment_methods input[name=pmethod]:checked").val();
             $("#payment_screen_redirect input[name=pmethod]").val(selected_pmethod);
@@ -73,6 +76,14 @@
                 if(solve !== false){
 
                     $("#payment_methods").fadeIn(200).html('');
+
+                    if(solve.status !== undefined && solve.status === "error")
+                    {
+                        $("#payment_methods").html('<div class="invoice-detail-pp-sb-enabled">'+solve.message+'</div>');
+                        $("#continue_button").attr("style","cursor: no-drop;background: #b0b0b0;").addClass('graybtn');
+                        return false;
+                    }
+
                     var content,amount,see_fee,checked_status;
                     $(solve.pmethods).each(function(key,item){
                         if(item.balance != undefined){
@@ -195,14 +206,10 @@
                                 </strong>
                                 <br />
                                 <?php
-                                    foreach($items AS $item){
-                                        $amount = $item["amount"];
-                                        $cid    = isset($item["currency"]) ? $item["currency"] : $item["cid"];
-                                        echo implode("<br>",explode(EOL,$item["description"]));
-                                    }
+                                    foreach($items AS $item) echo implode("<br>",explode(EOL,$item["description"]));
                                 ?>
                             </td>
-                            <td align="center"><?php echo Money::formatter_symbol($amount,$cid,true); ?></td>
+                            <td align="center"><?php echo Money::formatter_symbol($invoice["total"],$invoice["currency"],true); ?></td>
                         </tr>
                         <?php
                     }
@@ -266,7 +273,7 @@
 
                     <div class="clear"></div>
                     <div class="line"></div>
-                    <form id="payment_screen_redirect" action="<?php echo $links["controller"]; ?>" method="post">
+                    <form id="payment_screen_redirect" action="<?php echo $links["controller"]; ?>" method="get">
                         <input type="hidden" name="operation" value="payment-screen">
                         <input type="hidden" name="pmethod" value="<?php echo isset($selected_pmethod) ? $selected_pmethod : 'none'; ?>">
                         <input type="hidden" name="invoices" value="">

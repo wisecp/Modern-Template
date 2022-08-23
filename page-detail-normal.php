@@ -6,7 +6,16 @@
 <div id="wrapper">
     <div class="sayfacontent"<?php echo !$sidebar_status ? ' style="width:100%;"' : '';?>>
 
-        <div style="padding:20px;">
+        <?php if($_theme_name == "Classic"): ?>
+            <h4 class="bbbaslik"><strong><?php echo $page["title"]; ?></strong></h4>
+
+            <div class="breadcrumb"> <?php include __DIR__.DS."inc".DS."header-breadcrumb.php"; ?></div>
+
+            <div class="line"></div>
+            <div class="clear"></div>
+        <?php endif; ?>
+
+        <div>
             <?php echo $page["content"]; ?>
         </div>
     </div>

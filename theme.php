@@ -30,6 +30,8 @@
                 $this->main_css();
                 return true;
             }
+            elseif(($params[0] ?? false) && ($params[1] ?? false) && file_exists(__DIR__.DS."pages".DS.Filter::folder($params[0] ?? false).DS.Filter::folder($params[1] ?? false).".php"))
+                return ['include_file' => __DIR__.DS."pages".DS.Filter::folder($params[0] ?? false).DS.Filter::folder($params[1] ?? false).".php"];
             elseif($page && file_exists(__DIR__.DS."pages".DS.$page.".php"))
                 return ['include_file' => __DIR__.DS."pages".DS.$page.".php"];
         }

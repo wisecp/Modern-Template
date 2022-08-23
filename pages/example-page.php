@@ -1,10 +1,12 @@
-<?php defined('CORE_FOLDER') OR exit('You can not get in here!');
+<?php
+    defined('CORE_FOLDER') OR exit('You can not get in here!');
     $meta = [
         'title' => __("theme/example-page-title"),
     ];
     $header_title       = __("theme/example-page-title");
     $header_description = 'example description';
     $header_background  = ''; // here type URL
+
 ?>
 <div class="wrapper">
     <div class="padding20">

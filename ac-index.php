@@ -70,51 +70,46 @@
 
                 <?php
                     if(isset($tldList) && is_array($tldList) && sizeof($tldList)>0){
-                        for($i=0; $i<=7; $i++){
-                            if(isset($tldList[$i])){
-                                $list = $tldList[$i];
-                                $amount = $list["reg_price"]["amount"];
+                        foreach($tldList AS $i => $list){
+                            $amount = $list["reg_price"]["amount"];
 
-                                if($list["promo_status"] && (substr($list["promo_duedate"],0,4) == '1881' || DateManager::strtotime($list["promo_duedate"]." 23:59:59") > DateManager::strtotime()) && $list["promo_register_price"]>0){
-                                    $amount = $list["promo_register_price"];
-                                }
-
-                                $amount     = Money::formatter_symbol($amount,$list["reg_price"]["cid"],!$domain_override_uscurrency);
-                                $amount_symbol_position = '';
-                                $split_amount   = explode(" ",$amount);
-                                $amount_symbol  = '';
-                                if(in_array(current($split_amount),$currency_symbols)){
-                                    $amount_symbol_position = "left";
-                                    $amount_symbol  = current($split_amount);
-                                    array_shift($split_amount);
-                                    $amount         = implode(" ",$split_amount);
-                                }elseif(in_array(end($split_amount),$currency_symbols)){
-                                    $amount_symbol_position = "right";
-                                    $amount_symbol  = end($split_amount);
-                                    array_pop($split_amount);
-                                    $amount         = implode(" ",$split_amount);
-                                }
-
-
-                                $is_img = false;
-                                $is_svg = "images".DS."tldlogos".DS.$list["name"].".svg";
-                                $is_png = "images".DS."tldlogos".DS.$list["name"].".png";
-                                $is_jpg = "images".DS."tldlogos".DS.$list["name"].".jpg";
-                                if(file_exists(View::$init->get_template_dir().$is_svg)) $is_img = $is_svg;
-                                elseif(file_exists(View::$init->get_template_dir().$is_png)) $is_img = $is_png;
-                                elseif(file_exists(View::$init->get_template_dir().$is_jpg)) $is_img = $is_jpg;
-
-                                ?>
-                                <div class="spottlds">
-                                    <?php if($is_img): ?>
-                                        <img src="<?php echo Utility::image_link_determiner($tadress.$is_img); ?>" alt=".<?php echo $list["name"]; ?>">
-                                    <?php else: ?>
-                                        .<?php echo $list["name"]; ?>
-                                    <?php endif; ?>
-                                    <h5><div class="amount_spot_view"><i class="currpos<?php echo $amount_symbol_position; ?>"><?php echo $amount_symbol; ?></i> <?php echo $amount; ?></div></h5>
-                                </div>
-                                <?php
+                            if($list["promo_status"] && (substr($list["promo_duedate"],0,4) == '1881' || DateManager::strtotime($list["promo_duedate"]." 23:59:59") > DateManager::strtotime()) && $list["promo_register_price"]>0){
+                                $amount = $list["promo_register_price"];
                             }
+
+                            $amount     = Money::formatter_symbol($amount,$list["reg_price"]["cid"],!$domain_override_uscurrency);
+                            $amount_symbol_position = '';
+                            $split_amount   = explode(" ",$amount);
+                            $amount_symbol  = '';
+                            if(in_array(current($split_amount),$currency_symbols)){
+                                $amount_symbol_position = "left";
+                                $amount_symbol  = current($split_amount);
+                                array_shift($split_amount);
+                                $amount         = implode(" ",$split_amount);
+                            }elseif(in_array(end($split_amount),$currency_symbols)){
+                                $amount_symbol_position = "right";
+                                $amount_symbol  = end($split_amount);
+                                array_pop($split_amount);
+                                $amount         = implode(" ",$split_amount);
+                            }
+
+                            $is_img = false;
+                            $is_svg = "images".DS."tldlogos".DS.$list["name"].".svg";
+                            $is_png = "images".DS."tldlogos".DS.$list["name"].".png";
+                            $is_jpg = "images".DS."tldlogos".DS.$list["name"].".jpg";
+                            if(file_exists(View::$init->get_template_dir().$is_svg)) $is_img = $is_svg;
+                            elseif(file_exists(View::$init->get_template_dir().$is_png)) $is_img = $is_png;
+                            elseif(file_exists(View::$init->get_template_dir().$is_jpg)) $is_img = $is_jpg;
+                            ?>
+                            <div class="spottlds">
+                                <?php if($is_img): ?>
+                                    <img src="<?php echo Utility::image_link_determiner($tadress.$is_img); ?>" alt=".<?php echo $list["name"]; ?>">
+                                <?php else: ?>
+                                    .<?php echo $list["name"]; ?>
+                                <?php endif; ?>
+                                <h5><div class="amount_spot_view"><i class="currpos<?php echo $amount_symbol_position; ?>"><?php echo $amount_symbol; ?></i> <?php echo $amount; ?></div></h5>
+                            </div>
+                            <?php
                         }
                     }
                 ?>

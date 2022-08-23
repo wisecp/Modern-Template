@@ -80,13 +80,22 @@
                         if(isset($product["price"]) && $product["price"]){
                             foreach ($product["price"] AS $k=>$pe){
                                 $amount     = Money::formatter_symbol($pe["amount"],$pe["cid"],!$product["override_usrcurrency"]);
+                                $setup      = $pe["setup"] > 0.00 ? Money::formatter_symbol($pe["setup"],$pe["cid"],!$product["override_usrcurrency"]) : '';
                                 $period     = View::period($pe["time"],$pe["period"]);
                                 $discount   = $pe["discount"]>0 ? '<div class="ribbonperiod"><span>'.__("website/osteps/rate-discount",['{rate}' => $pe["discount"]]).'</span></div>' : NULL;
                                 ?>
-                                <div class="orderperiodblock" id="price-<?php echo $pe["id"]; ?>" data-value="<?php echo $k; ?>">
+                                <div class="orderperiodblock<?php echo $setup ? ' setup-fee-period-block' : ''; ?>" id="price-<?php echo $pe["id"]; ?>" data-value="<?php echo $k; ?>">
                                     <?php echo $discount; ?>
                                     <h3><?php echo $period; ?></h3>
                                     <h2><?php echo $amount; ?></h2>
+                                    <?php
+                                        if($setup)
+                                        {
+                                            ?>
+                                            <span class="setup-fee-period">+ <?php echo $setup; ?> <?php echo __("website/osteps/setup-fee"); ?></span>
+                                            <?php
+                                        }
+                                    ?>
                                     <div class="periodselectbox"><i class="fa fa-check" aria-hidden="true"></i></div>
                                 </div>
                                 <?php

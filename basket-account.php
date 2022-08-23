@@ -2,6 +2,7 @@
     $hoptions = [
         'page' => "basket-payment",
         'intlTelInput',
+        'jquery.countdown',
     ];
 
     $currency_symbols = [];
@@ -517,18 +518,6 @@
                                             separateDialCode: true,
                                             utilsScript: "<?php echo $sadress;?>assets/plugins/phone-cc/js/utils.js"
                                         });
-
-                                        var reset = function() {
-                                            telInput.removeClass("error");
-                                        };
-                                        telInput.on("keyup change",reset);
-                                        telInput.blur(function() {
-                                            reset();
-                                            if($.trim(telInput.val())){
-                                                if (telInput.intlTelInput("isValidNumber")) telInput.removeClass("error");
-                                                else telInput.addClass("error");
-                                            }
-                                        });
                                     });
 
                                     function forget_password(){
@@ -581,19 +570,6 @@
                                             });
                                         </script>
                                     <?php endif; ?>
-
-
-                                    <div id="contract1_modal" style="display: none;" data-izimodal-title="<?php echo htmlentities(__("website/sign/contract1-title"),ENT_QUOTES); ?>">
-                                        <div class="padding20">
-                                            <?php echo ___("constants/contract1"); ?>
-                                        </div>
-                                    </div>
-
-                                    <div id="contract2_modal" style="display: none;" data-izimodal-title="<?php echo htmlentities(__("website/sign/contract2-title"),ENT_QUOTES); ?>">
-                                        <div class="padding20">
-                                            <?php echo ___("constants/contract2"); ?>
-                                        </div>
-                                    </div>
 
                                     <?php
                                         if($connectionButtons){
@@ -653,22 +629,13 @@
                                                 </td>
                                             </tr>
 
-                                            <?php if(Config::get("options/sign/up/kind/corporate/company_tax_number") || Config::get("options/sign/up/kind/corporate/company_tax_office")): ?>
-                                                <tr class="kind-content kind_2" style="display:none;">
-                                                    <td width="30%">
-                                                        <?php echo  Config::get("options/sign/up/kind/corporate/company_tax_number") ? __("website/sign/up-form-ctaxno") : ''; ?>
-                                                        <?php echo Config::get("options/sign/up/kind/corporate/company_tax_number") && Config::get("options/sign/up/kind/corporate/company_tax_office") ? " / " : ''; ?>
-                                                        <?php echo Config::get("options/sign/up/kind/corporate/company_tax_office") ? __("website/sign/up-form-ctaxoff") : ''; ?></td>
-                                                    <td>
-                                                        <?php if(Config::get("options/sign/up/kind/corporate/company_tax_number")): ?>
-                                                            <div class="yuzde50"><input name="company_tax_number" type="text"></div>
-                                                        <?php endif; ?>
-                                                        <?php if(Config::get("options/sign/up/kind/corporate/company_tax_office")): ?>
-                                                            <div class="yuzde50"><input name="company_tax_office" type="text" id="vergi_dairesi"></div>
-                                                        <?php endif; ?>
-                                                    </td>
-                                                </tr>
-                                            <?php endif; ?>
+                                            <tr class="kind-content kind_2" style="display:none;">
+                                                <td width="30%"><?php echo __("website/sign/up-form-ctaxno"); ?> / <?php echo __("website/sign/up-form-ctaxoff"); ?></td>
+                                                <td>
+                                                    <div class="yuzde50"><input name="company_tax_number" type="text"></div>
+                                                    <div class="yuzde50"><input name="company_tax_office" type="text" id="vergi_dairesi"></div>
+                                                </td>
+                                            </tr>
                                         <?php endif; ?>
 
 
@@ -947,5 +914,18 @@
             <br><a class="lbtn" href="<?php echo $links["basket"]; ?>"><i class="fa fa-angle-double-left" aria-hidden="true"></i> <?php echo __("website/basket/turn-back"); ?></a>
 
         </div>
+    </div>
+</div>
+
+
+<div id="contract1_modal" style="display: none;" data-izimodal-title="<?php echo htmlentities(__("website/sign/contract1-title"),ENT_QUOTES); ?>">
+    <div class="padding20">
+        <?php echo ___("constants/contract1"); ?>
+    </div>
+</div>
+
+<div id="contract2_modal" style="display: none;" data-izimodal-title="<?php echo htmlentities(__("website/sign/contract2-title"),ENT_QUOTES); ?>">
+    <div class="padding20">
+        <?php echo ___("constants/contract2"); ?>
     </div>
 </div>

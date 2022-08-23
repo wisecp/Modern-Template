@@ -129,10 +129,10 @@
                     <h5 class="servercattitle" data-aos="fade-up"><?php echo $cat["title"]; ?></h5>
 
                     <div>
-                        <table class="horizontal-list" width="100%" border="0" data-order='[[6, "asc"]]'>
+                        <table class="horizontal-list" width="100%" border="0" data-order='[[0, "asc"]]'>
                             <thead style="background:#ebebeb;">
                             <tr>
-                                <th data-orderable="false" align="center" bgcolor="#ebebeb"><strong><?php echo __("website/products/server-list-title"); ?></strong></td>
+                                <th align="center" bgcolor="#ebebeb"><strong><?php echo __("website/products/server-list-title"); ?></strong></td>
                                 <th data-orderable="false" align="center" bgcolor="#ebebeb"><strong><?php echo __("website/products/server-list-processor"); ?></strong></th>
                                 <th data-orderable="false" align="center" bgcolor="#ebebeb"><strong><?php echo __("website/products/server-list-ram"); ?></strong></th>
                                 <th data-orderable="false" align="center" bgcolor="#ebebeb"><strong><?php echo __("website/products/server-list-disk"); ?></strong></th>
@@ -163,7 +163,7 @@
 
                                     ?>
                                     <tr>
-                                        <td align="center" valign="middle">
+                                        <td align="center" valign="middle" data-order="<?php echo $product["rank"]; ?>">
                                             <strong><?php echo $product["title"]; ?></strong>
                                             <?php if($product["cover_image"]): ?>
                                                 <br>

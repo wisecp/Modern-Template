@@ -52,18 +52,6 @@
                 separateDialCode: true,
                 utilsScript: "<?php echo $sadress;?>assets/plugins/phone-cc/js/utils.js"
             });
-
-            var reset = function() {
-                telInput.removeClass("error");
-            };
-            telInput.on("keyup change",reset);
-            telInput.blur(function() {
-                reset();
-                if($.trim(telInput.val())){
-                    if (telInput.intlTelInput("isValidNumber")) telInput.removeClass("error");
-                    else telInput.addClass("error");
-                }
-            });
         });
     </script>
 
@@ -98,15 +86,6 @@
 ::-webkit-scrollbar-thumb{background-color:#607D8B}
 video{position:fixed;top:50%;left:50%;min-width:100%;min-height:100%;width:auto;height:auto;z-index:-100;transform:translateX(-50%) translateY(-50%);background-size:cover;transition:1s opacity;opacity:.50;filter:alpha(opacity=50)}
 .stopfade{opacity:.5}
-.verificationcontent{padding:30px}
-.verificationcontent p{font-size:18px;text-align:center}
-.verificationcontent h1{text-align:center;font-size:24px;font-weight:bold;color:#8bc34a}
-.verificationcontent h1 i{font-size:80px}
-.verificationcontent form{text-align:center}
-.verificationcontent input{text-align:center;width:200px;font-size:16px;font-weight:bold}
-.secureoptions{width:265px;margin:auto;margin-top:35px;font-size:16px;font-weight:600;margin-bottom:15px}
-.notverification{font-size:13px;color:#b5b5b5;width:100%;text-align:center;display:inline-block;margin-top:20px}
-.notverification a{color:#b5b5b5;font-weight:600}
 #uyeolgiris{position:fixed;overflow:auto;margin-bottom:0;width:100%;height:100%;bottom:0px;background-image:url(<?php echo $tadress;?>images/noisebg.png);background-color:rgba(50, 90, 108, 0.55);background-repeat:repeat}
 #uyeolgirisbody .footer{display:none}
 .uyeolgirisyap{float:none;width:400px;margin:auto;border-radius:27px;    -webkit-animation-name: fadeIn;
@@ -241,7 +220,7 @@ video{position:fixed;top:50%;left:50%;min-width:100%;min-height:100%;width:auto;
                         <input type="hidden" name="stage" value="1">
 
                         <!-- Information FORM -->
-                        <div id="Information" style="overflow:hidden;">                         
+                        <div id="Information">
 
                             <table width="100%" border="0">
                                 <tbody>

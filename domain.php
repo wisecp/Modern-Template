@@ -4,6 +4,7 @@
         'jquery-ui',
     ];
 
+
     $currency_symbols = [];
     foreach(Money::getCurrencies() AS $currency){
         $symbol = $currency["prefix"] != '' ? trim($currency["prefix"]) : trim($currency["suffix"]);
@@ -124,11 +125,9 @@
 
                                             if(item.reg_price != undefined && item.reg_price.length>0){
                                                 price_to_year = "";
-                                                var i=0;
                                                 price_to_year += '<select id="tesclsure" name="period['+item.sld+'.'+item.tld+']">';
-                                                $(item.reg_price).each(function(k,price){
-                                                    i+=1;
-                                                    price_to_year += '<option value="'+i+'">'+price+' ('+i+' <?php echo __("website/domain/year"); ?>)</option>';
+                                                $(item.reg_price).each(function(k,r){
+                                                    price_to_year += '<option value="'+r.year+'">'+r.price+' ('+r.year+' <?php echo __("website/domain/year"); ?>)</option>';
                                                 });
                                                 price_to_year += '</select>';
                                             }
@@ -281,11 +280,9 @@
 
                                     if(item.reg_price != undefined && item.reg_price.length>0){
                                         price_to_year = "";
-                                        var i=0;
                                         price_to_year += '<select id="tesclsure" name="period['+item.sld+'.'+item.tld+']">';
-                                        $(item.reg_price).each(function(k,price){
-                                            i+=1;
-                                            price_to_year += '<option value="'+i+'">'+price+' ('+i+' <?php echo __("website/domain/year"); ?>)</option>';
+                                        $(item.reg_price).each(function(k,r){
+                                            price_to_year += '<option value="'+r.year+'">'+r.price+' ('+r.year+' <?php echo __("website/domain/year"); ?>)</option>';
                                         });
                                         price_to_year += '</select>';
                                     }

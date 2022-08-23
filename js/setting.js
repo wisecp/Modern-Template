@@ -84,7 +84,7 @@ $(function() {
 					}
 				});
 
-    $('#foo5).carouFredSel({
+    $('#foo5').carouFredSel({
         auto: true,
         pagination: "#pager5",
         prev: '#prev5',

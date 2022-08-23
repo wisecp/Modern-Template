@@ -5,6 +5,7 @@
         'waiting' => '<div class="listingstatus"><span class="wait">'.__("website/account_tickets/status-waiting").'</span></div>',
         'replied' => '<div class="listingstatus"><span class="active">'.__("website/account_tickets/status-replied").'</span></div>',
         'solved' => '<div class="listingstatus"><span>'.__("website/account_tickets/status-solved").'</span></div>',
+        'custom' => '<div class="listingstatus"><span style="border-color: transparent; color:white; background-color: {color}">{name}</span></div>',
     ];
 
     $product_situations = [

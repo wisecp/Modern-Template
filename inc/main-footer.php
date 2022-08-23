@@ -3,6 +3,7 @@
 
 <?php View::show_brand(); ?>
 
+
 <?php
     if(isset($hoptions["page"]) && $hoptions["page"] == "index"){
         if($footlogos){
@@ -29,7 +30,15 @@
 
                         <i class="fa fa-envelope-o" aria-hidden="true"></i>
                         <input name="email" type="text" placeholder="<?php echo __("website/newsletter/form-email-placeholder"); ?>">
-                        <a id="newsletter_submit" href="javascript:newsletter_submit();void 0;" class="gonderbtn aboneolbtn"><?php echo __("website/newsletter/form-submit"); ?></a>
+                        <?php if(Config::get("options/gdpr-status")): ?>
+
+                            <a id="newsletter_submit_inactive" href="javascript:void 0;" class="gonderbtn aboneolbtn"><?php echo __("website/newsletter/form-submit"); ?></a>
+
+                            <a style="display: none;" id="newsletter_submit" href="javascript:newsletter_submit();void 0;" class="gonderbtn aboneolbtn"><?php echo __("website/newsletter/form-submit"); ?></a>
+
+                        <?php else: ?>
+                            <a id="newsletter_submit" href="javascript:newsletter_submit();void 0;" class="gonderbtn aboneolbtn"><?php echo __("website/newsletter/form-submit"); ?></a>
+                        <?php endif; ?>
                     </form>
                     <script type="text/javascript">
                         function newsletter_submit() {
@@ -67,7 +76,15 @@
                             }
                         }
                     </script>
-                </div>
+
+                    <?php if(Config::get("options/gdpr-status")): ?>
+                        <div id="newsletter_gdpr">
+                            <input type="checkbox" class="checkbox-custom" value="1" id="newsletter_contract" onchange="if($(this).prop('checked')) $('#newsletter_submit_inactive').css('display','none'),$('#newsletter_submit').css('display','block'); else $('#newsletter_submit_inactive').css('display','block'),$('#newsletter_submit').css('display','none');">
+                            <label class="checkbox-custom-label" for="newsletter_contract"><span class="kinfo"><?php echo __("website/account_info/gdpr-tx4",['{link}' => Controllers::$init->CRLink("contract2")]); ?></span></label>
+                      </div>
+                    <?php endif; ?>
+                    <div class="clear"></div>  
+                </div><div class="clear"></div> 
             </div>
             <?php
         }

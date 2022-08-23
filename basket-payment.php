@@ -11,11 +11,19 @@
         $currency_symbols[$symbol] = $currency["id"];
     }
 ?>
+<link rel="stylesheet" href="<?php echo $sadress;?>assets/plugins/phone-cc/new/css/intlTelInput.css">
+<script src="<?php echo $sadress;?>assets/plugins/phone-cc/new/js/intlTelInput.js"></script>
+
 <script type="text/javascript">
         var currency_symbols = <?php echo Utility::jencode($currency_symbols); ?>;
 
         var pay_ok,current_balance=0,changing_balance=0,address,int_balance,total_payable;
         var default_country;
+        var tel1;
+        var tel2;
+        var telInput;
+        var telInput2;
+        var countryCode;
 
         function amount_divider(str){
             var visible_amount      = str;
@@ -131,7 +139,7 @@
                                     var amount_info = amount_divider(ditem.amount);
                                     d_content  = '<tr>';
                                     d_seee     = d_see.replace('{rate}',ditem.rate);
-                                    d_content += '<td><strong>'+d_seee+'</strong><br>('+ditem.name+') </td>';
+                                    d_content += '<td><strong>'+d_seee+'</strong>'+(ditem.name !== null ? '<br>('+ditem.name+')' : '')+' </td>';
                                     d_content += '<td align="right"><h5><div class="amount_spot_view"><i class="currpos'+amount_info.symbol_pos+'">'+amount_info.symbol+'</i> -'+amount_info.amount+'</div></h5></td>';
                                     d_content += '</tr>';
                                     $("#dealership_discounts").append(d_content);
@@ -160,6 +168,7 @@
                                 var see,see_text;
                                 see     = $("#tax-see");
                                 see_text = '<?php echo __("website/basket/tax-amount"); ?>';
+                                see_text = see_text.replace('{rates}',solve.tax_rates ?? '');
                                 see_text = see_text.replace('{rate}',solve.tax_rate);
                                 see.html(see_text);
                                 if(solve.total_tax_amount != undefined){
@@ -418,9 +427,8 @@
                             });
                         }
 
-                        if(solve.message != undefined && solve.message != ''){
-                            $("#addNewAddressForm #FormOutput").fadeIn(200).html(solve.message);
-                        }
+                        if(solve.message != undefined && solve.message != '')
+                            alert_error(solve.message,{timer:3000});
                     }else if(solve.status == "successful"){
                         $("#addNewAddressForm #FormOutput").fadeOut(200).html('');
                         ReloadAddressList(solve.id);
@@ -567,6 +575,55 @@
             setTimeout(function(){
                 OrderSummary();
             });
+            
+            // Manage Address START
+
+            countryCode         = '<?php if($ipInfo = UserManager::ip_info()) echo $ipInfo["countryCode"]; else echo 'us'; ?>';
+
+            telInput2 = document.getElementById("gsm2");
+
+            var object_code = {
+                geoIpLookup: function(callback) {
+                    callback(countryCode);
+                },
+                autoPlaceholder: "on",
+                formatOnDisplay: true,
+                initialCountry: "auto",
+                nationalMode: false,
+                placeholderNumberType: "MOBILE",
+                preferredCountries: ['us', 'gb', 'ch', 'ca', 'de', 'it'],
+                separateDialCode: true,
+                utilsScript: "<?php echo $sadress;?>assets/plugins/phone-cc/new/js/utils.js"
+            };
+            tel2    = intlTelInput(telInput2,object_code);
+
+            $("#gsm2").change(function(){
+                $("#addNewAddressForm input[name=gsm]").val(tel2.getNumber());
+            });
+
+            telInput2.addEventListener("countrychange", function() {
+                $("#addNewAddressForm input[name=gsm]").val(tel2.getNumber());
+            });
+            
+            
+            $("#addNewAddressForm input[name='kind']").change(function(){
+                var value       = $("#addNewAddressForm input[name='kind']:checked").val();
+
+                if(value === "corporate")
+                {
+                    $("#addNewAddressForm .corporate-info").css("display","block");
+                    $("#addNewAddressForm .individual-info").css("display","none");
+                }
+                else
+                {
+                    $("#addNewAddressForm .individual-info").css("display","block");
+                    $("#addNewAddressForm .corporate-info").css("display","none");
+                }
+
+            });
+            
+            // Manage Address END
+            
 
             ReloadAddressList();
             getCountries();
@@ -658,6 +715,86 @@
                                 <table width="100%" border="0">
                                     <tr>
                                         <td colspan="2">
+
+                                            <?php if(Config::get("options/sign/up/kind/status")): ?>
+                                                <div class="hesapbilgisi">
+                                                    <div class="yuzde25">
+                                                        <div class="hesapbilgititle"><?php echo __("website/sign/up-form-kind"); ?></div>
+                                                    </div>
+                                                    <div class="yuzde75">
+
+                                                        <input<?php echo $udata["kind"] == "individual" ? ' checked' : ''; ?> id="xkind_1" class="radio-custom" name="kind" value="individual" type="radio">
+                                                        <label for="xkind_1" class="radio-custom-label" style="margin-right: 28px;"><span class="checktext"><?php echo __("website/sign/up-form-kind-1"); ?></span></label>
+
+                                                        <input<?php echo $udata["kind"] == "corporate" ? ' checked' : ''; ?> id="xkind_2" class="radio-custom" name="kind" value="corporate" type="radio">
+                                                        <label for="xkind_2" class="radio-custom-label" style="margin-right: 28px;"><span class="checktext"><?php echo __("website/sign/up-form-kind-2"); ?></span></label>
+
+                                                    </div>
+                                                </div>
+                                            <?php endif; ?>
+
+                                            <div class="hesapbilgisi">
+                                                <div class="yuzde25"><div class="hesapbilgititle"><?php echo __("website/account_info/address-profile-tx1"); ?></div></div>
+                                                <div class="yuzde75">
+                                                    <input name="full_name" type="text" placeholder="<?php echo __("website/account_info/address-profile-tx1"); ?>" value="<?php echo $udata["full_name"]; ?>">
+                                                </div>
+                                            </div>
+
+                                            <!--Individual -->
+                                            <?php if($udata["country"] == 227 && Config::get("options/sign/up/kind/individual/identity/status")): ?>
+                                                <div class="hesapbilgisi">
+                                                    <div class="yuzde25"><div class="hesapbilgititle"><?php echo __("website/sign/up-form-identity"); ?></div></div>
+                                                    <div class="yuzde75">
+                                                        <input placeholder="<?php echo __("website/sign/up-form-identity"); ?>" name="identity" maxlength="11" type="text" value="<?php echo $udata["identity"]; ?>" onkeypress='return event.charCode>= 48 &&event.charCode<= 57'>
+                                                    </div>
+                                                </div>
+                                            <?php endif; ?>
+
+                                            <!-- Individual end-->
+
+                                            <!-- corporate start -->
+                                            <div class="hesapbilgisi corporate-info" style="<?php echo $udata["kind"] == "corporate" ? '' : 'display: none;'; ?>">
+                                                <div class="yuzde25"><div class="hesapbilgititle"><?php echo __("website/sign/up-form-cname"); ?></div></div>
+                                                <div class="yuzde75">
+                                                    <input name="company_name" type="text" placeholder="<?php echo __("website/sign/up-form-cname"); ?>" value="<?php echo $udata["company_name"]; ?>">
+                                                </div>
+                                            </div>
+
+                                            <?php if(Config::get("options/sign/up/kind/corporate/company_tax_number")): ?>
+                                                <div class="hesapbilgisi corporate-info" style="<?php echo $udata["kind"] == "corporate" ? '' : 'display: none;'; ?>">
+                                                    <div class="yuzde25"><div class="hesapbilgititle"><?php echo __("website/sign/up-form-ctaxno"); ?></div></div>
+                                                    <div class="yuzde75">
+                                                        <input name="company_tax_number" type="text" placeholder="<?php echo __("website/sign/up-form-ctaxno"); ?>" value="<?php echo $udata["company_tax_number"]; ?>">
+                                                    </div>
+                                                </div>
+                                            <?php endif; ?>
+
+                                            <?php if(Config::get("options/sign/up/kind/corporate/company_tax_office")): ?>
+                                                <div class="hesapbilgisi corporate-info" style="<?php echo $udata["kind"] == "corporate" ? '' : 'display: none;'; ?>">
+                                                    <div class="yuzde25"><div class="hesapbilgititle"><?php echo __("website/sign/up-form-ctaxoff"); ?></div></div>
+                                                    <div class="yuzde75">
+                                                        <input name="company_tax_office" type="text" placeholder="<?php echo __("website/sign/up-form-ctaxoff"); ?>" value="<?php echo $udata["company_tax_office"]; ?>">
+                                                    </div>
+                                                </div>
+                                            <?php endif; ?>
+                                            <!--corporate end-->
+
+                                            <div class="hesapbilgisi">
+                                                <div class="yuzde25"><div class="hesapbilgititle"><?php echo __("website/sign/up-form-email"); ?></div></div>
+                                                <div class="yuzde75">
+                                                    <input name="email" type="email" placeholder="<?php echo __("website/sign/up-form-email"); ?>" value="<?php echo $udata["email"]; ?>">
+                                                </div>
+                                            </div>
+                                            <div class="hesapbilgisi">
+                                                <div class="yuzde25"><div class="hesapbilgititle"><?php echo __("website/sign/up-form-gsm"); ?></div></div>
+                                                <div class="yuzde75">
+                                                    <input id="gsm2" type="text" style="width:100%;"  value="<?php echo strlen($udata["phone"]) > 1 ? "+".$udata["phone"] : ''; ?>">
+                                                    <input type="hidden" name="gsm" value="<?php echo $udata["phone"]; ?>">
+                                                </div>
+                                            </div>
+
+                                            <div class="clear" style="margin-bottom: 20px;"></div>
+
 
                                             <div class="yuzde30">
                                                 <strong><?php echo __("website/account_info/country"); ?></strong>

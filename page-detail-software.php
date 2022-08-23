@@ -42,9 +42,6 @@
         });
     } );
 </script>
-<?php if(isset($page["mockup"]) && $page["mockup"] != ''): ?>
-    <meta property="og:image" content="<?php echo $page["mockup"]; ?>">
-<?php endif; ?>
 
 <div id="wrapper">
 
@@ -174,7 +171,7 @@
                             <?php
                         }
 
-                        $amount = Money::formatter_symbol($software["price"]["amount"],$software["price"]["cid"],true);
+                        $amount = Money::formatter_symbol($software["price"]["amount"],$software["price"]["cid"],!$software["override_usrcurrency"]);
                         $amount_symbol_position = '';
                         $split_amount   = explode(" ",$amount);
                         $amount_symbol  = '';

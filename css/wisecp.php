@@ -460,7 +460,7 @@ div.mostpopularx{-webkit-animation:blink 3s linear 0 infinite normal;animation:b
 #fullwidth #megamenuservice a{padding:0px}
 .digerhmzinfo{float:right;width:200px;color:white;position:absolute;right:0px;top:0px;padding:0px 45px;height:100%;background:#<?php echo $color1;?>;font-weight:200}
 .digerhmzinfo h5{margin-top:25px;font-family:'Raleway',sans-serif}
-.digerhzmucgen{width:0;height:0;top:30px;position:absolute;border-style:solid;border-width:15px 15px 15px 0;border-color:transparent #<?php echo $color1;?>transparent transparent;margin-left:-53px;margin-top:65px}
+.digerhzmucgen{width:0;height:0;top:30px;position:absolute;border-style:solid;border-width:15px 15px 15px 0;border-color:transparent #<?php echo $color1;?> transparent transparent;margin-left:-53px;margin-top:65px}
 #fullwidth .menu li .digerhmzinfo a{padding:10px 25px;line-height:normal;float:left;border-radius:50px;margin-top:10px;font-size:15px}
 #fullwidth .menu li .digerhmzinfo a:hover{background:rgba(0,0,0,0.34)}
 #megamenu:hover #megamenuservice a {background:none;}

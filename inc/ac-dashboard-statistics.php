@@ -33,7 +33,9 @@
                 <div class="mpanelblokicon"><i class="fa fa-life-ring"></i></div>
                <a href="<?php echo $acsidebar_links["menu-1"]; ?>"> <h1><?php echo $statistic4; ?></h1>
                 <h2><?php echo __("website/account/statistic-4-name"); ?></h2></a>
-               <a href="<?php echo $links["create-ticket-request"]; ?>"> <div class="mblokbtn"><div class="padding10"><?php echo __("website/account/statistic-4-link"); ?></div></div></a>
+            <?php if(!(isset($udata["block_create_ticket"]) && $udata["block_create_ticket"])): ?>
+                <a href="<?php echo $links["create-ticket-request"]; ?>"> <div class="mblokbtn"><div class="padding10"><?php echo __("website/account/statistic-4-link"); ?></div></div></a>
+            <?php endif; ?>
             </div>
     <?php endif; ?>
 

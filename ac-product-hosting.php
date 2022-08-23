@@ -825,7 +825,7 @@
                 </div>
                 <h5 id="detial_domain"><strong><?php echo $domain; ?></strong></h5>
                 <?php
-                    if(isset($options["server_features"]) && is_array($options["server_features"]))
+                    if(isset($options["server_features"]) && is_array($options["server_features"]) && $options["server_features"])
                         echo '<h5 id="server_features" style="font-weight:normal;margin:0px;">('.implode(" + ",$options["server_features"]).')</h5><br>';
                     ?>
                     <div id="order-service-detail-btns">

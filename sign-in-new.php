@@ -54,15 +54,6 @@
 ::-webkit-scrollbar-track{-webkit-box-shadow:inset 0 0 6px rgba(0,0,0,0.3);background-color:#F5F5F5}
 ::-webkit-scrollbar{width:9px;background-color:#F5F5F5}
 ::-webkit-scrollbar-thumb{background-color:#607D8B}
-.verificationcontent{padding:30px}
-.verificationcontent p{font-size:18px;text-align:center}
-.verificationcontent h1{text-align:center;font-size:24px;font-weight:bold;color:#8bc34a}
-.verificationcontent h1 i{font-size:80px}
-.verificationcontent form{text-align:center}
-.verificationcontent input{text-align:center;width:200px;font-size:16px;font-weight:bold}
-.secureoptions{width:265px;margin:auto;margin-top:35px;font-size:16px;font-weight:600;margin-bottom:15px}
-.notverification{font-size:13px;color:#b5b5b5;width:100%;text-align:center;display:inline-block;margin-top:20px}
-.notverification a{color:#b5b5b5;font-weight:600}
 #uyeolgiris{position:fixed;overflow:auto;margin-bottom:0;width:100%;height:100%;bottom:0px;background-image:url(<?php echo $tadress;?>images/signinsignupbg2020.jpg);background-color:rgba(50, 90, 108, 0.55);background-repeat:no-repeat;    background-size: 100%;}
 #uyeolgirisbody .footer{display:none}
 .uyeol{position:absolute;width:50%;border-radius:0;margin-bottom:0px;right:0;top:0;bottom:0}
@@ -82,7 +73,6 @@
 .uyeolgirisyap .btn{width:200px;background:transparent;    padding: 12px 0px;}
 .clientcopyright{width:100%;text-align:center;font-size:13px;margin-top:15px;margin-bottom:30px;color:#b4b4b4;display:inline-block}
 .clientcopyright a{color:#b4b4b4}
-.socialconnect{float:right;border:none;padding-bottom:0px;margin-bottom:0px;width:55%}
 .footsosyal{margin-top:15px}
 .footsosyal a{color:#a1a1a1}
 .footsosyal a:hover{background:#eee}
@@ -95,11 +85,6 @@
 .uyeolgirisslogan-con .gonderbtn{color:#fff;border:2px solid #fff;margin-top:35px}
 .uyeolgirisslogan-con .gonderbtn:hover{color:#333;background:white}
 .signupcon{padding:20px;    background: white;}
-.socialconnect a{color:#7c7c7c;font-size:14px;background:#e7e7e7}
-.socialconnect .facebookconnect{color:#7c7c7c;background:#eee}
-.socialconnect .facebookconnect:hover{color:#fff}
-.socialconnect .googleconnect{background:#eee;color:#7c7c7c}
-.socialconnect .googleconnect:hover{color:#fff}
 .signinsignup-title{display:inline-block;font-size:28px;font-weight:600;margin-top:12px}
 ::-webkit-input-placeholder{color:#7898ae}
 :-moz-placeholder{color:#7898ae}
@@ -120,6 +105,7 @@
 #Signforget_Form input{margin-bottom:20px}
 .clientloginheadinfo { margin-bottom: 20px;    font-size: 20px;}
 .captcha-content {margin-top:10px;}
+.abcRioButton{border-radius:1px;box-shadow:0 2px 4px 0 rgba(0,0,0,.25);-moz-box-sizing:border-box;box-sizing:border-box;-webkit-transition:background-color .218s,border-color .218s,box-shadow .218s;transition:background-color .218s,border-color .218s,box-shadow .218s;-webkit-user-select:none;-webkit-appearance:none;background-color:#fff;background-image:none;color:#262626;cursor:pointer;outline:none;overflow:hidden;position:relative;text-align:center;vertical-align:middle;white-space:nowrap;width:auto}.abcRioButton:hover{box-shadow:0 0 3px 3px rgba(66,133,244,.3)}.abcRioButtonBlue{border:none;color:#fff}.abcRioButtonBlue,.abcRioButtonBlue:hover{background-color:#4285f4}.abcRioButtonBlue:active{background-color:#3367d6}.abcRioButtonLightBlue{background-color:#fff;color:#757575}.abcRioButtonLightBlue:active{background-color:#eee;color:#6d6d6d}.abcRioButtonIcon{float:left}.abcRioButtonBlue .abcRioButtonIcon{background-color:#fff;border-radius:1px}.abcRioButtonSvg{display:block}.abcRioButtonContents{font-family:Roboto,arial,sans-serif;font-size:14px;font-weight:500;letter-spacing:.21px;margin-left:6px;margin-right:6px;vertical-align:top}.abcRioButtonContentWrapper{height:100%;width:100%}.abcRioButtonBlue .abcRioButtonContentWrapper{border:1px solid transparent}.abcRioButtonErrorWrapper,.abcRioButtonWorkingWrapper{display:none;height:100%;width:100%}.abcRioButtonErrorIcon,.abcRioButtonWorkingIcon{margin-left:auto;margin-right:auto}.abcRioButtonErrorState,.abcRioButtonWorkingState{border:1px solid #d5d5d5;border:1px solid rgba(0,0,0,.17);box-shadow:0 1px 0 rgba(0,0,0,.05);color:#262626}.abcRioButtonErrorState:hover,.abcRioButtonWorkingState:hover{border:1px solid #aaa;border:1px solid rgba(0,0,0,.25);box-shadow:0 1px 0 rgba(0,0,0,.1)}.abcRioButtonErrorState:active,.abcRioButtonWorkingState:active{border:1px solid #aaa;border:1px solid rgba(0,0,0,.25);box-shadow:inset 0 1px 0 #ddd;color:#262626}.abcRioButtonWorkingState,.abcRioButtonWorkingState:hover{background-color:#f5f5f5}.abcRioButtonWorkingState:active{background-color:#e5e5e5}.abcRioButtonErrorState,.abcRioButtonErrorState:hover{background-color:#fff}.abcRioButtonErrorState:active{background-color:#e5e5e5}.abcRioButtonErrorState .abcRioButtonErrorWrapper,.abcRioButtonWorkingState .abcRioButtonWorkingWrapper{display:block}.abcRioButtonErrorState .abcRioButtonContentWrapper,.abcRioButtonErrorState .abcRioButtonWorkingWrapper,.abcRioButtonWorkingState .abcRioButtonContentWrapper{display:none} .-webkit-keyframes abcRioButtonWorkingIconPathSpinKeyframes {0% {-webkit-transform: rotate(0deg)}}
 
 @media only screen and (min-width:320px) and (max-width:1024px){
 .uyeolgirishead{width:100%;margin-top:15%}
@@ -133,7 +119,6 @@
 .uyeolgirisslogan h4{width:90%;font-size:17px;margin:auto;margin-top:25px}
 .uyeolgirisslogan-con{width:90%;margin:auto;margin-top:55px}
 .signupcon .padding30 {    padding: 0px;}
-.socialconnect {    margin-bottom: 20px;    width: 100%;}
 .signup-stages-block{width:75px;height:75px;line-height:75px;margin:0px 4%;font-size:28px}
 .signup-stage-line {    margin-bottom: -45px;}
 .clean-theme-signup-box .yuzde50 {    width: 46%;}

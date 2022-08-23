@@ -137,7 +137,18 @@
                             <?php endif; ?>
                         <?php endif; ?>
 
-                        <a style="width:200px;float: right;" class="yesilbtn gonderbtn mio-ajax-submit" mio-ajax-options='{"waiting_text":"<?php echo addslashes(__("website/others/button2-pending")); ?>","result":"contact_form_submit"}' style="float:right;" href="javascript:void(0);"><i class="fa fa-paper-plane-o" aria-hidden="true"></i> <?php echo __("website/contact/form-submit"); ?></a>
+                        <?php if(Config::get("options/gdpr-status")): ?>
+                            <input<?php echo ($udata["contract2"] ?? 0)  > 0 ? ' checked' : '' ; ?> type="checkbox" class="checkbox-custom" name="contract" value="1" id="contact_contract" onchange="if($(this).prop('checked')) $('#contact_inactive_btn').css('display','none'),$('#contact_active_btn').css('display','block'); else $('#contact_inactive_btn').css('display','block'),$('#contact_active_btn').css('display','none');">
+                            <label class="checkbox-custom-label" for="contact_contract"><span class="kinfo"><?php echo __("website/account_info/gdpr-tx4",['{link}' => Controllers::$init->CRLink("contract2")]); ?></span></label>
+
+                            <a id="contact_inactive_btn" style="width:200px;float: right;" class="graybtn gonderbtn" href="javascript:void(0);"><i class="fa fa-paper-plane-o" aria-hidden="true"></i> <?php echo __("website/contact/form-submit"); ?></a>
+
+                            <a id="contact_active_btn" style="display:none;width:200px;float: right;" class="yesilbtn gonderbtn mio-ajax-submit" mio-ajax-options='{"waiting_text":"<?php echo addslashes(__("website/others/button2-pending")); ?>","result":"contact_form_submit"}' href="javascript:void(0);"><i class="fa fa-paper-plane-o" aria-hidden="true"></i> <?php echo __("website/contact/form-submit"); ?></a>
+
+
+                        <?php else: ?>
+                            <a style="width:200px;float: right;" class="yesilbtn gonderbtn mio-ajax-submit" mio-ajax-options='{"waiting_text":"<?php echo addslashes(__("website/others/button2-pending")); ?>","result":"contact_form_submit"}' style="float:right;" href="javascript:void(0);"><i class="fa fa-paper-plane-o" aria-hidden="true"></i> <?php echo __("website/contact/form-submit"); ?></a>
+                        <?php endif; ?>
                     </form>
                     <script type="text/javascript">
                         function contact_form_submit(result){

@@ -1251,7 +1251,7 @@
                                                 ?>
                                                 <div class="sunucular" data-aos="fade-up">
                                                     <div>
-                                                        <table class="horizontal-list" width="100%" border="0" data-order='[[6, "asc"]]'>
+                                                        <table class="" width="100%" border="0" data-order='[[6, "asc"]]'>
                                                             <thead style="background:#ebebeb;">
                                                             <tr>
                                                                 <th data-orderable="false" align="center" bgcolor="#ebebeb"><strong><?php echo __("website/products/server-list-title"); ?></strong></td>

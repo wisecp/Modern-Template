@@ -11,6 +11,14 @@
                 foreach($acAddresses AS $addr){
                     ?>
                     <div class="adresbilgisi" id="address_<?php echo $addr["id"];?>">
+                        <input type="hidden" name="full_name" value="<?php echo $addr["full_name"]; ?>">
+                        <input type="hidden" name="kind" value="<?php echo $addr["kind"]; ?>">
+                        <input type="hidden" name="company_name" value="<?php echo $addr["company_name"]; ?>">
+                        <input type="hidden" name="company_tax_office" value="<?php echo $addr["company_tax_office"]; ?>">
+                        <input type="hidden" name="company_tax_number" value="<?php echo $addr["company_tax_number"]; ?>">
+                        <input type="hidden" name="email" value="<?php echo $addr["email"]; ?>">
+                        <input type="hidden" name="phone" value="<?php echo $addr["phone"]; ?>">
+                        <input type="hidden" name="identity" value="<?php echo $addr["identity"]; ?>">
                         <input type="hidden" name="country_id" value="<?php echo $addr["country_id"]; ?>">
                         <input type="hidden" name="detouse" value="<?php echo $addr["detouse"] ? 1 : 0; ?>">
                         <input type="hidden" name="zipcode" value="<?php echo $addr["zipcode"]; ?>">
@@ -52,11 +60,14 @@
     $hoptions = ["jquery-ui",'jquery-mask','voucher_codes'];
 
 ?>
-<link rel="stylesheet" href="<?php echo $sadress;?>assets/plugins/phone-cc/css/intlTelInput.css">
-<script src="<?php echo $sadress;?>assets/plugins/phone-cc/js/intlTelInput.js"></script>
+<link rel="stylesheet" href="<?php echo $sadress;?>assets/plugins/phone-cc/new/css/intlTelInput.css">
+<script src="<?php echo $sadress;?>assets/plugins/phone-cc/new/js/intlTelInput.js"></script>
 <script type="text/javascript">
     var default_country,city_request = false,counti_request=false;
+    var tel1;
+    var tel2;
     var telInput;
+    var telInput2;
     var countryCode;
     $(document).ready(function(){
 
@@ -72,28 +83,64 @@
             $("#"+level).css("display","block");
         });
 
-        telInput = $("#gsm");
-
-        $('#birthday').mask('00/00/0000');
+        telInput = document.getElementById("gsm");
+        telInput2 = document.getElementById("gsm2");
 
         countryCode         = '<?php if($ipInfo = UserManager::ip_info()) echo $ipInfo["countryCode"]; else echo 'us'; ?>';
         default_country     = countryCode;
 
-        telInput.intlTelInput({
+        var object_code = {
             geoIpLookup: function(callback) {
                 callback(countryCode);
-                $("select[name=country] option[data-code="+countryCode+"]").attr("selected",true).trigger("change");
             },
             autoPlaceholder: "on",
             formatOnDisplay: true,
             initialCountry: "auto",
-            hiddenInput: "gsm",
             nationalMode: false,
             placeholderNumberType: "MOBILE",
             preferredCountries: ['us', 'gb', 'ch', 'ca', 'de', 'it'],
             separateDialCode: true,
-            utilsScript: "<?php echo $sadress;?>assets/plugins/phone-cc/js/utils.js"
+            utilsScript: "<?php echo $sadress;?>assets/plugins/phone-cc/new/js/utils.js"
+        };
+
+        tel1    = intlTelInput(telInput,object_code);
+        tel2    = intlTelInput(telInput2,object_code);
+
+        $("#gsm").change(function(){
+            $("#ModifyAccountInfo input[name=gsm]").val(tel1.getNumber());
         });
+
+        telInput.addEventListener("countrychange", function() {
+            $("#ModifyAccountInfo input[name=gsm]").val(tel1.getNumber());
+        });
+
+
+        $("#gsm2").change(function(){
+            $("#manageAddressForm input[name=gsm]").val(tel2.getNumber());
+        });
+
+        telInput2.addEventListener("countrychange", function() {
+            $("#manageAddressForm input[name=gsm]").val(tel2.getNumber());
+        });
+
+        $("#manageAddressForm input[name='kind']").change(function(){
+            var value       = $("#manageAddressForm input[name='kind']:checked").val();
+
+            if(value === "corporate")
+            {
+                $("#manageAddressForm .corporate-info").css("display","block");
+                $("#manageAddressForm .individual-info").css("display","none");
+            }
+            else
+            {
+                $("#manageAddressForm .individual-info").css("display","block");
+                $("#manageAddressForm .corporate-info").css("display","none");
+            }
+
+        });
+
+        $("input[name='kind']").trigger("change");
+
 
 
         let tab = gGET("tab");
@@ -130,26 +177,26 @@
             collapsible: false,
         });
 
-
-        $("input[name='kind']").change(function(){
-            var value       = $("input[name='kind']:checked").val();
-            var cfieldsz    = $(".custom-field--content").length;
+        $("#ModifyAccountInfo input[name='kind']").change(function(){
+            var value       = $("#ModifyAccountInfo input[name='kind']:checked").val();
+            var cfieldsz    = $("#ModifyAccountInfo .custom-field--content").length;
 
             if(value == "corporate"){
-                $(".corporate-info").css("display","block");
-                $(".digerbilgiler").css("display","block");
-                $(".kisiselbilgiler").removeAttr("style");
+                $("#ModifyAccountInfo .corporate-info").css("display","block");
+                $("#ModifyAccountInfo .digerbilgiler").css("display","block");
+                $("#ModifyAccountInfo .kisiselbilgiler").removeAttr("style");
             }else{
-                $(".corporate-info").fadeOut(1);
+                $("#ModifyAccountInfo .corporate-info").fadeOut(1);
                 if(cfieldsz==0){
-                    $(".digerbilgiler").css("display","none");
-                    $(".kisiselbilgiler").attr("style","width:100%;");
+                    $("#ModifyAccountInfo .digerbilgiler").css("display","none");
+                    $("#ModifyAccountInfo .kisiselbilgiler").attr("style","width:100%;");
                 }
             }
 
         });
 
-        $("input[name='kind']").trigger("change");
+
+
 
         <?php
         if(isset($requiredFields) && $requiredFields){
@@ -203,7 +250,7 @@
                         }else{
                             $("#manageAddressForm select[name='city']").css("display","none").attr("disabled",true);
                             $("#manageAddressForm input[name='city']").css("display","block").attr("disabled",false);
-                            $("#manageAddressForm input[name='city']").focus();
+                            //$("#manageAddressForm input[name='city']").focus();
                         }
                     }else
                         console.log(result);
@@ -245,7 +292,7 @@
                             }else{
                                 $("#manageAddressForm select[name=counti]").css("display","none").attr("disabled",true);
                                 $("#manageAddressForm input[name=counti]").val('').css("display","block").attr("disabled",false);
-                                $("#manageAddressForm input[name='counti']").focus();
+                                //$("#manageAddressForm input[name='counti']").focus();
                             }
                         }else
                             console.log(result);
@@ -276,10 +323,11 @@
                 }else if(solve.status == "successful"){
                     alert_success(solve.message,{timer:2000});
 
+                    turn_back();
+
                     $.get( "<?php echo $operation_link."?inc=address-list"; ?>", function( data ) {
                         $( "#AddressList" ).html( data );
                         $("#empty_content").css("display","none");
-
                     });
                 }
             }else
@@ -287,11 +335,31 @@
         }
     }
     function addAddress(){
-        $("#manageAddress").attr("data-izimodal-title",'<?php echo htmlspecialchars(__("website/account_info/add-new-address"),ENT_QUOTES); ?>');
-        open_modal('manageAddress');
+        $("html, body").animate({ scrollTop: - ($('#accordion2').offset().top + 20)  },200);
+        $("#address_list_wrap,#defaultAddress_wrap").fadeOut(100,function(){
+            $("#manageAddress").fadeIn(100);
+        });
+
+        $('#manageAddress #manage_title_1').css('display','block');
+        $('#manageAddress #manage_title_2').css('display','none');
 
         $("#manageAddressForm input[name=operation]").val('addNewAddress');
         $("#manageAddressForm input[name=id]").val('0');
+
+
+
+        $("#manageAddressForm input[name=kind]").prop('checked',false);
+        $("#xkind_1").prop('checked',true).trigger('change');
+
+        $("#manageAddressForm input[name=full_name]").val('');
+        $("#manageAddressForm input[name=company_name]").val('');
+        $("#manageAddressForm input[name=company_tax_number]").val('');
+        $("#manageAddressForm input[name=company_tax_office]").val('');
+        $("#manageAddressForm input[name=email]").val('');
+        tel2.setNumber('');
+        $('#manageAddressForm input[name=gsm]').val('');
+
+        $("#manageAddressForm input[name=identity]").val('');
 
         $("#manageAddressForm select[name=country]").val('');
 
@@ -303,22 +371,54 @@
 
         $("#manageAddressForm_submit").html('+ <?php echo htmlspecialchars(__("website/account_info/add-address-submit-button"),ENT_QUOTES); ?>');
 
+        $('select[name=country] option[data-code='+(default_country.toUpperCase())+']').prop("selected",true).trigger('change');
+
     }
     function editAddress(id){
-        $("#manageAddress").attr("data-izimodal-title",'<?php echo htmlspecialchars(__("website/account_info/edit-address"),ENT_QUOTES); ?>');
-        open_modal('manageAddress');
+
+        $("html, body").animate({ scrollTop: - ($('#accordion2').offset().top + 20)  },200);
+
+        $("#address_list_wrap,#defaultAddress_wrap").fadeOut(100,function(){
+            $("#manageAddress").fadeIn(100);
+        });
+
+        $('#manageAddress #manage_title_2').css('display','block');
+        $('#manageAddress #manage_title_1').css('display','none');
+
 
         $("#manageAddressForm input[name=operation]").val('editAddress');
         $("#manageAddressForm input[name=id]").val(id);
 
         $("#manageAddressForm_submit").html('<?php echo htmlspecialchars(__("website/account_info/edit-address-submit-button"),ENT_QUOTES); ?>');
 
+        var kind            = $("#address_"+id+" input[name=kind]").val();
+        var full_name       = $("#address_"+id+" input[name=full_name]").val();
+        var comp_name       = $("#address_"+id+" input[name=company_name]").val();
+        var comp_tax_off    = $("#address_"+id+" input[name=company_tax_office]").val();
+        var comp_tax_num    = $("#address_"+id+" input[name=company_tax_number]").val();
+        var email           = $("#address_"+id+" input[name=email]").val();
+        var phone           = $("#address_"+id+" input[name=phone]").val();
+        var identity        = $("#address_"+id+" input[name=identity]").val();
         var city            = $("#address_"+id+" input[name=city]").val();
         var counti          = $("#address_"+id+" input[name=counti]").val();
         var zipcode         = $("#address_"+id+" input[name=zipcode]").val();
         var address         = $("#address_"+id+" input[name=address]").val();
         var detouse         = $("#address_"+id+" input[name=detouse]").val();
         var country_id      = $("#address_"+id+" input[name=country_id]").val();
+
+
+        $("#manageAddressForm input[name=kind]").prop('checked',false);
+        $("#manageAddressForm input[value="+kind+"]").prop('checked',true).trigger('change');
+
+        $("#manageAddressForm input[name=full_name]").val(full_name);
+        $("#manageAddressForm input[name=company_name]").val(comp_name);
+        $("#manageAddressForm input[name=company_tax_number]").val(comp_tax_off);
+        $("#manageAddressForm input[name=company_tax_office]").val(comp_tax_num);
+        $("#manageAddressForm input[name=email]").val(email);
+        if(phone.length > 1) tel2.setNumber("+"+phone);
+        $('#manageAddressForm input[name=gsm]').val(phone);
+        $("#manageAddressForm input[name=identity]").val(identity);
+
 
         $("#manageAddressForm input[name=zipcode]").val(zipcode);
         $("#manageAddressForm input[name=address]").val(address);
@@ -362,76 +462,16 @@
         }
         window.history.pushState("object or string", $("title").html(),link);
     }
+
+    function turn_back()
+    {
+        $("html, body").animate({ scrollTop: - ($('#accordion2').offset().top + 20)  },200);
+        $("#manageAddress").fadeOut(100,function(){
+            $("#address_list_wrap,#defaultAddress_wrap").fadeIn(100);
+        });
+    }
 </script>
 
-<div id="manageAddress" style="display: none;" data-izimodal-title="<?php echo __("website/account_info/add-new-address"); ?>">
-    <div class="padding20">
-
-        <script type="text/javascript">
-            $(document).ready(function(){
-                $("#manageAddressForm_submit").on("click",function(){
-                    MioAjaxElement($(this),{
-                        waiting_text: '<?php echo __("website/others/button1-pending"); ?>',
-                        result:"manageAddressForm_handler",
-                    });
-                });
-            });
-        </script>
-
-        <form action="<?php echo $operation_link; ?>" method="post" id="manageAddressForm">
-            <?php echo Validation::get_csrf_token('account'); ?>
-
-            <input type="hidden" name="operation" value="addNewAddress">
-            <input type="hidden" name="id" value="0">
-
-            <?php
-                if(isset($countryList) && $countryList){
-                    ?>
-                    <div class="yuzde25">
-                        <strong><?php echo __("website/account_info/country"); ?></strong>
-                        <select name="country" onchange="getCities(this.options[this.selectedIndex].value);">
-                            <option value=""><?php echo __("website/account_info/select-your"); ?></option>
-                            <?php
-                                foreach($countryList as $country){
-                                    ?><option value="<?php echo $country["id"];?>" data-code="<?php echo $country["code"]; ?>"><?php echo $country["name"];?></option><?php
-                                }
-                            ?>
-                        </select>
-                    </div>
-                    <?php
-                }
-            ?>
-            <div id="cities" class="yuzde25">
-                <strong><?php echo __("website/account_info/city"); ?></strong>
-                <select name="city" onchange="getCounties($(this).val());" disabled style="display: none;"></select>
-                <input type="text" name="city" placeholder="<?php echo __("admin/users/create-city-placeholder"); ?>">
-            </div>
-            <div id="counti" class="yuzde25" >
-                <strong><?php echo __("website/account_info/counti"); ?></strong>
-                <select name="counti" disabled style="display: none;"></select>
-                <input type="text" name="counti" placeholder="<?php echo __("admin/users/create-counti-placeholder"); ?>">
-            </div>
-            <div id="zipcode" class="yuzde25">
-                <strong><?php echo __("website/account_info/zipcode"); ?></strong>
-                <input name="zipcode" type="text" placeholder="<?php echo __("admin/users/create-zipcode-placeholder"); ?>">
-            </div>
-            <div id="address" class="yuzde100" style="margin-top:20px;">
-                <strong><?php echo __("website/account_info/address"); ?></strong>
-                <input name="address" type="text" placeholder="<?php echo __("admin/users/create-address-placeholder"); ?>">
-            </div>
-            <div class="yuzde100" style="margin-top:10px;">
-                <input type="checkbox" name="detouse" value="1" class="checkbox-custom" id="detouse">
-                <label class="checkbox-custom-label" for="detouse"><?php echo __("website/account_info/default-address"); ?></label>
-            </div>
-
-            <a style="float:right;" href="javascript:void(0);" id="manageAddressForm_submit" class="lbtn"><?php echo __("website/account_info/add-address-submit-button"); ?></a>
-
-        </form>
-        <div class="clear"></div>
-
-
-    </div>
-</div>
 
 <div id="contract1_modal" style="display: none;" data-izimodal-title="<?php echo htmlentities(__("website/sign/contract1-title"),ENT_QUOTES); ?>">
     <div class="padding20">
@@ -468,6 +508,9 @@
         ?>
         <li><a href="javascript:void(0)" class="tablinks" data-k="password" onclick="openTab(this, 'password')"><i class="fa fa-key" aria-hidden="true"></i> <?php echo __("website/account_info/info-tab4"); ?></a></li>
         <li><a href="javascript:void(0)" class="tablinks" data-k="verification" onclick="openTab(this, 'verification')"><i class="fa fa-check" aria-hidden="true"></i> <?php echo __("website/account_info/info-tab5"); ?></a></li>
+       <?php if(Config::get("options/gdpr-status")): ?>
+           <li><a href="javascript:void(0)" class="tablinks" data-k="gdpr" onclick="openTab(this, 'gdpr')"><i class="fa fa-user-shield" aria-hidden="true"></i> <?php echo __("website/account_info/info-tab-gdpr"); ?></a></li>
+       <?php endif; ?>
     </ul>
 
 
@@ -572,6 +615,7 @@
                                 <div class="yuzde25"><div class="hesapbilgititle"><?php echo __("website/sign/up-form-gsm"); ?> <?php if($udata["verified-gsm"]){ ?><a data-tooltip="<?php echo __("website/account_info/verified"); ?>"><i style="color:#8bc34a" class="fa fa-check-circle-o" aria-hidden="true"></i></a><?php } ?> </div></div>
                                 <div class="yuzde75">
                                     <input<?php echo $gsm_disabled ? ' disabled' : NULL; ?> id="gsm" type="text" style="width:100%;"  value="<?php echo (isset($udata["gsm"])) ? "+".$udata["gsm_cc"].$udata["gsm"] : NULL; ?>">
+                                    <input type="hidden" name="gsm" value="<?php echo (isset($udata["gsm"])) ? "+".$udata["gsm_cc"].$udata["gsm"] : NULL; ?>">
                                 </div>
                             </div>
                         <?php endif; ?>
@@ -595,18 +639,7 @@
                                     </div>
                                 </div>
                                 <div class="yuzde75">
-                                    <script>
-                                        $(function(){
-                                            $( "#birthday" ).datepicker({
-                                                yearRange: "-100:+0",
-                                                dateFormat:"dd/mm/yy",
-                                                changeDay:true,
-                                                changeMonth: true,
-                                                changeYear: true
-                                            });
-                                        });
-                                    </script>
-                                    <input<?php echo !$editable["birthday"] && $udata["birthday"] != '' ? ' disabled' : NULL; ?> type="text" name="birthday" class="accountinputs" id="birthday" value="<?php echo $udata["birthday"] == NULL ? NULL : DateManager::format(Config::get("options/date-format"),$udata["birthday"]); ?>" placeholder="00/00/0000">
+                                    <input<?php echo !$editable["birthday"] && $udata["birthday"] != '' ? ' disabled' : NULL; ?> type="date" name="birthday" class="accountinputs" id="birthday" value="<?php echo $udata["birthday"] == NULL ? NULL : $udata["birthday"]; ?>" placeholder="YYYY-MM-DD">
                                     <?php
                                         if($birthday_adult_verify){
                                             ?>
@@ -807,87 +840,325 @@
     </div>
 
     <div id="billing" class="tabcontent">
+        <style>
+            #billing .sbtn {    padding: 7px 10px;}
+            #billing .ui-accordion .ui-accordion-header {cursor: text;}
+            #csm .ui-accordion .ui-accordion-header {cursor: text;}
+        </style>
         <div class="tabcontentcon"  style="margin-top:25px;">
-            <div id="accordion" style="margin-top:25px;">
 
-                <h3><?php echo __("website/account_info/current-addresses"); ?></h3>
-                <div>
 
-                    <a href="javascript:addAddress();void 0;" class="green lbtn">+ <?php echo __("website/account_info/add-new-address"); ?></a>
-                    <div class="clear"></div>
-                    <br>
 
-                    <div id="AddressList">
-                        <?php
-                            if(isset($acAddresses) && $acAddresses){
-                                foreach($acAddresses AS $addr){
+
+            <div id="accordion2" style="margin-top:25px;" class="ui-accordion ui-widget ui-helper-reset" role="tablist">
+
+              
+                <!-- Add/Edit Billing Address -->
+                <div id="manageAddress" style="display: none">
+                    <h3 class="ui-accordion-header ui-corner-top ui-state-default ui-accordion-icons" role="tab" id="manage_title_1" aria-controls="ui-id-2" aria-selected="true" aria-expanded="true" tabindex="0"><span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-s"></span><strong><?php echo __("website/account_info/add-new-address"); ?></strong></h3>
+                    <h3 class="ui-accordion-header ui-corner-top ui-state-default ui-accordion-icons" role="tab" id="manage_title_2" aria-controls="ui-id-2" aria-selected="true" aria-expanded="true" tabindex="0"><span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-s"></span><strong><?php echo __("website/account_info/edit-address"); ?></strong></h3>
+
+
+                    <div class="ui-accordion-content ui-corner-bottom ui-helper-reset ui-widget-content ui-accordion-content-active" id="ui-id-2" aria-labelledby="ui-id-1" role="tabpanel" aria-hidden="false" style="display: block;    margin-bottom: 20px;">
+                        <script type="text/javascript">
+                            $(document).ready(function(){
+                                $("#manageAddressForm_submit").on("click",function(){
+                                    MioAjaxElement($(this),{
+                                        waiting_text: '<?php echo __("website/others/button1-pending"); ?>',
+                                        result:"manageAddressForm_handler",
+                                    });
+                                });
+                            });
+                        </script>
+
+                        <form action="<?php echo $operation_link; ?>" method="post" id="manageAddressForm">
+                            <?php echo Validation::get_csrf_token('account'); ?>
+
+                            <input type="hidden" name="operation" value="addNewAddress">
+                            <input type="hidden" name="id" value="0">
+
+                            <?php if($kind_status): ?>
+                                <div class="hesapbilgisi">
+                                    <div class="yuzde25">
+                                        <div class="hesapbilgititle"><?php echo __("website/sign/up-form-kind"); ?></div>
+                                    </div>
+                                    <div class="yuzde75">
+
+                                        <input id="xkind_1" class="radio-custom" name="kind" value="individual" type="radio" checked>
+                                        <label for="xkind_1" class="radio-custom-label" style="margin-right: 28px;"><span class="checktext"><?php echo __("website/sign/up-form-kind-1"); ?></span></label>
+
+                                        <input id="xkind_2" class="radio-custom" name="kind" value="corporate" type="radio">
+                                        <label for="xkind_2" class="radio-custom-label" style="margin-right: 28px;"><span class="checktext"><?php echo __("website/sign/up-form-kind-2"); ?></span></label>
+
+                                    </div>
+                                </div>
+                            <?php endif; ?>
+
+                            <div class="hesapbilgisi">
+                                <div class="yuzde25"><div class="hesapbilgititle"><?php echo __("website/account_info/address-profile-tx1"); ?></div></div>
+                                <div class="yuzde75">
+                                    <input name="full_name" type="text" placeholder="<?php echo __("website/account_info/address-profile-tx1"); ?>" value="">
+                                </div>
+                            </div>
+
+                            <!--Individual -->
+                            <?php if($udata["country"] == 227 && $identity_status): ?>
+                                <div class="hesapbilgisi">
+                                    <div class="yuzde25"><div class="hesapbilgititle"><?php echo __("website/sign/up-form-identity"); ?></div></div>
+                                    <div class="yuzde75">
+                                        <input placeholder="<?php echo __("website/sign/up-form-identity"); ?>" name="identity" maxlength="11" type="text" value="" onkeypress='return event.charCode>= 48 &&event.charCode<= 57'>
+                                    </div>
+                                </div>
+                            <?php endif; ?>
+
+                            <!-- Individual end-->
+
+                            <!-- corporate start -->
+                            <div class="hesapbilgisi corporate-info" style="display: none;">
+                                <div class="yuzde25"><div class="hesapbilgititle"><?php echo __("website/sign/up-form-cname"); ?></div></div>
+                                <div class="yuzde75">
+                                    <input name="company_name" type="text" placeholder="<?php echo __("website/sign/up-form-cname"); ?>" value="">
+                                </div>
+                            </div>
+
+                            <?php if(Config::get("options/sign/up/kind/corporate/company_tax_number")): ?>
+                                <div class="hesapbilgisi corporate-info" style="display: none;">
+                                    <div class="yuzde25"><div class="hesapbilgititle"><?php echo __("website/sign/up-form-ctaxno"); ?></div></div>
+                                    <div class="yuzde75">
+                                        <input name="company_tax_number" type="text" placeholder="<?php echo __("website/sign/up-form-ctaxno"); ?>" value="">
+                                    </div>
+                                </div>
+                            <?php endif; ?>
+
+                            <?php if(Config::get("options/sign/up/kind/corporate/company_tax_office")): ?>
+                                <div class="hesapbilgisi corporate-info" style="display: none;">
+                                    <div class="yuzde25"><div class="hesapbilgititle"><?php echo __("website/sign/up-form-ctaxoff"); ?></div></div>
+                                    <div class="yuzde75">
+                                        <input name="company_tax_office" type="text" placeholder="<?php echo __("website/sign/up-form-ctaxoff"); ?>" value="">
+                                    </div>
+                                </div>
+                            <?php endif; ?>
+                            <!--corporate end-->
+
+                            <div class="hesapbilgisi">
+                                <div class="yuzde25"><div class="hesapbilgititle"><?php echo __("website/sign/up-form-email"); ?></div></div>
+                                <div class="yuzde75">
+                                    <input name="email" type="email" placeholder="<?php echo __("website/sign/up-form-email"); ?>" value="">
+                                </div>
+                            </div>
+                            <div class="hesapbilgisi">
+                                <div class="yuzde25"><div class="hesapbilgititle"><?php echo __("website/sign/up-form-gsm"); ?></div></div>
+                                <div class="yuzde75">
+                                    <input id="gsm2" type="text" style="width:100%;"  value="">
+                                    <input type="hidden" name="gsm">
+                                </div>
+                            </div>
+
+                            <div class="clear" style="margin-bottom: 20px;"></div>
+
+                            <?php
+                                if(isset($countryList) && $countryList){
                                     ?>
-                                    <div class="adresbilgisi" id="address_<?php echo $addr["id"];?>">
-                                        <input type="hidden" name="country_id" value="<?php echo $addr["country_id"]; ?>">
-                                        <input type="hidden" name="detouse" value="<?php echo $addr["detouse"] ? 1 : 0; ?>">
-                                        <input type="hidden" name="zipcode" value="<?php echo $addr["zipcode"]; ?>">
-                                        <input type="hidden" name="city" value="<?php echo $addr["city"]; ?>">
-                                        <input type="hidden" name="counti" value="<?php echo $addr["counti"]; ?>">
-                                        <input type="hidden" name="address" value="<?php echo htmlentities($addr["address"],ENT_QUOTES); ?>">
-                                        <div class="yuzde80">
-                                            <strong><?php echo $addr["name"]; ?></strong><br>
-                                            <?php echo $addr["address_line"]; ?>
-                                            <?php if($addr["detouse"]): ?>
-                                                <strong>(<?php echo __("website/account_info/default-address"); ?>)</strong>
-                                            <?php endif; ?>
-                                        </div>
-                                        <div class="yuzde20" style="float:right;text-align:right;">
-                                            <a href="javascript:editAddress(<?php echo $addr["id"]; ?>);void 0;" style="margin-left:5px;" title="<?php echo ___("needs/button-edit") ?>" class="sbtn"><i class="fa fa-pencil" aria-hidden="true"></i></a>
-                                            <a href="javascript:deleteAddress(<?php echo $addr["id"]; ?>);void 0;" style="margin-left:5px;" title="<?php echo ___("needs/button-delete") ?>" class="red sbtn"><i class="fa fa-trash" aria-hidden="true"></i></a>
-                                        </div>
+                                    <div class="yuzde25">
+                                        <strong><?php echo __("website/account_info/country"); ?></strong>
+                                        <select name="country" onchange="getCities(this.options[this.selectedIndex].value);">
+                                            <option value=""><?php echo __("website/account_info/select-your"); ?></option>
+                                            <?php
+                                                foreach($countryList as $country){
+                                                    ?><option value="<?php echo $country["id"];?>" data-code="<?php echo $country["code"]; ?>"><?php echo $country["name"];?></option><?php
+                                                }
+                                            ?>
+                                        </select>
                                     </div>
                                     <?php
                                 }
-                            }
-                        ?>
+                            ?>
+
+                            <div id="cities" class="yuzde25">
+                                <strong><?php echo __("website/account_info/city"); ?></strong>
+                                <select name="city" onchange="getCounties($(this).val());" disabled style="display: none;"></select>
+                                <input type="text" name="city" placeholder="<?php echo __("admin/users/create-city-placeholder"); ?>">
+                            </div>
+                            <div id="counti" class="yuzde25" >
+                                <strong><?php echo __("website/account_info/counti"); ?></strong>
+                                <select name="counti" disabled style="display: none;"></select>
+                                <input type="text" name="counti" placeholder="<?php echo __("admin/users/create-counti-placeholder"); ?>">
+                            </div>
+                            <div id="zipcode" class="yuzde25">
+                                <strong><?php echo __("website/account_info/zipcode"); ?></strong>
+                                <input name="zipcode" type="text" placeholder="<?php echo __("admin/users/create-zipcode-placeholder"); ?>">
+                            </div>
+                            <div id="address" class="yuzde100" style="margin-top:20px;">
+                                <strong><?php echo __("website/account_info/address"); ?></strong>
+                                <input name="address" type="text" placeholder="<?php echo __("admin/users/create-address-placeholder"); ?>">
+                            </div>
+                            <div class="line"></div>
+                            <div style="margin-top: 5px;display: inline-block;">
+                                <input type="checkbox" name="detouse" value="1" class="checkbox-custom" id="detouse">
+                                <label class="checkbox-custom-label" for="detouse"><?php echo __("website/account_info/stored-cards-6"); ?></label>
+                            </div>
+                            <div>
+                                <input type="checkbox" name="overwritenadoninv" value="1" class="checkbox-custom" id="overwritenadoninv">
+                                <label class="checkbox-custom-label" for="overwritenadoninv"><?php echo __("website/account_info/address-profile-tx2"); ?></label>
+                            </div>
+
+                            <div class="line"></div>
+
+                            <a style="float:left;" href="javascript:void(0);" onclick="turn_back();" class="lbtn"><?php echo __("website/basket/turn-back"); ?></a>
+
+                            <a style="float:right;" href="javascript:void(0);" id="manageAddressForm_submit" class="green lbtn"><?php echo __("website/account_info/add-address-submit-button"); ?></a>
+
+                        </form>
                     </div>
-                    <center><div class="" id="empty_content" style="<?php echo isset($acAddresses) && $acAddresses ? 'display: none;' : ''; ?>"><?php echo __("website/account_info/address-none"); ?></div></center>
-                    <script type="text/javascript">
-                        function deleteAddress(id){
-                            if(confirm('<?php echo htmlspecialchars(__("website/account_info/delete-address-are-you-sure"),ENT_QUOTES); ?>')){
-                                $("#address_"+id).animate({opacity: 4}, 300);
-
-                                var request = MioAjax({
-                                    action:"<?php echo $operation_link; ?>",
-                                    method:"POST",
-                                    data:{
-                                        operation:"DeleteAddress",
-                                        id:id,
-                                    }
-                                },true,true);
-
-                                request.done(function(result){
-                                    if(result != ''){
-                                        var solve = getJson(result);
-                                        if(solve !== false){
-                                            if(solve.status == "error"){
-                                                alert_error(solve.message,{timer:3000});
-                                            }else if(solve.status == "successful"){
-                                                $("#address_"+id).animate({backgroundColor:'#4E1402',opacity:0}, 500,function () {
-                                                    $("#address_"+id).remove();
-                                                    if(solve.total<1){
-                                                        $("#empty_content").slideDown(300);
-                                                    }
-                                                });
-                                            }
-                                        }else
-                                            console.log(result);
-                                    }
-                                });
-                            }
-                        }
-                    </script>
                 </div>
+                <!-- Add/Edit Billing Address end-->
+
+
+                <!-- Accordion Start -->
+                <div id="defaultAddress_wrap">
+                    <h3 class="ui-accordion-header ui-corner-top ui-state-default ui-accordion-icons" role="tab" id="accordion_el2" aria-controls="ui-id-2" aria-selected="true" aria-expanded="true" tabindex="0"><span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-s"></span><strong><?php echo __("website/account_info/address-profile-tx3"); ?></strong></h3>
+                    <div class="ui-accordion-content ui-corner-bottom ui-helper-reset ui-widget-content ui-accordion-content-active" id="ui-id-2" aria-labelledby="ui-id-1" role="tabpanel" aria-hidden="false" style="display: block;    margin-bottom: 20px;">
+
+                        <script type="text/javascript">
+                            $(document).ready(function(){
+                                $("#updateDefaultAddressForm_submit").on("click",function(){
+                                    MioAjaxElement($(this),{
+                                        waiting_text: '<?php echo __("website/others/button1-pending"); ?>',
+                                        result:"manageAddressForm_handler",
+                                    });
+                                });
+                            });
+                        </script>
+                        <form action="<?php echo $operation_link; ?>" method="post" id="updateDefaultAddressForm">
+                            <input type="hidden" name="operation" value="updateDefaultAddress">
+
+                            <?php echo Validation::get_csrf_token('account'); ?>
+
+                            <div class="adresbilgisi">
+                                <div class="yuzde100">
+                                    <select name="address_id">
+                                        <?php
+                                            if(isset($acAddresses) && $acAddresses){
+                                                foreach($acAddresses AS $addr)
+                                                {
+                                                    ?>
+                                                    <option value="<?php echo $addr["id"]; ?>"><?php echo $addr["name"]; ?> - <?php echo $addr["address_line"]; ?></option>
+                                                    <?php
+                                                }
+                                            }
+                                            else
+                                            {
+                                                ?>
+                                                <option value="0"><?php echo ___("needs/none"); ?></option>
+                                                <?php
+                                            }
+                                        ?>
+                                    </select>
+
+                                </div>
+                            </div>
+                            <div style="margin-top: 20px;display: inline-block;width: 100%;">
+                                <input type="checkbox" name="overwritenadoninv" value="1" class="checkbox-custom" id="overwritenadoninv2">
+                                <label class="checkbox-custom-label" for="overwritenadoninv2"><?php echo __("website/account_info/address-profile-tx2"); ?></label>
+                            </div>
+                            <div class="line"></div>
+                            <a href="javascript:void 0;" class="green lbtn" id="updateDefaultAddressForm_submit"><?php echo ___("needs/button-save"); ?></a>
+                            <a style="float:right;" href="javascript:addAddress();void 0;" class="blue lbtn">+ <?php echo __("website/account_info/add-address-submit-button"); ?></a>
+                        </form>
+
+                    </div>
+                </div>
+                <!-- Accordion End -->
+
+
+                <!-- Accordion Start -->
+                <div id="address_list_wrap">
+                    <h3 class="ui-accordion-header ui-corner-top ui-state-default ui-accordion-icons" role="tab" id="accordion_el3" aria-controls="ui-id-2" aria-selected="true" aria-expanded="true" tabindex="0"><span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-s"></span><strong><?php echo __("website/account_info/current-addresses"); ?></strong></h3>
+                    <div class="ui-accordion-content ui-corner-bottom ui-helper-reset ui-widget-content ui-accordion-content-active" id="ui-id-2" aria-labelledby="ui-id-1" role="tabpanel" aria-hidden="false" style="display: block;">
+                        <div id="AddressList">
+                            <?php
+                                if(isset($acAddresses) && $acAddresses){
+                                    foreach($acAddresses AS $addr){
+                                        ?>
+                                        <div class="adresbilgisi" id="address_<?php echo $addr["id"];?>">
+                                            <input type="hidden" name="full_name" value="<?php echo $addr["full_name"]; ?>">
+                                            <input type="hidden" name="kind" value="<?php echo $addr["kind"]; ?>">
+                                            <input type="hidden" name="company_name" value="<?php echo $addr["company_name"]; ?>">
+                                            <input type="hidden" name="company_tax_office" value="<?php echo $addr["company_tax_office"]; ?>">
+                                            <input type="hidden" name="company_tax_number" value="<?php echo $addr["company_tax_number"]; ?>">
+                                            <input type="hidden" name="email" value="<?php echo $addr["email"]; ?>">
+                                            <input type="hidden" name="phone" value="<?php echo $addr["phone"]; ?>">
+                                            <input type="hidden" name="identity" value="<?php echo $addr["identity"]; ?>">
+
+                                            <input type="hidden" name="country_id" value="<?php echo $addr["country_id"]; ?>">
+                                            <input type="hidden" name="detouse" value="<?php echo $addr["detouse"] ? 1 : 0; ?>">
+                                            <input type="hidden" name="zipcode" value="<?php echo $addr["zipcode"]; ?>">
+                                            <input type="hidden" name="city" value="<?php echo $addr["city"]; ?>">
+                                            <input type="hidden" name="counti" value="<?php echo $addr["counti"]; ?>">
+                                            <input type="hidden" name="address" value="<?php echo htmlentities($addr["address"],ENT_QUOTES); ?>">
+                                            <div class="yuzde80">
+                                                <strong><?php echo $addr["name"]; ?></strong><br>
+                                                <?php echo $addr["address_line"]; ?>
+                                                <?php if($addr["detouse"]): ?>
+                                                    <strong>(<?php echo __("website/account_info/default-address"); ?>)</strong>
+                                                <?php endif; ?>
+                                            </div>
+                                            <div class="yuzde20" style="float:right;text-align:right;">
+                                                <a href="javascript:editAddress(<?php echo $addr["id"]; ?>);void 0;" title="<?php echo ___("needs/button-edit") ?>" class="sbtn"><i class="fa fa-pencil" aria-hidden="true"></i></a>
+                                                <a href="javascript:deleteAddress(<?php echo $addr["id"]; ?>);void 0;"  title="<?php echo ___("needs/button-delete") ?>" class="red sbtn"><i class="fa fa-trash" aria-hidden="true"></i></a>
+                                            </div>
+                                        </div>
+                                        <?php
+                                    }
+                                }
+                            ?>
+                        </div>
+                        <center><div class="" id="empty_content" style="<?php echo isset($acAddresses) && $acAddresses ? 'display: none;' : ''; ?>"><?php echo __("website/account_info/address-none"); ?></div></center>
+                        <script type="text/javascript">
+                            function deleteAddress(id){
+                                if(confirm('<?php echo htmlspecialchars(__("website/account_info/delete-address-are-you-sure"),ENT_QUOTES); ?>')){
+                                    $("#address_"+id).animate({opacity: 4}, 300);
+
+                                    var request = MioAjax({
+                                        action:"<?php echo $operation_link; ?>",
+                                        method:"POST",
+                                        data:{
+                                            operation:"DeleteAddress",
+                                            id:id,
+                                        }
+                                    },true,true);
+
+                                    request.done(function(result){
+                                        if(result != ''){
+                                            var solve = getJson(result);
+                                            if(solve !== false){
+                                                if(solve.status == "error"){
+                                                    alert_error(solve.message,{timer:3000});
+                                                }else if(solve.status == "successful"){
+                                                    $("#address_"+id).animate({backgroundColor:'#4E1402',opacity:0}, 500,function () {
+                                                        $("#address_"+id).remove();
+                                                        if(solve.total<1){
+                                                            $("#empty_content").slideDown(300);
+                                                        }
+                                                    });
+                                                }
+                                            }else
+                                                console.log(result);
+                                        }
+                                    });
+                                }
+                            }
+                        </script>
+                    </div>
+                </div>
+                <!-- Accordion End -->
 
 
             </div>
         </div>
     </div>
+
+
 
     <div id="preferences" class="tabcontent">
         <div class="tabcontentcon">
@@ -1277,7 +1548,6 @@
 
                 <?php
                     if(isset($remainingVerifications["document_filters"])){
-
                         if($remainingVerifications["document_filters"]){
                             $show_submit = false;
 
@@ -1656,5 +1926,204 @@
         }
     ?>
 
+    <?php
+        if(Config::get("options/gdpr-status"))
+        {
+            ?>
+            <div id="gdpr" class="tabcontent">
+
+                <script type="text/javascript">
+                    $(document).ready(function(){
+                        $("#contract2").change(function(){
+                            var request = MioAjax({
+                                action: "<?php echo $operation_link; ?>",
+                                method: "POST",
+                                data:{"operation" : "update_gdpr_status",status: $("#contract2").prop('checked') ? 1 : 0}
+                            },true,true);
+                            request.done(function(result){
+                                if(result != ''){
+                                    var solve = getJson(result);
+                                    if(solve !== false){
+                                        if(solve.status === "error")
+                                            alert_error(solve.message,{timer:3000});
+                                        else if(solve.status === "successful")
+                                            window.location.href = '<?php echo $operation_link; ?>?tab=gdpr';
+                                    }
+                                }
+                            });
+                        });
+                    });
+                    function gdpr_request(btn,action)
+                    {
+                        var request = MioAjax({
+                            button_element: btn,
+                            waiting_text:"<?php echo addslashes(__("website/others/button1-pending")); ?>",
+                            action: "<?php echo $operation_link; ?>",
+                            method: "POST",
+                            data:{
+                                operation: "gdpr_request",
+                                token: "<?php echo Validation::get_csrf_token('account',false); ?>",
+                                action: action
+                            }
+                        },true,true);
+                        request.done(function(result){
+                            if(result !== ''){
+                                var solve = getJson(result);
+                                if(solve !== false){
+                                    if(solve.status === "error")
+                                        alert_error(solve.message,{timer:4000});
+                                    else if(solve.status === "successful")
+                                        window.location.href = '<?php echo $operation_link; ?>?tab=gdpr';
+                                }
+                            }
+                        });
+                    }
+                </script>
+
+                <div class="tabcontentcon">
+
+                    <div class="green-info" style="margin-bottom:25px;">
+                        <div class="padding20">
+                            <i class="fas fa-user-shield"></i>
+                            <p><strong><?php echo __("website/account_info/gdpr-tx1"); ?></strong><br>
+                                <?php echo __("website/account_info/gdpr-tx2"); ?></p>
+                        </div>
+                    </div>
+
+                    <div class="formcon">
+                        <div class="yuzde30"><?php echo __("website/account_info/gdpr-tx3"); ?></div>
+                        <div class="yuzde70">
+                            <div class="yuzde70">
+                                <input<?php echo ($udata["contract2"] ?? 0)  > 0 ? ' checked' : '' ; ?> type="checkbox" class="sitemio-checkbox" name="contract2" value="1" id="contract2">
+                                <label class="sitemio-checkbox-label" for="contract2"></label>
+                                <span class="kinfo"><?php echo __("website/account_info/gdpr-tx4",['{link}' => Controllers::$init->CRLink("contract2")]); ?></span>
+
+
+                                <?php
+                                    if($udata["contract2"])
+                                    {
+                                        ?>
+                                        <div class="clear"></div>
+                                        <div class="line"></div>
+                                        <a style="float:left;" data-tooltip="<?php echo __("admin/users/gdpr-tx36"); ?>"> <img src="<?php echo $sadress; ?>assets/images/gdpr_compliant-ok.svg" style="    height: 40px;    float: left;    margin-right: 15px;"></a>
+                                        <span class="kinfo" style="color: #4dbc70;margin-top: 9px;float: left;"><?php echo __("website/account_info/gdpr-tx5",['{date}' => UserManager::formatTimeZone($udata["contract2_updated_at"] ?? '',$timezone,Config::get("options/date-format")." - H:i")]); ?></span>
+                                        <?php
+                                    }
+
+                                    if(!$udata["contract2"] && Config::get("options/gdpr-required"))
+                                    {
+                                        ?>
+                                        <div class="clear"></div>
+                                        <div class="line"></div>
+                                        <span class="kinfo" style="color: #f44336;font-weight:600;"><i class="fas fa-exclamation-circle"></i> <?php echo __("website/account_info/gdpr-tx6"); ?></span>
+                                        <?php
+                                    }
+                                ?>
+                            </div>
+                        </div>
+                    </div>
+
+                    <?php
+                        if(!(Config::get("options/gdpr-required") && !$udata["contract2"]))
+                        {
+                            ?>
+                            <div class="formcon">
+                                <div class="yuzde30"><?php echo __("website/account_info/gdpr-tx7"); ?></div>
+                                <div class="yuzde70">
+                                    <div class="yuzde70">
+                                        <a style="    margin-bottom: 10px;" class="sbtn" target="_blank" href="<?php echo $operation_link; ?>?operation=download_personal_data_gdpr&token=<?php echo Validation::get_csrf_token('account',false); ?>&format=xml"><i class="fa fa-cloud-download" aria-hidden="true"></i> <strong><?php echo __("website/account_info/gdpr-tx8"); ?></strong></a><div class="clear"></div>
+                                        <span class="kinfo"><?php echo __("website/account_info/gdpr-tx9"); ?><BR>(<?php echo __("website/account_info/gdpr-tx10"); ?>) </span>
+
+                                        <?php
+                                            if($udata["gdpr_downloaded_at"])
+                                            {
+                                                ?>
+                                                <div class="clear"></div>
+                                                <div class="line"></div>
+                                                <span class="kinfo" style="color: #4dbc70;"><i class="fas fa-info-circle"></i> <?php echo __("website/account_info/gdpr-tx11",['{date}' => UserManager::formatTimeZone($udata["gdpr_downloaded_at"] ?? '',$timezone,Config::get("options/date-format")." - H:i") ]); ?></span>
+                                                <?php
+                                            }
+                                        ?>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="formcon">
+                                <div class="yuzde30"><?php echo __("website/account_info/gdpr-tx12"); ?></div>
+                                <div class="yuzde70">
+                                    <div class="yuzde70">
+                                        <span class="kinfo"><?php echo __("website/account_info/gdpr-tx13"); ?></span>
+                                        <div style="margin-bottom:10px;" class="clear"></div>
+                                        <?php
+                                            if(isset($gdpr_request) && $gdpr_request && $gdpr_request["status"] != "cancelled")
+                                            {
+                                                ?>
+                                                <div class="clear"></div>
+                                                <div class="line"></div>
+                                                <span class="kinfo" style="color: #f44336;    margin-bottom: 10px;    float: left;"><i class="fas fa-exclamation-triangle"></i> <?php echo __("website/account_info/gdpr-tx16",['{date}' => UserManager::formatTimeZone($gdpr_request["created_at"] ?? '',$timezone,Config::get("options/date-format")." - H:i"),'{type}' => $gdpr_request["type"] == "remove" ? __("website/account_info/gdpr-tx14") : __("website/account_info/gdpr-tx15")]); ?></span><div class="clear"></div>
+                                                <a href="javascript:void 0;" onclick="gdpr_request(this,'cancel');" class="sbtn"><strong><?php echo __("website/account_info/gdpr-tx23"); ?></strong></a>
+                                                <?php
+                                            }
+                                            else
+                                            {
+                                                ?><div class="clear"></div>
+                                                <a class="sbtn red" href="javascript:open_modal('gdpr_remove_modal',{headerColor:'red'}); void 0;"><i class="fa fa-trash" aria-hidden="true"></i> <strong><?php echo __("website/account_info/gdpr-tx14"); ?></strong></a>
+                                                <a class="sbtn" href="javascript:open_modal('gdpr_anonymize_modal'); void 0;"><i class="fa fa-ban" aria-hidden="true"></i> <strong><?php echo __("website/account_info/gdpr-tx15"); ?></strong></a>
+
+                                                <?php
+                                                if(isset($gdpr_request) && $gdpr_request && Utility::strlen($gdpr_request["status_note"]) > 1)
+                                                {
+                                                    ?>
+                                                    <div class="clear"></div>
+                                                    <div class="line"></div>
+                                                    <span class="kinfo"><strong style="color: #f44336;"><i class="fa fa-exclamation-circle"></i> <?php echo __("website/account_info/gdpr-tx25"); ?></strong> <br>
+                                                       <strong><?php echo __("website/account_info/gdpr-tx26"); ?>:</strong> <?php echo $gdpr_request["status_note"]; ?></span>
+                                                    <?php
+                                                }
+                                            }
+                                        ?>
+                                    </div>
+                                </div>
+                            </div>
+                            <?php
+                        }
+                    ?>
+                </div>
+            </div>
+            <?php
+        }
+    ?>
+
     <div class="clear"></div>
 </div>
+
+<?php
+    if(Config::get("options/gdpr-status"))
+    {
+        ?>
+        <div id="gdpr_remove_modal" style="display:none;"  data-iziModal-title="<?php echo __("website/account_info/gdpr-tx17"); ?>">
+            <div class="padding30" style="text-align:center;">
+                <p><?php echo __("website/account_info/gdpr-tx19"); ?></p>
+                <p><?php echo __("website/account_info/gdpr-tx20"); ?></p>
+            </div>
+            <div class="modal-foot-btn">
+                <a href="javascript:void 0;" onclick="gdpr_request(this,'remove');" class="red lbtn"><?php echo __("website/account_info/gdpr-tx21"); ?></a>
+            </div>
+        </div>
+        <div id="gdpr_anonymize_modal" style="display:none;"  data-iziModal-title="<?php echo __("website/account_info/gdpr-tx18"); ?>">
+            <div class="padding30" style="text-align:center;">
+                <p><?php echo __("website/account_info/gdpr-tx22"); ?></p>
+                <p><?php echo __("website/account_info/gdpr-tx20"); ?></p>
+            </div>
+            <div class="modal-foot-btn">
+                <a href="javascript:void 0;" onclick="gdpr_request(this,'anonymize');" class="lbtn"><?php echo __("website/account_info/gdpr-tx21"); ?></a>
+            </div>
+        </div>
+
+        <?php
+    }
+?>
+
+<style>
+    #gdpr .kinfo {font-size:14px;}
+</style>
