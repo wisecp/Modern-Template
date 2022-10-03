@@ -365,7 +365,7 @@ $hoptions = ["datatables","iziModal","select2"];
                                     <td align="center"><?php echo $row['order_name'] ? $row["order_name"] : __("website/account/affiliate-tx59"); ?></td>
                                     <td align="center"><?php echo Money::formatter_symbol($row["amount"],$row["currency"]); ?></td>
                                     <td align="center">
-                                        <strong><?php echo Money::formatter_symbol($row["commission"],$aff["currency"]); ?></strong> (%<?php echo $rate; ?>)
+                                        <strong><?php echo Money::formatter_symbol($row["commission"],$aff["currency"]); ?></strong> (<?php echo $rate; ?>%)
                                         <?php
                                         if($row["exchange"] > 0.00)
                                         {

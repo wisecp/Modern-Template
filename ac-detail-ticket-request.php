@@ -32,6 +32,7 @@
     var auto_save_msg_key = 'ticket_<?php echo $ticket["id"]; ?>';
     var awaiting_auto_saved=false;
     var user_is_typing='';
+    var request_get_replies = false;
 
     function ReplyForm_submit(result){
         if(result != ''){
@@ -60,7 +61,11 @@
 
     }
     function get_replies(){
+        if(request_get_replies) return false;
         if(windowActive !== "on") return false;
+
+        request_get_replies = true;
+
         var request = MioAjax({
             action:"<?php echo $links["controller"];?>",
             method:"POST",
@@ -71,6 +76,7 @@
             },
         },true,true);
         request.done(function(result){
+            request_get_replies = false;
             if(result !== ''){
                 user_is_typing = '';
                 var solve = getJson(result);

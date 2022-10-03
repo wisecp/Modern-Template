@@ -618,6 +618,8 @@
                                     <input type="hidden" name="gsm" value="<?php echo (isset($udata["gsm"])) ? "+".$udata["gsm_cc"].$udata["gsm"] : NULL; ?>">
                                 </div>
                             </div>
+                        <?php else: ?>
+                            <div style="display: none;"><input id="gsm" type="text" style="width:100%;"  value=""></div>
                         <?php endif; ?>
 
 

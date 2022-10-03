@@ -445,7 +445,7 @@
             <?php endif; ?>
 
 
-            <?php if(isset($hoptions["server_features"]) || (isset($options["ip"]) && $options["ip"] != '')): ?>
+            <?php if(isset($options["server_features"]) && $options["server_features"]): ?>
                 <div class="hizmetblok" style="min-height:310px;" id="server_features">
                     <table width="100%" border="0">
                         <tr>

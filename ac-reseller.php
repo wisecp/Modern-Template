@@ -195,7 +195,7 @@ $hoptions = ["datatables","iziModal","select2"];
                                 if($discount)
                                 {
                                     ?>
-                                    <strong><?php echo Money::formatter_symbol($discount["amountd"],$row["inv_curr"],$row["amount_cid"]); ?></strong> (%<?php echo $discount["rate"]; ?>)
+                                    <strong><?php echo Money::formatter_symbol($discount["amountd"],$row["inv_curr"],$row["amount_cid"]); ?></strong> (<?php echo $discount["rate"]; ?>%)
                                     <?php
                                 }
                                 ?>
@@ -340,7 +340,7 @@ $hoptions = ["datatables","iziModal","select2"];
                                             <td align="center"><?php echo $row["to"]; ?></td>
                                             <td align="center">
                                                 <?php echo __("website/account/reseller-tx18"); ?>        </td>
-                                            <td align="center"><strong>%<?php echo $_rate; ?></strong></td>
+                                            <td align="center"><strong><?php echo $_rate; ?>%</strong></td>
                                         </tr>
                                         <?php
                                     }
@@ -452,7 +452,7 @@ $hoptions = ["datatables","iziModal","select2"];
                                                     <td align="center"><?php echo $row["to"]; ?></td>
                                                     <td align="center">
                                                         <?php echo __("website/account/reseller-tx18"); ?>        </td>
-                                                    <td align="center"><strong>%<?php echo $_rate; ?></strong></td>
+                                                    <td align="center"><strong><?php echo $_rate; ?>%</strong></td>
                                                 </tr>
                                                 <?php
                                             }

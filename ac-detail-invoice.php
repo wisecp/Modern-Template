@@ -157,7 +157,7 @@
                     <div class="clear"></div>
                     <span style="display: inline-block;">
                 <?php
-                    echo str_replace(EOL,"<br>",$informations);
+                echo str_replace(EOL,"<br>",$informations);
                 ?>
                     <br><?php echo $address; ?><br>
                     <?php echo implode(" - ",array_filter([isset($pnumbers[0]) ? $pnumbers[0] : '' ,isset($eaddresses[0]) ? $eaddresses[0] : ''])); ?>
@@ -182,7 +182,7 @@
 
                     <a href="javascript:dataPrint('normal');void 0;" class="sbtn"><i class="fa fa-print"></i> <?php echo __("website/account_invoices/print"); ?></a>
 
-                    <a href="javascript:dataPrint('pdf');" class="sbtn"><i class="fa fa-cloud-download" aria-hidden="true"></i> <?php echo __("website/account_invoices/download-pdf"); ?></a>
+            <a href="javascript:dataPrint('pdf');" class="sbtn"><i class="fa fa-cloud-download" aria-hidden="true"></i> <?php echo __("website/account_invoices/download-pdf"); ?></a>
                 </div>
             </div>
             <div class="invoice-detail-left">
@@ -240,35 +240,35 @@
                 <?php endif; ?>
 
                         <?php
-                            if(isset($invoice["user_data"]["address"]) && $invoice["user_data"]["address"]){
-                                $adrs = $invoice["user_data"]["address"];
-                                echo "<br>";
-                                if(!$censored) echo $adrs["address"]." / ";
-                                echo isset($adrs["counti"]) && $adrs["counti"] ? $adrs["counti"]." / " : '';
-                                echo isset($adrs["city"]) && $adrs["city"] ? $adrs["city"]." / " : '';
-                                echo AddressManager::get_country_name($adrs["country_code"]);
-                                echo isset($adrs["zipcode"]) && $adrs["zipcode"] ? " / ".$adrs["zipcode"] : '';
-                            }
+                        if(isset($invoice["user_data"]["address"]) && $invoice["user_data"]["address"]){
+                            $adrs = $invoice["user_data"]["address"];
+                            echo "<br>";
+                            if(!$censored) echo $adrs["address"]." / ";
+                            echo isset($adrs["counti"]) && $adrs["counti"] ? $adrs["counti"]." / " : '';
+                            echo isset($adrs["city"]) && $adrs["city"] ? $adrs["city"]." / " : '';
+                            echo AddressManager::get_country_name($adrs["country_code"]);
+                            echo isset($adrs["zipcode"]) && $adrs["zipcode"] ? " / ".$adrs["zipcode"] : '';
+                        }
                         ?>
 
                         <?php
-                            $phone = NULL;
-                            if($invoice["user_data"]["kind"] == "corporate")
-                                if(isset($invoice["user_data"]["landline_phone"]) && $invoice["user_data"]["landline_phone"])
-                                    $phone  = $invoice["user_data"]["landline_phone"];
+                        $phone = NULL;
+                        if($invoice["user_data"]["kind"] == "corporate")
+                            if(isset($invoice["user_data"]["landline_phone"]) && $invoice["user_data"]["landline_phone"])
+                                $phone  = $invoice["user_data"]["landline_phone"];
 
-                            if($invoice["user_data"]["kind"] == "individual"){
+                        if($invoice["user_data"]["kind"] == "individual"){
 
-                                if(isset($invoice["user_data"]["landline_phone"]) && $invoice["user_data"]["landline_phone"])
-                                    $phone  = $invoice["user_data"]["landline_phone"];
+                            if(isset($invoice["user_data"]["landline_phone"]) && $invoice["user_data"]["landline_phone"])
+                                $phone  = $invoice["user_data"]["landline_phone"];
 
-                                if(!$phone && isset($invoice["user_data"]["gsm"]) && $invoice["user_data"]["gsm"])
-                                    $phone  = "+".$invoice["user_data"]["gsm_cc"].$invoice["user_data"]["gsm"];
-                            }
+                            if(!$phone && isset($invoice["user_data"]["gsm"]) && $invoice["user_data"]["gsm"])
+                                $phone  = "+".$invoice["user_data"]["gsm_cc"].$invoice["user_data"]["gsm"];
+                        }
 
-                            echo "<br>";
-                            echo $phone ? censored('phone',$phone)." - " : '';
-                            echo censored('email',$invoice["user_data"]["email"]);
+                        echo "<br>";
+                        echo $phone ? censored('phone',$phone)." - " : '';
+                        echo censored('email',$invoice["user_data"]["email"]);
                         ?>
 
             </span>
@@ -299,7 +299,7 @@
                         <?php endif; ?>
 
                         <?php
-                            if(!isset($pmethod_name) && $invoice["pmethod"] != "none") $pmethod_name = $invoice["pmethod"];
+                        if(!isset($pmethod_name) && $invoice["pmethod"] != "none") $pmethod_name = $invoice["pmethod"];
                         ?>
 
                         <?php if(isset($pmethod_name) && $pmethod_name && $invoice["status"] != "unpaid"): ?>
@@ -642,7 +642,23 @@
 
                         </div>
                         <div class="line"></div>
-                        <form id="payment_screen_redirect" action="<?php echo $links["controller"]; ?>" method="get">
+                        <?php
+                            $form_action = $links["controller"];
+                            if(isset($sharing) && $sharing)
+                            {
+                                $form_action_exp = explode("?",$form_action);
+                                parse_str($form_action_exp[1],$qry);
+                                $form_action = $form_action_exp[0];
+                                $token       = $qry["token"] ?? '';
+                            }
+                        ?>
+                        <form id="payment_screen_redirect" action="<?php echo $form_action; ?>" method="get">
+                            <?php
+                                if(isset($sharing) && $sharing)
+                                {
+                                    ?><input type="hidden" name="token" value="<?php echo $token; ?>"><?php
+                                }
+                            ?>
                             <input type="hidden" name="operation" value="payment-screen">
                             <input type="hidden" name="sendbta" value="<?php echo isset($selected_sendbta) ? $selected_sendbta : 0; ?>">
                             <input type="hidden" name="pmethod" value="<?php echo isset($selected_pmethod) ? $selected_pmethod : 'none'; ?>">
