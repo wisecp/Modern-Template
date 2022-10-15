@@ -15,6 +15,7 @@
     if($sharing) $censored = isset($udata) && $udata["id"] == $invoice["user_id"] ? false : true;
     else $censored       = false;
     if(isset($admin)) $censored = false;
+    if(!($invoice["user_data"]["kind"] ?? '')) $invoice["user_data"]["kind"] = "individual";
 
     $GLOBALS["censured"] = $censored;
 
