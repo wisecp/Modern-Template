@@ -202,7 +202,7 @@
                                                                     var status = result.status;
                                                                     if(status == "available"){
                                                                         $("#sadeckyinfo,#sadeckyinfo_free").css("display","none");
-                                                                        $("#register-amount").html(result.reg_price[0]);
+                                                                        $("#register-amount").html(result.reg_price[0].price);
                                                                         if(result.reg_price[0] === 0)
                                                                             $("#sadeckyinfo_free").css("display","block");
                                                                         else

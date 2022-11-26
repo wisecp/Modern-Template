@@ -10,7 +10,8 @@
 
     if(isset($first_tld_price)){
         $first_tld_price_amount = $first_tld_price["register"]["amount"];
-        if($first_tld_price["promo_status"] && DateManager::strtotime($first_tld_price["promo_duedate"]." 23:59:59") > DateManager::strtotime() && $first_tld_price["promo_register_price"]>0){
+
+        if($first_tld_price["promo_status"] && (substr($first_tld_price["promo_duedate"],0,4) == '1881' || DateManager::strtotime($first_tld_price["promo_duedate"]." 23:59:59") > DateManager::strtotime()) && $first_tld_price["promo_register_price"]>0){
             $first_tld_price_amount = $first_tld_price["promo_register_price"];
         }
 

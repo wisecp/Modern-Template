@@ -160,8 +160,8 @@
                         if(solve.taxation != undefined && solve.taxation){
                             $("#tax_content").fadeIn(1);
                             var see,see_text;
-                            see     = $("#tax-see");
                             see_text = '<?php echo __("website/basket/tax-amount"); ?>';
+                            see_text = see_text.replace('{rates}',solve.tax_rates ?? '');
                             see_text = see_text.replace('{rate}',solve.tax_rate);
                             see.html(see_text);
                             if(solve.total_tax_amount != undefined){
@@ -632,8 +632,12 @@
                                             <tr class="kind-content kind_2" style="display:none;">
                                                 <td width="30%"><?php echo __("website/sign/up-form-ctaxno"); ?> / <?php echo __("website/sign/up-form-ctaxoff"); ?></td>
                                                 <td>
-                                                    <div class="yuzde50"><input name="company_tax_number" type="text"></div>
-                                                    <div class="yuzde50"><input name="company_tax_office" type="text" id="vergi_dairesi"></div>
+                                                    <?php if(Config::get("options/sign/up/kind/corporate/company_tax_number")): ?>
+                                                        <div class="yuzde50"><input name="company_tax_number" type="text"></div>
+                                                    <?php endif; ?>
+                                                    <?php if(Config::get("options/sign/up/kind/corporate/company_tax_office")): ?>
+                                                        <div class="yuzde50"><input name="company_tax_office" type="text" id="vergi_dairesi"></div>
+                                                    <?php endif; ?>
                                                 </td>
                                             </tr>
                                         <?php endif; ?>

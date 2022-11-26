@@ -11,6 +11,12 @@
         if(!$symbol) $symbol = $currency["code"];
         $currency_symbols[] = $symbol;
     }
+
+    $epp_code_support   = [];
+
+    if(isset($tldList) && $tldList) foreach($tldList AS $t) $epp_code_support[$t["name"]] = $t["epp_code"] == 1;
+    $tlds               = $epp_code_support ? array_keys($epp_code_support) : [];
+
 ?>
 <script type="text/javascript">
     var disabled_style = "background:none; color:#333; cursor:no-drop; opacity:0.3;";
@@ -20,13 +26,22 @@
     situations['available'] = '<?php echo __("website/domain/situations-available"); ?>';
     situations['unavailable'] = '<?php echo __("website/domain/situations-unavailable"); ?>';
     var contact_button            = '<a href="<?php echo $contact_link; ?>" class="incelebtn green" style="display: unset;"><?php echo __("website/domain/contact-us"); ?></a>';
+    var epp_code_support = <?php echo Utility::jencode($epp_code_support); ?>;
+    var tlds             = <?php echo Utility::jencode($tlds); ?>;
+    var xbtn             = false;
+    var xbtn_be          = false;
+
+    var psl_script = document.createElement('script');
+    psl_script.src = "<?php echo $sadress; ?>assets/plugins/psl/psl.min.js";
+    document.head.appendChild(psl_script);
+
 
     $(document).ready(function(){
-
         loading_template = $("#loading-template").html();
 
         var gDomain     = gGET("domain");
         var gTransfer   = gGET("transfer");
+
         if(gDomain != null && gDomain != '' && gDomain != undefined){
             $("#domainInput").val(gDomain);
 
@@ -40,7 +55,38 @@
         }
 
         $("#transferbtn").click(function(){
+            var  btn = $(this);
+
+            var domainInput = $("#domainInput").val();
+
+            if(domainInput != '')
+            {
+                $(".transfercode input").val('');
+
+                var epp_code_st = true;
+
+                var parsed = psl.parse(domainInput);
+
+                if(tlds.includes(parsed.tld))
+                    epp_code_st = epp_code_support[parsed.tld];
+
+                if(!epp_code_st)
+                {
+                    $(".transfercode").slideUp();
+
+                    $(".transfercode input").val('N/A');
+
+                    $("#transferButton").trigger("click");
+                    xbtn    = btn;
+                    xbtn_be = btn.html();
+
+                    xbtn.html("<?php echo addslashes(__("website/others/button1-pending")); ?>");
+
+                    return false;
+                }
+            }
             $(".transfercode").slideToggle();
+
         });
 
         $("#checkButton").click(function(){
@@ -75,6 +121,7 @@
                     }
                     if(solve.message != undefined && solve.message != '')
                         alert_error(solve.message,{timer:5000});
+                    xbtn.html(xbtn_be);
                 }else if(solve.status == "successful"){
                     if(solve.message != undefined) alert_success(solve.message,{timer:2000});
                     if(solve.redirect != undefined && solve.redirect != '')
@@ -134,7 +181,7 @@
                                         }
                                         else
                                         {
-                                            select_content = '<a href="javascript:transferModal(\''+item.domain+'\');" class="lbtn transfer-btn"><?php echo __("website/domain/transfer-btn"); ?></a> <a href="javascript:void 0;" onclick="openWhois(\''+item.domain+'\');" class="lbtn whois-btn"><?php echo __("website/domain/whois-btn"); ?></a> ';
+                                            select_content = '<a href="javascript:void 0;" onclick="transferModal(\''+item.domain+'\',this)" class="lbtn transfer-btn"><?php echo __("website/domain/transfer-btn"); ?></a> <a href="javascript:void 0;" onclick="openWhois(\''+item.domain+'\');" class="lbtn whois-btn"><?php echo __("website/domain/whois-btn"); ?></a> ';
                                         }
 
                                         $(".lookcolumlist[data-name='"+item.tld+"'] .tld-name").addClass("tldhere").html('<strong>'+item.sld+'.'+item.tld+'</strong>');
@@ -289,7 +336,7 @@
                                 }
                                 else
                                 {
-                                    select_content = '<a href="javascript:transferModal(\''+item.domain+'\');" class="lbtn transfer-btn"><?php echo __("website/domain/transfer-btn"); ?></a> <a href="javascript:void 0;" onclick="openWhois(\''+item.domain+'\');" class="lbtn whois-btn"><?php echo __("website/domain/whois-btn"); ?></a> ';
+                                    select_content = '<a href="javascript:void 0;" onclick="transferModal(\''+item.domain+'\',this)" class="lbtn transfer-btn"><?php echo __("website/domain/transfer-btn"); ?></a> <a href="javascript:void 0;" onclick="openWhois(\''+item.domain+'\');" class="lbtn whois-btn"><?php echo __("website/domain/whois-btn"); ?></a> ';
                                 }
 
                                 $("#domainResult").attr("data-name",item.tld);
@@ -413,13 +460,35 @@
         window.open(url, title, 'scrollbars=yes, width=' + w + ', height=' + h + ', top=' + top + ', left=' + left);
     }
 
-    function transferModal(domain)
+    function transferModal(domain,btn)
     {
-        scrollUp();
         $("#domainInput").val(domain);
-        $(".transfercode").slideDown();
-        $(".transfercode input").focus();
 
+        xbtn    = $(btn);
+        xbtn_be = $(btn).html();
+
+        xbtn.html("<?php echo __("website/others/button3-pending"); ?>");
+
+        var epp_code_st = true;
+
+        var parsed = psl.parse(domain);
+
+        if(tlds.includes(parsed.tld))
+            epp_code_st = epp_code_support[parsed.tld];
+
+        if(!epp_code_st)
+        {
+            $(".transfercode").slideUp();
+
+            $(".transfercode input").val('N/A');
+            $("#transferButton").trigger("click");
+            return false;
+        }
+
+        $(".transfercode").slideDown();
+        $(".transfercode input").val('').focus();
+
+        scrollUp();
     }
 </script>
 <div id="wrapper" class="wclientdomainpage">

@@ -54,7 +54,7 @@
 <script>
     var template_address = "<?php echo $tadress;?>";
 </script>
-<script src="<?php echo $tadress;?>js/jquery-1.11.3.min.js"></script>
+<script src="<?php echo $tadress;?>js/jquery-2.2.4.min.js"></script>
 <script src="<?php echo $tadress;?>js/jquery-stick<?php echo ($header_type==2) ? '-header2' : ''; ?>.js"></script>
 
 <?php if(isset($hoptions) && in_array("jsPDF",$hoptions)): ?>

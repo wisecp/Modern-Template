@@ -20,7 +20,11 @@
             $ltemplate = isset($cat["options"]["list_template"]) ? $cat["options"]["list_template"] : 2;
             ?>
             <?php if($ltemplate == 1): ?>
-                <h5 class="servercattitle" data-aos="fade-up"><?php echo $cat["title"]; ?></h5>
+
+                <?php if($GLOBALS["cat_size"] > 1): ?>
+                    <h5 class="servercattitle" data-aos="fade-up"><?php echo $cat["title"]; ?></h5>
+                <?php endif; ?>
+
                 <div class="tablopaketler" style="background: none;" id="category_<?php echo $cat["id"]; ?>">
                     <?php
                         foreach($list AS $product){
@@ -123,10 +127,14 @@
                         }
                     ?>
                 </div>
-            <?php elseif($ltemplate== 2): ?>
+            <?php endif ?>
+            <?php if($ltemplate== 2): ?>
                 <div class="sunucular" data-aos="fade-up">
 
-                    <h5 class="servercattitle" data-aos="fade-up"><?php echo $cat["title"]; ?></h5>
+
+                    <?php if($GLOBALS["cat_size"] > 1): ?>
+                        <h5 class="servercattitle" data-aos="fade-up"><?php echo $cat["title"]; ?></h5>
+                    <?php endif; ?>
 
                     <div>
                         <table class="horizontal-list" width="100%" border="0" data-order='[[0, "asc"]]'>
@@ -307,6 +315,7 @@
                 if($category["id"]){
                     $categories = isset($categories_list[$selection["id"]]) ? $categories_list[$selection["id"]] : false;
                     if($categories){
+                        $GLOBALS["cat_size"] = sizeof($categories);
                         foreach($categories AS $cat){
                             $list = $get_list($cat["id"],$cat["kind"]);
                             if($list){

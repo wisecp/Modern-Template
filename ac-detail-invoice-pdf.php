@@ -86,7 +86,7 @@
     }
     table tr td {border-bottom:1px solid #ddd;padding:12px;}
 </style>
-<page backtop="10mm" backbottom="0mm" backleft="0mm" backright="0mm">
+<page backtop="10mm" backbottom="0mm" backleft="10mm" backright="12mm">
 
     <table style="color: #345a6c;font-family: Helvetica;" width="100%" border="0" align="center" cellpadding="25" cellspacing="0">
         <tr>
@@ -343,8 +343,25 @@
                     <SPAN><?php echo $pmethod_name; ?> (<?php echo $datepaid; ?>)</SPAN><br><br>
                     <SPAN><?php echo __("website/account_invoices/refunded"); ?> (<?php echo $refunddate; ?>)</SPAN>
                 <?php endif; ?>
+
+               
             </td>
         </tr>
+        <?php if(Filter::html_clear(Config::get("options/invoice_special_note/".View::$init->ui_lang))): ?>
+            <tr>
+                <td colspan="3" align="left" style="border-top: 2px solid #eee;border-bottom:none;">
+                    <p>
+                        <?php
+                            echo Utility::text_replace(Config::get("options/invoice_special_note/".View::$init->ui_lang),[
+                                '{CLIENT_ID}' => $invoice["user_data"]["id"],
+                                '{CLIENT_TAX_NUMBER}' => $invoice["user_data"]["company_tax_number"],
+                                '{CLIENT_TAX_OFFICE}' => $invoice["user_data"]["company_tax_office"],
+                            ]);
+                        ?>
+                    </p>
+                </td>
+            </tr>
+        <?php endif; ?>
     </table>
 
 

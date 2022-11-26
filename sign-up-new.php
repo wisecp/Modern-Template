@@ -321,12 +321,18 @@
                                             <input name="company_name" type="text" placeholder="<?php echo __("website/sign/up-form-cname"); ?>" required>
                                         </div>
 
-                                        <div class="yuzde50 kind-content kind_2" style="display:none;">
-                                            <input name="company_tax_number" type="text" placeholder="<?php echo __("website/sign/up-form-ctaxno"); ?>" required>
-                                        </div>
-                                        <div class="yuzde50 kind-content kind_2" style="display:none;">
-                                            <input name="company_tax_office" type="text" placeholder="<?php echo __("website/sign/up-form-ctaxoff"); ?>" required>
-                                        </div>
+
+                                        <?php if(Config::get("options/sign/up/kind/corporate/company_tax_number")): ?>
+                                            <div class="yuzde50 kind-content kind_2" style="display:none;">
+                                                <input name="company_tax_number" type="text" placeholder="<?php echo __("website/sign/up-form-ctaxno"); ?>" required>
+                                            </div>
+                                        <?php endif; ?>
+
+                                         <?php if(Config::get("options/sign/up/kind/corporate/company_tax_office")): ?>
+                                             <div class="yuzde50 kind-content kind_2" style="display:none;">
+                                                 <input name="company_tax_office" type="text" placeholder="<?php echo __("website/sign/up-form-ctaxoff"); ?>" required>
+                                             </div>
+                                         <?php endif; ?>
 
 
                                         <?php $countryList = AddressManager::getCountryList(); ?>

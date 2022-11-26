@@ -2283,7 +2283,9 @@
                                                         <p><?php echo __("website/account_products/domain-doc-18"); ?></p>
                                                     </div>
                                                 </div>
-                                                <a href="javascript:void 0;" onclick="open_modal('info_doc_modal');" class="sbtn gray" style="font-weight: 600;"><i class="fa fa-question-circle" aria-hidden="true"></i> <?php echo __("website/account_products/domain-doc-5"); ?></a>
+                                                <?php if(isset($required_docs_info) && $required_docs_info): ?>
+                                                    <a href="javascript:void 0;" onclick="open_modal('info_doc_modal');" class="sbtn gray" style="font-weight: 600;"><i class="fa fa-question-circle" aria-hidden="true"></i> <?php echo __("website/account_products/domain-doc-5"); ?></a>
+                                                <?php endif; ?>
                                             </td>
                                         </tr>
                                         <?php
