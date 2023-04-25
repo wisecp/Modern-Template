@@ -686,7 +686,7 @@
                                             ?>
                                             <!-- LAYER NR. 17 -->
                                             <a class="tp-caption rev-btn  tp-resizeme"
-                                               href="<?php echo $slide['link']; ?>" target="_blank" id="slide-180-layer-7"
+                                               href="<?php echo $slide['link']; ?>" id="slide-180-layer-7"
                                                data-x="['center','center','center','center']" data-hoffset="['0','0','0','0']" 
              data-y="['middle','middle','middle','middle']" data-voffset="['75','75','85','86']" 
                         data-width="none"
@@ -1119,7 +1119,7 @@
                                             ?>
                                             <!-- LAYER NR. 34 -->
                                             <a class="tp-caption rev-btn  tp-resizeme"
-                                               href="<?php echo $slide['link']; ?>" target="_blank" id="slide-181-layer-7"
+                                               href="<?php echo $slide['link']; ?>" id="slide-181-layer-7"
                                                data-x="['center','center','center','center']" data-hoffset="['0','0','0','0']" 
              data-y="['middle','middle','middle','middle']" data-voffset="['75','75','85','86']" 
                         data-width="none"

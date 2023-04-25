@@ -10,12 +10,16 @@
     $datepaid       = substr($invoice["datepaid"],0,4) == "1881" ? '' : DateManager::format(Config::get("options/date-format")." H:i",$invoice["datepaid"]);
     $refunddate     = substr($invoice["refunddate"],0,4) == "1881" ? '' : DateManager::format(Config::get("options/date-format")." H:i",$invoice["refunddate"]);
     $sharing        = isset($sharing) ? $sharing : false;
+    /*
     if($sharing) $censored = isset($udata) && $udata["id"] == $invoice["user_id"] ? false : true;
     else $censored       = false;
+    */
+
     if(isset($admin)) $censored = false;
     if(!($invoice["user_data"]["kind"] ?? '')) $invoice["user_data"]["kind"] = "individual";
 
-    $GLOBALS["censured"] = $censored;
+    $censored = false;
+    $GLOBALS["censured"] = false;
 
     function censored($type='',$data=''){
         $data     = trim($data);
@@ -191,7 +195,7 @@
                     <h5><?php echo __("website/account_invoices/invoice-owner"); ?></h5>
                     <div class="line"></div>
                     <?php
-                        if($invoice["status"] == "unpaid" && isset($acAddresses) && $acAddresses)
+                        if($invoice["status"] == "unpaid" && isset($acAddresses) && $acAddresses && !$sharing)
                         {
                             ?>
                             <div class="invoice-detail-select-profile">
@@ -244,11 +248,18 @@
                         if(isset($invoice["user_data"]["address"]) && $invoice["user_data"]["address"]){
                             $adrs = $invoice["user_data"]["address"];
                             echo "<br>";
-                            if(!$censored) echo $adrs["address"]." / ";
-                            echo isset($adrs["counti"]) && $adrs["counti"] ? $adrs["counti"]." / " : '';
-                            echo isset($adrs["city"]) && $adrs["city"] ? $adrs["city"]." / " : '';
-                            echo AddressManager::get_country_name($adrs["country_code"]);
-                            echo isset($adrs["zipcode"]) && $adrs["zipcode"] ? " / ".$adrs["zipcode"] : '';
+
+                            $address_info = $adrs["address"]." / ";
+
+                            $address_info .= isset($adrs["counti"]) && $adrs["counti"] ? $adrs["counti"]." / " : '';
+
+                            $address_info .= isset($adrs["city"]) && $adrs["city"] ? $adrs["city"]." / " : '';
+                            $address_info .= AddressManager::get_country_name($adrs["country_code"]);
+                            $address_info .= isset($adrs["zipcode"]) && $adrs["zipcode"] ? " / ".$adrs["zipcode"] : '';
+                            if($censored)
+                                echo Filter::censored($address_info);
+                            else
+                                echo $address_info;
                         }
                         ?>
 
@@ -270,6 +281,24 @@
                         echo "<br>";
                         echo $phone ? censored('phone',$phone)." - " : '';
                         echo censored('email',$invoice["user_data"]["email"]);
+
+                        if(isset($custom_fields) && $custom_fields)
+                        {
+                            echo '<br>';
+                            $custom_field_keys = array_keys($custom_fields);
+                            $end_f = end($custom_field_keys);
+                            foreach($custom_fields AS $f_id => $field)
+                            {
+                                echo '<span>'.$field["name"].'</span> : ';
+                                if($censored)
+                                    echo Filter::censored($field["value"]);
+                                else
+                                    echo $field["value"];
+                                if($f_id != $end_f)
+                                    echo '<br>';
+                            }
+                        }
+
                         ?>
 
             </span>
@@ -421,7 +450,7 @@
                     }
                 ?>
 
-                <div id="tax_wrap" class="formcon" style="<?php echo $invoice["tax"]>0 && $invoice["taxrate"]>0 ? '' : 'display:none;'; ?>">
+                <div id="tax_wrap" class="formcon" style="<?php echo Config::get("options/taxation") ? '' : 'display:none;'; ?>">
                     <div class="yuzde70" style="text-align:right;"><span><?php echo __("website/account_invoices/tax-amount",['{rate}' => str_replace(".00","",$invoice["taxrate"]),'{rates}' => $tax_rates ?? '']); ?></span></div>
                     <div class="yuzde30"><span><strong id="tax_fee"><?php echo Money::formatter_symbol($invoice["tax"],$invoice["currency"]); ?></strong></span></div>
                 </div>
@@ -462,7 +491,9 @@
         <?php if($invoice["status"] == "unpaid"): ?>
 
             <script type="text/javascript">
-                var selected_payment_method;
+                var
+                    selected_payment_method,
+                    taxation = <?php echo Config::get("options/taxation") == 1 ? "true" : "false"; ?>;
                 $(function(){
 
                     $("#accordion").accordion({
@@ -556,11 +587,13 @@
                                     $("#payment_methods").append(content);
                                 });
 
-                                if(solve.tax != undefined && solve.tax != 0){
+
+                                if(taxation){
                                     $("#tax_wrap").css("display","block");
-                                    $("#tax_fee").html(solve.tax);
+                                    $("#tax_fee").html(typeof solve.tax !== "undefined" ? solve.tax : '');
                                 }else
                                     $("#tax_wrap").css("display","none");
+
 
                                 if(solve.total != undefined){
                                     $("#total_wrap").css("display","block");
@@ -670,6 +703,46 @@
                 </div>
             </div>
         <?php endif; ?>
+
+        <?php
+            $invoice_qr_codes = Hook::run("AddQRCodetoInvoiceDetailinClientArea",$invoice);
+            if($invoice_qr_codes){
+                foreach($invoice_qr_codes AS $qr_code)
+                {
+                    if($qr_code){
+                        $image      = $qr_code['image'] ?? '';
+                        $title      = $qr_code['title'] ?? '';
+                        $desc       = $qr_code['description'] ?? '';
+                        if(!$image) continue;
+                        ?>
+                        <div class="sepa-qr-code">
+                            <div class="sepa-qr-code-left">
+                                <img src="<?php echo $image; ?>">
+                            </div>
+
+                            <?php if($desc): ?>
+                                <div class="sepa-qr-code-right">
+                                    <h5><strong><?php echo $title; ?></strong></h5>
+                                    <p><?php echo $desc; ?></p>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                        <style type="text/css">
+                            .sepa-qr-code {float:left;width:100%;padding-top:20px;border-top:1px solid #eee;}
+                            .sepa-qr-code-left {float:left;width:100px;}
+                            .sepa-qr-code-left img{width:100%;}
+                            .sepa-qr-code-right {float:right;width: 85%;}
+                            @media only screen and (min-width:320px) and (max-width:1024px) {
+                                .sepa-qr-code-left{width:100%;text-align:center;}
+                                .sepa-qr-code-left img{width:50%;}
+                                .sepa-qr-code-right {width: 100%;}
+                            }
+                        </style>
+                        <?php
+                    }
+                }
+            }
+        ?>
 
 
         <p>

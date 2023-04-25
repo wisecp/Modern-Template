@@ -514,7 +514,9 @@
                                             if(result){
                                                 var solve = getJson(result);
                                                 if(solve){
-                                                    if(solve.status == "successful"){
+                                                    if(solve.status == "error")
+                                                        alert_error(solve.message,{timer:5000});
+                                                    else if(solve.status == "successful"){
                                                         window.location.href = solve.redirect;
                                                     }
                                                 }
@@ -531,10 +533,9 @@
                         <a href="javascript:void(0)" onclick="$('a[data-tab=dns]').click();" class="turuncbtn gonderbtn"><i class="fas fa-server" aria-hidden="true"></i> <?php echo __("website/account_products/dns-manager"); ?></a>
 
                         <a href="javascript:void(0)" onclick="$('a[data-tab=whois]').click();" class="mavibtn gonderbtn"><i class="far fa-id-card" aria-hidden="true"></i> <?php echo __("website/account_products/whois-manager"); ?></a>
+                        <?php endif; ?>
 
                     </div>
-
-                    <?php endif; ?>
                 </div>
 
                 <div class="hizmetblok">

@@ -755,7 +755,7 @@
                                                     $parsev = explode(",",$value);
                                                     $parse  = explode(",",$field["options"]);
                                                     foreach($parse AS $k=>$p){
-                                                        $checked = array_search($p,$parsev) ? " checked" : NULL;
+                                                        $checked = in_array($p,$parsev) ? " checked" : NULL;
                                                         if(($disabled && $checked) || !$disabled){
                                                             ?>
                                                             <input<?php echo $disabled.$checked;?> name="cfields[<?php echo $field["id"]; ?>][]" value="<?php echo $p;?>" class="checkbox-custom" id="cfield_<?php echo $field["id"]."_".$k; ?>" type="checkbox">

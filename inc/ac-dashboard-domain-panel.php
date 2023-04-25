@@ -1,5 +1,5 @@
 <?php defined('CORE_FOLDER') OR exit('You can not get in here!');
-    if(!Config::get("options/pg-activation/domain")) return false;
+    if(!Config::get("options/pg-activation/domain") || !Config::get("options/domain-dashboard-widget")) return false;
 
     $currency_symbols = [];
     foreach(Money::getCurrencies() AS $currency){

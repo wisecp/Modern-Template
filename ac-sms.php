@@ -1155,7 +1155,7 @@
                 </div>
             </div>
 
-            <?php if(isset($reports) && is_array($reports) && $reports): ?>
+            <?php if(isset($reports) && $reports): ?>
                 <div>
                     <script type="text/javascript">
                         $(document).ready(function(){
@@ -1169,12 +1169,16 @@
                                     }
 
                                 ],
+                                "lengthMenu": [
+                                    [10, 25, 50, -1], [10, 25, 50, "<?php echo __("website/others/datatable-all"); ?>"]
+                                ],
+                                "bProcessing": true,
+                                "bServerSide": true,
+                                "searching" : false,
+                                "sAjaxSource": "<?php echo $links["controller"]; ?>?operation=get_sms_reports",
                                 responsive: true,
-                                "language":{
-                                    "url":"<?php echo APP_URI."/".___("package/code")."/datatable/lang.json";?>"
-                                }
+                                "oLanguage":<?php include __DIR__.DS."datatable-lang.php"; ?>
                             });
-
                         });
                     </script>
                     <table id="reports" width="100%">
@@ -1191,50 +1195,7 @@
                         </tr>
                         </thead>
 
-                        <tbody align="center" style="border-top:none;">
-                        <?php
-                            Money::$digit=4;
-                            $rank=0;
-                            foreach($reports AS $report){
-                                $rank++;
-                                ?>
-                                <tr>
-                                    <td align="left"><?php echo $rank; ?></td>
-                                    <td align="center"><?php echo $report["ctime"]; ?></td>
-                                    <td align="center"><?php echo $report["title"]; ?></td>
-                                    <td align="center">
-                                        <p style="display: none" id="show_message_<?php echo $report["id"]; ?>">
-                                            <?php echo $report["content"]; ?>
-                                        </p>
-                                        <a class="lbtn" href="javascript:showMessage(<?php echo $report["id"]; ?>);void 0;"><?php echo __("website/account_sms/report-message-content"); ?></a><br>
-                                        (<?php echo $report["data"]["part"]; ?> SMS - <?php echo $report["data"]["length"]; ?> <?php echo __("website/account_sms/dimension-character"); ?>)
-                                    </td>
-                                    <td align="center"><?php echo isset($report["data"]["count"]) ? $report["data"]["count"] : __("website/others/none"); ?></td>
-                                    <td align="center">
-                                        <?php echo Money::formatter_symbol($report["data"]["total_credit"],$report["data"]["credit_cid"]); ?>
-                                    </td>
-                                    <td align="left">
-                                        <?php
-                                            if(isset($report["data"]["countries"]) && $report["data"]["countries"]){
-                                                foreach($report["data"]["countries"] AS $country){
-                                                    ?>
-                                                    <img src="<?php echo $sadress; ?>assets/images/flags/<?php echo $country["code"]; ?>.svg" width="20" style="float: left;"> (<?php echo $country["total_part"]; ?> SMS - <?php echo Money::formatter_symbol($country["total_price"],$report["data"]["credit_cid"]); ?>)<br>
-                                                    <?php
-                                                }
-                                            }
-                                        ?>
-                                    </td>
-                                    <td align="center">
-
-                                        <a href="javascript:getReportDetail(<?php echo $report["id"]; ?>);void 0;" class="lbtn"><i class="fa fa-search"></i></a>
-
-                                    </td>
-                                </tr>
-                                <?php
-                            }
-                        ?>
-
-                        </tbody>
+                        <tbody align="center" style="border-top:none;"></tbody>
                     </table>
                 </div>
 

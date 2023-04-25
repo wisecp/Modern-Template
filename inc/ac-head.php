@@ -26,7 +26,6 @@
     View::main_style();
 ?>
 <link rel="stylesheet" href="<?php echo $tadress;?>css/wisecp.css?v=<?php echo License::get_version(); ?>"/>
-<link href="https://fonts.googleapis.com/css?family=Raleway:300,400,500,700,800|Titillium+Web:200,300,400,600,700&amp;subset=latin-ext" rel="stylesheet">
 <link rel="stylesheet" href="<?php echo $tadress;?>css/font-awesome.min.css">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/v4-shims.css">

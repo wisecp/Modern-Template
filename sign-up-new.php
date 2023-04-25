@@ -6,6 +6,9 @@
 <html lang="<?php echo ___("package/code"); ?>">
 <head>
     <?php
+        $stages         = 3;
+        if(isset($custom_fields) && $custom_fields) $stages++;
+
         $hoptions = [
             'page' => "sign-in",
             'intlTelInput',
@@ -40,7 +43,7 @@
                 $('.stage-content').hide(1);
                 $("#stage-content-"+stage).show(1);
 
-                if(stage === 3)
+                if(stage === <?php echo $stages; ?>)
                 {
                     $("#nextStepBtn").css("display","none");
                     $("#signUpBtn").css("display","inline-block");
@@ -58,7 +61,7 @@
                 let new_stage    = active_stage+1;
                 $(".stage-click[data-stage="+new_stage+"]").click();
 
-                if(new_stage === 3)
+                if(new_stage === <?php echo $stages; ?>)
                 {
                     $("#nextStepBtn").css("display","none");
                     $("#signUpBtn").css("display","inline-block");
@@ -145,8 +148,8 @@
 .signin-signup-foot-btn button{font-family:'Titillium Web',sans-serif;float:none;width:250px;cursor:pointer;outline:none;-webkit-transition:all 0.3s ease-out;-moz-transition:all 0.3s ease-out;-ms-transition:all 0.3s ease-out;-o-transition:all 0.3s ease-out;transition:all 0.3s ease-out;}
 .signin-signup-foot-btn button:hover {background:#77a83f;}
 .signup-stages{float:left;margin-bottom:20px;width:100%;text-align:center;}
-.signup-stages-block{background:#eee;width:75px;height:75px;display:inline-block;border-radius:100%;text-align:center;line-height:75px;margin:0px 7%;font-weight:300;font-size:30px}
-.signup-stage-line{width:100%;height:10px;background:#eee;margin-top:35px;float:left;margin-bottom:-55px;border-radius:3px}
+.signup-stages-block{background:#eee;width:60px;height:60px;display:inline-block;border-radius:100%;text-align:center;line-height:60px;margin:0px 7%;font-weight:300;font-size:24px}
+.signup-stage-line{width:100%;height:10px;background:#eee;margin-top:25px;float:left;margin-bottom:-55px;border-radius:3px}
 .captcha-content {margin-top:0;}
 
 @media only screen and (min-width:320px) and (max-width:1024px){
@@ -241,23 +244,19 @@
 
                             <div class="signup-stage-line"></div>
 
-                            <a href="javascript:void 0;" class="stage-click stage-clicks" data-stage="1">
-                                <div class="signup-stages-block active">
-                                    1
-                                </div>
-                            </a>
+                            <?php
+                                for($s=1; $s <= $stages; $s++)
+                                {
+                                    ?>
+                                    <a href="javascript:void 0;" class="stage-click stage-clicks" data-stage="<?php echo $s; ?>">
+                                        <div class="signup-stages-block<?php echo $s == 1 ? ' active' : ''; ?>">
+                                            <?php echo $s; ?>
+                                        </div>
+                                    </a>
+                                    <?php
+                                }
+                            ?>
 
-                            <a href="javascript:void 0;" class="stage-click stage-clicks" data-stage="2">
-                                <div class="signup-stages-block">
-                                    2
-                                </div>
-                            </a>
-
-                            <a href="javascript:void 0;" class="stage-click stage-clicks" data-stage="3">
-                                <div class="signup-stages-block">
-                                    3
-                                </div>
-                            </a>
 
                         </div>
 
@@ -274,163 +273,263 @@
                             <div id="Information">
 
 
-                                <div class="stage-content" id="stage-content-1" style="display:block;">
+                                <?php
+                                    for($s=1;$s<=$stages; $s++)
+                                    {
+                                        if($s == 1)
+                                        {
+                                            ?>
+                                            <div class="stage-content" id="stage-content-<?php echo $s; ?>" style="display:block;">
 
-                                    <?php if($kind_status): ?>
-                                        <div class="clean-theme-signup-box">
+                                                <?php if($kind_status): ?>
+                                                    <div class="clean-theme-signup-box">
 
-                                            <div class="clean-theme-signup-box-title"><?php echo __("website/sign/up-form-kind"); ?></div>
+                                                        <div class="clean-theme-signup-box-title"><?php echo __("website/sign/up-form-kind"); ?></div>
 
 
-                                            <input id="kind_1" class="radio-custom" name="kind" value="individual" type="radio" checked>
-                                            <label for="kind_1" class="radio-custom-label" style="margin-right: 28px;"><span class="checktext"><?php echo __("website/sign/up-form-kind-1"); ?></span></label>
+                                                        <input id="kind_1" class="radio-custom" name="kind" value="individual" type="radio" checked>
+                                                        <label for="kind_1" class="radio-custom-label" style="margin-right: 28px;"><span class="checktext"><?php echo __("website/sign/up-form-kind-1"); ?></span></label>
 
-                                            <input id="kind_2" class="radio-custom" name="kind" value="corporate" type="radio">
-                                            <label for="kind_2" class="radio-custom-label" style="margin-right: 28px;"><span class="checktext"><?php echo __("website/sign/up-form-kind-2"); ?></span></label>
-                                        </div>
-                                    <?php endif; ?>
+                                                        <input id="kind_2" class="radio-custom" name="kind" value="corporate" type="radio">
+                                                        <label for="kind_2" class="radio-custom-label" style="margin-right: 28px;"><span class="checktext"><?php echo __("website/sign/up-form-kind-2"); ?></span></label>
+                                                    </div>
+                                                <?php endif; ?>
 
-                                    <div class="clean-theme-signup-box">
-                                        <div class="clean-theme-signup-box-title"><?php echo __("website/account_info/personal-informations"); ?></div>
+                                                <div class="clean-theme-signup-box">
+                                                    <div class="clean-theme-signup-box-title"><?php echo __("website/account_info/personal-informations"); ?></div>
 
-                                        <div class="yuzde50">
-                                            <input name="full_name" type="text" placeholder="<?php echo __("website/sign/up-form-full_name"); ?>">
-                                        </div>
+                                                    <div class="yuzde50">
+                                                        <input name="full_name" type="text" placeholder="<?php echo __("website/sign/up-form-full_name"); ?>">
+                                                    </div>
 
-                                        <div class="yuzde50">
-                                            <input name="email" type="text" placeholder="<?php echo __("website/sign/up-form-email"); echo ($email_verify_status) ? " ".__("website/sign/up-form-email-verify") : ''; ?>" required>
-                                        </div>
+                                                    <div class="yuzde50">
+                                                        <input name="email" type="text" placeholder="<?php echo __("website/sign/up-form-email"); echo ($email_verify_status) ? " ".__("website/sign/up-form-email-verify") : ''; ?>" required>
+                                                    </div>
 
-                                        <?php if($gsm_status): ?>
-                                            <div class="yuzde100">
-                                                <input id="gsm" type="text"<?php echo ($gsm_required) ? ' required' : '' ?> placeholder="<?php echo __("website/sign/up-form-gsm"); echo ($sms_verify_status) ? " ".__("website/sign/up-form-gsm-verify") : ''; ?>" onkeypress="return event.charCode>= 48 &amp;&amp;event.charCode<= 57">
+                                                    <?php if(isset($gsm_status) && $gsm_status): ?>
+                                                        <div class="yuzde100">
+                                                            <input id="gsm" type="text"<?php echo ($gsm_required) ? ' required' : '' ?> placeholder="<?php echo __("website/sign/up-form-gsm"); echo ($sms_verify_status) ? " ".__("website/sign/up-form-gsm-verify") : ''; ?>" onkeypress="return event.charCode>= 48 &amp;&amp;event.charCode<= 57">
+                                                        </div>
+                                                    <?php endif; ?>
+
+                                                </div>
+
                                             </div>
-                                        <?php endif; ?>
+                                            <?php
+                                        }
+                                        elseif($s == 2)
+                                        {
+                                            ?>
+                                            <div class="stage-content" id="stage-content-<?php echo $s; ?>" style="display:none;">
 
-                                    </div>
-
-                                </div>
-
-                                <div class="stage-content" id="stage-content-2" style="display:none;">
-
-                                    <div class="clean-theme-signup-box">
-                                        <div class="clean-theme-signup-box-title"><?php echo __("website/account_info/billing-information"); ?></div>
-
-
-                                        <div class="yuzde100 kind-content kind_2"  style="display:none;">
-                                            <input name="company_name" type="text" placeholder="<?php echo __("website/sign/up-form-cname"); ?>" required>
-                                        </div>
+                                                <div class="clean-theme-signup-box">
+                                                    <div class="clean-theme-signup-box-title"><?php echo __("website/account_info/billing-information"); ?></div>
 
 
-                                        <?php if(Config::get("options/sign/up/kind/corporate/company_tax_number")): ?>
-                                            <div class="yuzde50 kind-content kind_2" style="display:none;">
-                                                <input name="company_tax_number" type="text" placeholder="<?php echo __("website/sign/up-form-ctaxno"); ?>" required>
+                                                    <div class="yuzde100 kind-content kind_2"  style="display:none;">
+                                                        <input name="company_name" type="text" placeholder="<?php echo __("website/sign/up-form-cname"); ?>" required>
+                                                    </div>
+
+
+                                                    <?php if(Config::get("options/sign/up/kind/corporate/company_tax_number")): ?>
+                                                        <div class="yuzde50 kind-content kind_2" style="display:none;">
+                                                            <input name="company_tax_number" type="text" placeholder="<?php echo __("website/sign/up-form-ctaxno"); ?>" required>
+                                                        </div>
+                                                    <?php endif; ?>
+
+                                                    <?php if(Config::get("options/sign/up/kind/corporate/company_tax_office")): ?>
+                                                        <div class="yuzde50 kind-content kind_2" style="display:none;">
+                                                            <input name="company_tax_office" type="text" placeholder="<?php echo __("website/sign/up-form-ctaxoff"); ?>" required>
+                                                        </div>
+                                                    <?php endif; ?>
+
+
+                                                    <?php $countryList = AddressManager::getCountryList(); ?>
+                                                    <div class="yuzde50">
+                                                        <select name="country" onchange="getCities(this.options[this.selectedIndex].value);">
+                                                            <?php
+                                                                foreach($countryList as $country){
+                                                                    ?><option value="<?php echo $country["id"];?>" data-code="<?php echo $country["code"]; ?>"><?php echo $country["name"];?></option><?php
+                                                                }
+                                                            ?>
+                                                        </select>
+                                                    </div>
+
+                                                    <div class="yuzde50">
+                                                        <select name="city" onchange="getCounties($(this).val());" disabled style="display: none;"></select>
+                                                        <input type="text" name="city" placeholder="<?php echo __("admin/users/create-city-placeholder"); ?>">
+                                                    </div>
+
+                                                    <div class="yuzde50">
+                                                        <select name="counti" disabled style="display: none;"></select>
+                                                        <input type="text" name="counti" placeholder="<?php echo __("admin/users/create-counti-placeholder"); ?>">
+                                                    </div>
+
+                                                    <div class="yuzde50">
+                                                        <input name="zipcode" type="text" placeholder="<?php echo __("admin/users/create-zipcode-placeholder"); ?>">
+                                                    </div>
+
+                                                    <div class="yuzde100">
+                                                        <input name="address" type="text" placeholder="<?php echo __("admin/users/create-address-placeholder"); ?>">
+                                                    </div>
+
+
+                                                </div>
+
                                             </div>
-                                        <?php endif; ?>
+                                            <?php
+                                        }
+                                        elseif($s == $stages)
+                                        {
+                                            ?>
+                                            <div class="stage-content" id="stage-content-<?php echo $s; ?>" style="display:none;">
 
-                                         <?php if(Config::get("options/sign/up/kind/corporate/company_tax_office")): ?>
-                                             <div class="yuzde50 kind-content kind_2" style="display:none;">
-                                                 <input name="company_tax_office" type="text" placeholder="<?php echo __("website/sign/up-form-ctaxoff"); ?>" required>
-                                             </div>
-                                         <?php endif; ?>
+                                                <div class="clean-theme-signup-box">
+                                                    <div class="clean-theme-signup-box-title"><?php echo __("website/account_info/set-a-password"); ?></div>
+                                                    <div class="yuzde50">
+                                                        <input name="password" type="password" id="password_primary" placeholder="<?php echo __("website/sign/up-form-password"); ?>" required>
+                                                    </div>
+                                                    <div class="yuzde50">
+                                                        <input name="password_again" type="password" id="password_again" placeholder="<?php echo __("website/sign/up-form-password_again"); ?>" required>
+                                                    </div>
+                                                    <div class="yuzde50">
+                                                        <a class="sbtn" href="javascript:void 0;" onclick="$('#password_primary').attr('type','text'); $('#password_primary,#password_again').val(voucher_codes.generate({length:16,charset: 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%&*()-_=+[]\|;:,./?'})).trigger('change');"><i class="fa fa-refresh"></i> <?php echo __("website/account_products/new-random-password"); ?></a>
+                                                    </div>
+                                                    <div class="yuzde50">
+                                                        <div id="weak" style="display:block;" class="level-block"><?php echo __("website/sign/up-form-password-level"); ?>: <strong><?php echo __("website/sign/up-form-password-level1"); ?></strong></div>
+                                                        <div id="good" class="level-block" style="display:none"><?php echo __("website/sign/up-form-password-level"); ?>: <strong><?php echo __("website/sign/up-form-password-level2"); ?></strong></div>
+                                                        <div id="strong" class="level-block" style="display: none;"><?php echo __("website/sign/up-form-password-level"); ?>: <strong><?php echo __("website/sign/up-form-password-level3"); ?></strong></div>
+                                                    </div>
 
+                                                </div>
 
-                                        <?php $countryList = AddressManager::getCountryList(); ?>
-                                        <div class="yuzde50">
-                                            <select name="country" onchange="getCities(this.options[this.selectedIndex].value);">
-                                                <?php
-                                                    foreach($countryList as $country){
-                                                        ?><option value="<?php echo $country["id"];?>" data-code="<?php echo $country["code"]; ?>"><?php echo $country["name"];?></option><?php
-                                                    }
-                                                ?>
-                                            </select>
-                                        </div>
+                                                <div class="clean-theme-signup-box" style="display: none;">
+                                                    <div class="clean-theme-signup-box-title"><?php echo __("admin/users/create-notification-permissions"); ?></div>
 
-                                        <div class="yuzde50">
-                                            <select name="city" onchange="getCounties($(this).val());" disabled style="display: none;"></select>
-                                            <input type="text" name="city" placeholder="<?php echo __("admin/users/create-city-placeholder"); ?>">
-                                        </div>
+                                                    <div class="yuzde100">
+                                                        <input id="email_notifications" class="checkbox-custom" name="email_notifications" value="1" type="checkbox">
+                                                        <label for="email_notifications" class="checkbox-custom-label"></label>
+                                                        <?php echo __("website/account_info/email-notifications"); ?>
+                                                    </div>
+                                                    <div class="yuzde100">
+                                                        <input id="sms_notifications" class="checkbox-custom" name="sms_notifications" value="1" type="checkbox">
+                                                        <label for="sms_notifications" class="checkbox-custom-label"></label>
+                                                        <?php echo __("website/account_info/sms-notifications"); ?>
+                                                    </div>
 
-                                        <div class="yuzde50">
-                                            <select name="counti" disabled style="display: none;"></select>
-                                            <input type="text" name="counti" placeholder="<?php echo __("admin/users/create-counti-placeholder"); ?>">
-                                        </div>
-
-                                        <div class="yuzde50">
-                                            <input name="zipcode" type="text" placeholder="<?php echo __("admin/users/create-zipcode-placeholder"); ?>">
-                                        </div>
-
-                                        <div class="yuzde100">
-                                            <input name="address" type="text" placeholder="<?php echo __("admin/users/create-address-placeholder"); ?>">
-                                        </div>
-
-
-                                    </div>
-
-                                </div>
-
-                                <div class="stage-content" id="stage-content-3" style="display:none;">
-
-                                    <div class="clean-theme-signup-box">
-                                        <div class="clean-theme-signup-box-title"><?php echo __("website/account_info/set-a-password"); ?></div>
-                                        <div class="yuzde50">
-                                            <input name="password" type="password" id="password_primary" placeholder="<?php echo __("website/sign/up-form-password"); ?>" required>
-                                        </div>
-                                        <div class="yuzde50">
-                                            <input name="password_again" type="password" id="password_again" placeholder="<?php echo __("website/sign/up-form-password_again"); ?>" required>
-                                        </div>
-                                        <div class="yuzde50">
-                                            <a class="sbtn" href="javascript:void 0;" onclick="$('#password_primary').attr('type','text'); $('#password_primary,#password_again').val(voucher_codes.generate({length:16,charset: 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%&*()-_=+[]\|;:,./?'})).trigger('change');"><i class="fa fa-refresh"></i> <?php echo __("website/account_products/new-random-password"); ?></a>
-                                        </div>
-                                        <div class="yuzde50">
-                                            <div id="weak" style="display:block;" class="level-block"><?php echo __("website/sign/up-form-password-level"); ?>: <strong><?php echo __("website/sign/up-form-password-level1"); ?></strong></div>
-                                            <div id="good" class="level-block" style="display:none"><?php echo __("website/sign/up-form-password-level"); ?>: <strong><?php echo __("website/sign/up-form-password-level2"); ?></strong></div>
-                                            <div id="strong" class="level-block" style="display: none;"><?php echo __("website/sign/up-form-password-level"); ?>: <strong><?php echo __("website/sign/up-form-password-level3"); ?></strong></div>
-                                        </div>
-
-                                    </div>
-
-                                    <div class="clean-theme-signup-box" style="display: none;">
-                                        <div class="clean-theme-signup-box-title"><?php echo __("admin/users/create-notification-permissions"); ?></div>
-
-                                        <div class="yuzde100">
-                                            <input id="email_notifications" class="checkbox-custom" name="email_notifications" value="1" type="checkbox">
-                                            <label for="email_notifications" class="checkbox-custom-label"></label>
-                                            <?php echo __("website/account_info/email-notifications"); ?>
-                                        </div>
-                                        <div class="yuzde100">
-                                            <input id="sms_notifications" class="checkbox-custom" name="sms_notifications" value="1" type="checkbox">
-                                            <label for="sms_notifications" class="checkbox-custom-label"></label>
-                                            <?php echo __("website/account_info/sms-notifications"); ?>
-                                        </div>
-
-                                    </div>
+                                                </div>
 
 
-                                    <div class="clean-theme-signup-box" style="    padding-bottom: 10px;">
-                                        <div class="clean-theme-signup-box-title"><?php echo __("website/basket/contracts"); ?></div>
-                                        <div class="yuzde100">
-                                            <input id="checkbox-5" class="checkbox-custom" name="contract" value="1" type="checkbox" required>
-                                            <label for="checkbox-5" class="checkbox-custom-label"><span class="checktext"><?php echo __("website/sign/up-form-contract"); ?></span></label>
-                                        </div>
+                                                <div class="clean-theme-signup-box" style="    padding-bottom: 10px;">
+                                                    <div class="clean-theme-signup-box-title"><?php echo __("website/basket/contracts"); ?></div>
+                                                    <div class="yuzde100">
+                                                        <input id="checkbox-5" class="checkbox-custom" name="contract" value="1" type="checkbox" required>
+                                                        <label for="checkbox-5" class="checkbox-custom-label"><span class="checktext"><?php echo __("website/sign/up-form-contract"); ?></span></label>
+                                                    </div>
 
-                                    </div>
+                                                </div>
 
-                                    <div class="clear"></div>
+                                                <div class="clear"></div>
 
-                                    <?php if(isset($captcha) && $captcha): ?>
+                                                <?php if(isset($captcha) && $captcha): ?>
 
-                                        <div class="captcha-content">
-                                            <?php echo $captcha->getOutput(); ?>
-                                            <?php if($captcha->input): ?>
-                                                <input class="captchainput" name="<?php echo $captcha->input_name; ?>" type="text" placeholder="<?php echo ___("needs/form-captcha-label"); ?>">
-                                            <?php endif; ?>
-                                        </div>
+                                                    <div class="captcha-content">
+                                                        <?php echo $captcha->getOutput(); ?>
+                                                        <?php if($captcha->input): ?>
+                                                            <input class="captchainput" name="<?php echo $captcha->input_name; ?>" type="text" placeholder="<?php echo ___("needs/form-captcha-label"); ?>">
+                                                        <?php endif; ?>
+                                                    </div>
 
-                                    <?php endif; ?>
+                                                <?php endif; ?>
 
 
-                                </div>
+                                            </div>
+                                            <?php
+                                        }
+                                        else
+                                        {
+                                            ?>
+                                            <div class="stage-content" id="stage-content-<?php echo $s; ?>" style="display:none;">
+
+                                                <div class="clean-theme-signup-box">
+                                                    <div class="clean-theme-signup-box-title"><?php echo __("website/account_info/other-informations"); ?></div>
+
+
+                                                    <?php
+                                                        foreach($custom_fields AS $field)
+                                                        {
+                                                            ?>
+                                                            <div class="yuzde50 custom-field--content" id="cfield_<?php echo $field["id"]; ?>_wrap">
+                                                                <?php if($field["type"] == "text"): ?>
+                                                                    <input name="cfields[<?php echo $field["id"]; ?>]" type="text" placeholder="<?php echo htmlentities($field["name"],ENT_QUOTES); ?>" id="cfield_<?php echo $field["id"]; ?>">
+                                                                <?php elseif($field["type"] == "textarea"): ?>
+                                                                    <textarea rows="3" id="cfield_<?php echo $field["id"]; ?>" name="cfields[<?php echo $field["id"]; ?>]" placeholder="<?php echo $field["name"]; ?>"></textarea>
+                                                                <?php elseif($field["type"] == "select"): ?>
+                                                                    <select id="cfield_<?php echo $field["id"]; ?>" name="cfields[<?php echo $field["id"]; ?>]">
+                                                                        <option value=""><?php echo $field["name"]; ?></option>
+                                                                        <?php
+                                                                            $parse = explode(",",$field["options"]);
+                                                                            foreach($parse AS $p){
+                                                                                ?>
+                                                                                <option><?php echo  $p; ?></option>
+                                                                                <?php
+                                                                            }
+                                                                        ?>
+                                                                    </select>
+                                                                <?php elseif($field["type"] == "radio"):
+                                                                    ?>
+                                                                    <strong><?php echo $field["name"]; ?></strong>
+                                                                    <div class="clear"></div>
+                                                                    <br>
+                                                                    <?php
+                                                                    $parse = explode(",",$field["options"]);
+                                                                    foreach($parse AS $k=>$p)
+                                                                    {
+                                                                        ?>
+                                                                        <input
+                                                                                name="cfields[<?php echo $field["id"]; ?>]"
+                                                                                value="<?php echo $p; ?>"
+                                                                                class="radio-custom"
+                                                                                id="cfield_<?php echo $field["id"] . "_" . $k; ?>"
+                                                                                type="radio">
+                                                                        <label style="margin-right:15px;"
+                                                                               for="cfield_<?php echo $field["id"] . "_" . $k; ?>"
+                                                                               class="radio-custom-label"><?php echo $p; ?></label>
+                                                                        <?php
+                                                                    }
+                                                                elseif($field["type"] == "checkbox"):
+                                                                    ?>
+                                                                    <strong><?php echo $field["name"]; ?></strong>
+                                                                    <div class="clear"></div>
+                                                                    <br>
+                                                                    <?php
+                                                                    $parse = explode(",",$field["options"]);
+                                                                    foreach($parse AS $k=>$p)
+                                                                    {
+                                                                        ?>
+                                                                        <input name="cfields[<?php echo $field["id"]; ?>][]" value="<?php echo $p;?>" class="checkbox-custom" id="cfield_<?php echo $field["id"]."_".$k; ?>" type="checkbox">
+                                                                        <label style="margin-right:15px;" for="cfield_<?php echo $field["id"]."_".$k; ?>" class="checkbox-custom-label"><?php echo $p; ?></label>
+                                                                        <?php
+                                                                    }
+                                                                endif;
+                                                                ?>
+
+                                                            </div>
+                                                            <?php
+                                                        }
+                                                    ?>
+
+
+                                                </div>
+
+                                                <div class="clear"></div>
+                                            </div>
+                                            <?php
+                                        }
+                                    }
+                                ?>
+
+
 
                                 <div class="signin-signup-foot-btn">
 
@@ -567,33 +666,28 @@
                                         alert(solve.message);
                                     }
 
-                                    if(solve.type == "information"){
-                                        if(solve.status == "error"){
-                                            if(solve.for != undefined && solve.for != ''){
-                                                $("#Signup_Form "+solve.for).focus();
-                                                $("#Signup_Form "+solve.for).attr("style","border-bottom:2px solid red; color:red;");
-                                                $("#Signup_Form "+solve.for).change(function(){
-                                                    $(this).removeAttr("style");
-                                                });
-                                            }
-                                            if(solve.message != undefined && solve.message != '')
-                                                alert_error(solve.message,{timer:4000});
-                                        }
-                                    }
-
-                                    if(solve.type == "register"){
-                                        if(solve.status == "successful"){
-                                            $("#FormOutput").fadeOut(500).html('');
-                                            $("#Signup_Form").slideUp(500,function(){
-                                                $("#Success_div").slideDown(500);
-                                                if(solve.redirect != undefined){
-                                                    setTimeout(function(){
-                                                        window.location.href = solve.redirect;
-                                                    },7000);
-                                                }
+                                    if(solve.status == "error"){
+                                        if(solve.for != undefined && solve.for != ''){
+                                            $("#Signup_Form "+solve.for).focus();
+                                            $("#Signup_Form "+solve.for).attr("style","border-bottom:2px solid red; color:red;");
+                                            $("#Signup_Form "+solve.for).change(function(){
+                                                $(this).removeAttr("style");
                                             });
-                                        }else if(solve.status == "error")
+                                        }
+                                        if(solve.message != undefined && solve.message != '')
                                             alert_error(solve.message,{timer:4000});
+                                    }
+                                    else if(solve.status == "successful")
+                                    {
+                                        $("#FormOutput").fadeOut(500).html('');
+                                        $("#Signup_Form").slideUp(500,function(){
+                                            $("#Success_div").slideDown(500);
+                                            if(solve.redirect != undefined){
+                                                setTimeout(function(){
+                                                    window.location.href = solve.redirect;
+                                                },7000);
+                                            }
+                                        });
                                     }
                                 }else
                                     console.log(result);

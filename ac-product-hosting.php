@@ -19,10 +19,10 @@
     if(!$dns && isset($server) && $server)
     {
         $dns = [
-                'ns1' => $server["ns1"],
-                'ns2' => $server["ns2"],
-                'ns3' => $server["ns3"],
-                'ns4' => $server["ns4"],
+            'ns1' => $server["ns1"],
+            'ns2' => $server["ns2"],
+            'ns3' => $server["ns3"],
+            'ns4' => $server["ns4"],
         ];
     }
     $ftp_raw         = isset($options["ftp_raw"]) ? nl2br($options["ftp_raw"]) : NULL;
@@ -566,7 +566,7 @@
                     <input name="quota" class="yuzde50" placeholder="<?php echo __("website/account_products/hosting-add-new-email-quota"); ?>" type="number" onkeydown="return FilterInput(event)" onpaste="handlePaste(event)" value="">
 
                     <input id="edit_quota_unlimited" class="checkbox-custom" name="unlimited" value="1" type="checkbox">
-                    <label for="edit_quota_unlimited" class="checkbox-custom-label"><?php echo __("website/account_products/email-quota-unlimited"); ?></label>
+                    <label for="edit_quota_unlimited" class="checkbox-custom-label" style="<?php if(in_array("no-unlimited-email-account",$supported)) echo 'display:none;'; ?>"><?php echo __("website/account_products/email-quota-unlimited"); ?></label>
                 </div>
 
             </div>
@@ -770,7 +770,7 @@
 
     <ul class="tab">
         <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(this, 'ozet')" data-tab="1"><i class="fa fa-info" aria-hidden="true"></i> <?php echo __("website/account_products/hosting-tab1"); ?></a></li>
-        
+
         <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(this, 'addons')" data-tab="addons"><i class="fa fa-rocket" aria-hidden="true"></i> <?php echo __("website/account_products/tab-addons"); ?></a></li>
 
         <?php if(isset($requirements) && $requirements): ?>
@@ -827,87 +827,87 @@
                 <?php
                     if(isset($options["server_features"]) && is_array($options["server_features"]) && $options["server_features"])
                         echo '<h5 id="server_features" style="font-weight:normal;margin:0px;">('.implode(" + ",$options["server_features"]).')</h5><br>';
-                    ?>
-                    <div id="order-service-detail-btns">
-                        <?php
+                ?>
+                <div id="order-service-detail-btns">
+                    <?php
 
-                            if($buttons){
+                        if($buttons){
+                            ?>
+                            <div id="panel_buttons">
+                                <?php
+                                    foreach($buttons AS $b_type=>$b_value){
+                                        ?>
+                                        <a target="_blank" id="btn-<?php echo $b_type; ?>" href="<?php echo $b_value["url"]; ?>" class="yesilbtn gonderbtn"><i class="fa fa-cog" aria-hidden="true"></i> <?php echo $b_value["name"]; ?></a><br>
+                                        <?php
+                                    }
                                 ?>
-                                <div id="panel_buttons">
+                            </div>
+                            <?php
+                        }
+
+                        if((!isset($subscription) || $subscription["status"] == "cancelled") && isset($product) && $product && $proanse["period"] != "none" && ($proanse["status"] == "active" || $proanse["status"] == "suspended") && (!isset($proanse["disable_renewal"]) || !$proanse["disable_renewal"]) && (!isset($proanse["options"]["disable_renewal"]) || !$proanse["options"]["disable_renewal"]) ){
+                            ?>
+                            <div class="clear"></div>
+                            <div id="renewal_list" style="display:none;">
+                                <select id="selection_renewal">
+                                    <option value=""><?php echo __("website/account_products/renewal-list-option"); ?></option>
                                     <?php
-                                        foreach($buttons AS $b_type=>$b_value){
+                                        if(isset($options["pricing-type"]) && $options["pricing-type"] == 2)
+                                        {
                                             ?>
-                                            <a target="_blank" id="btn-<?php echo $b_type; ?>" href="<?php echo $b_value["url"]; ?>" class="yesilbtn gonderbtn"><i class="fa fa-cog" aria-hidden="true"></i> <?php echo $b_value["name"]; ?></a><br>
+                                            <option value="special-pricing">
+                                                <?php
+                                                    echo View::period($proanse["period_time"],$proanse["period"]);
+                                                    echo " ";
+                                                    echo Money::formatter_symbol($proanse["amount"],$proanse["amount_cid"]);
+                                                ?>
+                                            </option>
                                             <?php
                                         }
-                                    ?>
-                                </div>
-                                <?php
-                            }
-
-                            if((!isset($subscription) || $subscription["status"] == "cancelled") && isset($product) && $product && $proanse["period"] != "none" && ($proanse["status"] == "active" || $proanse["status"] == "suspended") && (!isset($proanse["disable_renewal"]) || !$proanse["disable_renewal"]) && (!isset($proanse["options"]["disable_renewal"]) || !$proanse["options"]["disable_renewal"]) ){
-                                ?>
-                                <div class="clear"></div>
-                                <div id="renewal_list" style="display:none;">
-                                    <select id="selection_renewal">
-                                        <option value=""><?php echo __("website/account_products/renewal-list-option"); ?></option>
-                                        <?php
-                                            if(isset($options["pricing-type"]) && $options["pricing-type"] == 2)
-                                            {
+                                        elseif(isset($product["price"])){
+                                            foreach($product["price"] AS $k=>$v){
                                                 ?>
-                                                <option value="special-pricing">
-                                                    <?php
-                                                        echo View::period($proanse["period_time"],$proanse["period"]);
+                                                <option value="<?php echo $k; ?>"><?php
+                                                        echo View::period($v["time"],$v["period"]);
                                                         echo " ";
-                                                        echo Money::formatter_symbol($proanse["amount"],$proanse["amount_cid"]);
-                                                    ?>
-                                                </option>
+                                                        echo Money::formatter_symbol($v["amount"],$v["cid"],true);
+                                                    ?></option>
                                                 <?php
                                             }
-                                            elseif(isset($product["price"])){
-                                                foreach($product["price"] AS $k=>$v){
-                                                    ?>
-                                                    <option value="<?php echo $k; ?>"><?php
-                                                            echo View::period($v["time"],$v["period"]);
-                                                            echo " ";
-                                                            echo Money::formatter_symbol($v["amount"],$v["cid"],true);
-                                                        ?></option>
-                                                    <?php
-                                                }
-                                            }
-                                        ?>
-                                    </select>
-                                    <script type="text/javascript">
-                                        $(document).ready(function () {
-                                            $("#selection_renewal").change(function () {
-                                                var selection = $(this).val();
-                                                if (selection != '') {
-                                                    var result = MioAjax({
-                                                        action: "<?php echo $links["controller"]; ?>",
-                                                        method: "POST",
-                                                        data: {operation: "order_renewal", period: selection}
-                                                    }, true);
+                                        }
+                                    ?>
+                                </select>
+                                <script type="text/javascript">
+                                    $(document).ready(function () {
+                                        $("#selection_renewal").change(function () {
+                                            var selection = $(this).val();
+                                            if (selection != '') {
+                                                var result = MioAjax({
+                                                    action: "<?php echo $links["controller"]; ?>",
+                                                    method: "POST",
+                                                    data: {operation: "order_renewal", period: selection}
+                                                }, true);
 
-                                                    if (result) {
-                                                        var solve = getJson(result);
-                                                        if (solve) {
-                                                            if (solve.status == "successful") {
-                                                                window.location.href = solve.redirect;
-                                                            }
+                                                if (result) {
+                                                    var solve = getJson(result);
+                                                    if (solve) {
+                                                        if (solve.status == "successful") {
+                                                            window.location.href = solve.redirect;
                                                         }
                                                     }
                                                 }
-                                            });
+                                            }
                                         });
-                                    </script>
-                                </div>
-                                <a id="renewal_list_btn" href="<?php echo isset($invoice) && $invoice["status"] == "unpaid" ? $invoice["detail_link"] : "javascript:$('#renewal_list').slideToggle(400);void 0;"; ?>"
-                                   class="mavibtn gonderbtn"><i class="fa fa-refresh"></i> <?php echo __("website/account_products/renewal-now-button"); ?></a>
-                                <div class="clear"></div>
-                                <?php
-                            }
-                        ?>
-                    </div>
+                                    });
+                                </script>
+                            </div>
+                            <a id="renewal_list_btn" href="<?php echo isset($invoice) && $invoice["status"] == "unpaid" ? $invoice["detail_link"] : "javascript:$('#renewal_list').slideToggle(400);void 0;"; ?>"
+                               class="mavibtn gonderbtn"><i class="fa fa-refresh"></i> <?php echo __("website/account_products/renewal-now-button"); ?></a>
+                            <div class="clear"></div>
+                            <?php
+                        }
+                    ?>
+                </div>
             </div>
         </div>
 
@@ -946,8 +946,8 @@
             <div class="clear"></div>
         <?php else: ?>
             <?php
-                $included_general_info = true;
-                general_info_content();
+            $included_general_info = true;
+            general_info_content();
             ?>
 
         <?php endif; ?>
@@ -1149,7 +1149,32 @@
 
                         <?php if(isset($options["ftp_info"]["password"])): ?>
                             <tr>
-                                <td><strong><?php echo __("website/account_products/ftp-password"); ?></strong>: <span class="selectalltext"><?php echo $options["ftp_info"]["password"]; ?></span></td>
+                                <td><strong><?php echo __("website/account_products/ftp-password"); ?></strong>:
+                                    <span  id="ftp_password_encrypted">**********</span>
+                                    <span class="selectalltext" id="ftp_password_decrypted" style="display: none;"><?php echo $options["ftp_info"]["password"]; ?></span>
+                                    <a href="javascript:void 0;" onclick="toggle_ftp_pw(this);"><i class="fa fa-eye"></i></a>
+
+                                    <script type="text/javascript">
+                                        function toggle_ftp_pw(el)
+                                        {
+                                            var iel = $('i',el);
+                                            if(iel.hasClass('fa-eye'))
+                                            {
+                                                iel.removeClass('fa-eye');
+                                                iel.addClass('fa-eye-slash');
+                                                $('#ftp_password_decrypted').css('display','inline-block');
+                                                $('#ftp_password_encrypted').css('display','none');
+                                            }
+                                            else
+                                            {
+                                                iel.removeClass('fa-eye-slash');
+                                                iel.addClass('fa-eye');
+                                                $('#ftp_password_encrypted').css('display','inline-block');
+                                                $('#ftp_password_decrypted').css('display','none');
+                                            }
+                                        }
+                                    </script>
+                                </td>
                             </tr>
                         <?php endif; ?>
                     <?php else: ?>
@@ -1204,7 +1229,7 @@
             if(isset($options["blocks"]) && $options["blocks"]){
                 foreach($options["blocks"] AS $block){
                     ?>
-                   <div class="hizmetblok block-item">
+                    <div class="hizmetblok block-item">
                         <div class="block_module_details-title formcon"><h4><?php echo $block["title"]; ?></h4></div>
                         <div class="block-item-desc"><div class="padding10"><?php echo Filter::link_convert(nl2br($block["description"])); ?></div></div>
                     </div>
@@ -1901,7 +1926,7 @@
                             </div>
                             <input name="quota" class="yuzde50inpt" placeholder="<?php echo __("website/account_products/hosting-add-new-email-quota"); ?>" type="number" onkeydown="return FilterInput(event)" onpaste="handlePaste(event)">
                             <input id="quota_unlimited" class="checkbox-custom" name="unlimited" value="1" type="checkbox" >
-                            <label style="margin-top:7px;" for="quota_unlimited" class="checkbox-custom-label"><span class="checktext"><?php echo __("website/account_products/email-quota-unlimited"); ?></span></label>
+                            <label style="margin-top:7px;<?php if(in_array("no-unlimited-email-account",$supported)) echo 'display:none;'; ?>" for="quota_unlimited" class="checkbox-custom-label"><span class="checktext"><?php echo __("website/account_products/email-quota-unlimited"); ?></span></label>
                             <span style="    font-size: 14px;  display:none;  margin: 15px 0px;    float: left;"><?php echo __("website/account_products/hosting-add-new-email-password-warning"); ?></span>
                             <a href="javascript:void(0);" class="yesilbtn gonderbtn mio-ajax-submit" mio-ajax-options='{"result":"addNewEmail_submit","waiting_text":"<?php echo addslashes(__("website/others/button5-pending")); ?>"}'><?php echo __("website/account_products/hosting-add-new-email-button"); ?></a>
                             <div class="clear"></div>
@@ -2277,40 +2302,40 @@
                     <h4 style="margin-bottom:7px;    font-size: 18px;"><strong><?php echo __("website/account_products/transfer-service-pending-list"); ?></strong></h4>
 
                     <table id="ctoc_s_t_list" width="100%" border="0" style="<?php echo isset($ctoc_s_t_list) && is_array($ctoc_s_t_list) && sizeof($ctoc_s_t_list)>0 ? '' : 'display:none;'; ?>">
-                            <thead style="background:#ebebeb;">
-                            <tr>
-                                <th align="left"><?php echo __("website/account_products/transfer-service-list-th-user"); ?></th>
-                                <th align="center"><?php echo __("website/account_products/transfer-service-list-th-email"); ?></th>
-                                <th align="center"><?php echo __("website/account_products/transfer-service-list-th-date"); ?></th>
-                                <th align="center"> </th>
-                            </tr>
-                            </thead>
+                        <thead style="background:#ebebeb;">
+                        <tr>
+                            <th align="left"><?php echo __("website/account_products/transfer-service-list-th-user"); ?></th>
+                            <th align="center"><?php echo __("website/account_products/transfer-service-list-th-email"); ?></th>
+                            <th align="center"><?php echo __("website/account_products/transfer-service-list-th-date"); ?></th>
+                            <th align="center"> </th>
+                        </tr>
+                        </thead>
 
-                            <tbody align="center" style="border-top:none;">
-                            <?php
-                                if(isset($ctoc_s_t_list) && is_array($ctoc_s_t_list) && sizeof($ctoc_s_t_list)>0){
-                                    foreach($ctoc_s_t_list AS $ctoc_s_t_r){
-                                        $ctoc_s_t_r["data"]     = Utility::jdecode($ctoc_s_t_r["data"],true);
-                                        $evt_data               = $ctoc_s_t_r["data"];
-                                        $full_name              = $evt_data["to_full_name"];
-                                        $name_length            = Utility::strlen($full_name);
-                                        $name_length            -= 2;
-                                        $full_name              = Utility::substr($full_name,0,2).str_repeat("*",$name_length);
-                                        ?>
-                                        <tr style="background:none;" id="ctoc_s_t_<?php echo $ctoc_s_t_r["id"]; ?>">
-                                            <td align="left"><?php echo $full_name; ?></td>
-                                            <td align="center"><?php echo $evt_data["to_email"]; ?></td>
-                                            <td align="center"><?php echo DateManager::format(Config::get("options/date-format")." H:i",$ctoc_s_t_r["cdate"]); ?></td>
-                                            <td align="center" width="140">
-                                                <a href="javascript:void 0;" onclick="remove_ctoc_s_t(<?php echo $ctoc_s_t_r["id"]; ?>,this);" class="sbtn red" data-tooltip="<?php echo ___("needs/button-delete"); ?>"><i class="fa fa-times"></i></a>
-                                            </td>
-                                        </tr>
-                                        <?php
-                                    }
+                        <tbody align="center" style="border-top:none;">
+                        <?php
+                            if(isset($ctoc_s_t_list) && is_array($ctoc_s_t_list) && sizeof($ctoc_s_t_list)>0){
+                                foreach($ctoc_s_t_list AS $ctoc_s_t_r){
+                                    $ctoc_s_t_r["data"]     = Utility::jdecode($ctoc_s_t_r["data"],true);
+                                    $evt_data               = $ctoc_s_t_r["data"];
+                                    $full_name              = $evt_data["to_full_name"];
+                                    $name_length            = Utility::strlen($full_name);
+                                    $name_length            -= 2;
+                                    $full_name              = Utility::substr($full_name,0,2).str_repeat("*",$name_length);
+                                    ?>
+                                    <tr style="background:none;" id="ctoc_s_t_<?php echo $ctoc_s_t_r["id"]; ?>">
+                                        <td align="left"><?php echo $full_name; ?></td>
+                                        <td align="center"><?php echo $evt_data["to_email"]; ?></td>
+                                        <td align="center"><?php echo DateManager::format(Config::get("options/date-format")." H:i",$ctoc_s_t_r["cdate"]); ?></td>
+                                        <td align="center" width="140">
+                                            <a href="javascript:void 0;" onclick="remove_ctoc_s_t(<?php echo $ctoc_s_t_r["id"]; ?>,this);" class="sbtn red" data-tooltip="<?php echo ___("needs/button-delete"); ?>"><i class="fa fa-times"></i></a>
+                                        </td>
+                                    </tr>
+                                    <?php
                                 }
-                            ?>
-                            </tbody>
-                        </table>
+                            }
+                        ?>
+                        </tbody>
+                    </table>
                     <div id="ctoc_s_t_no_list" class="error" style="<?php echo !(isset($ctoc_s_t_list) && is_array($ctoc_s_t_list) && sizeof($ctoc_s_t_list)>0) ? '' : 'display:none;' ?>"><?php echo __("website/account_products/transfer-service-no-list"); ?></div>
 
 

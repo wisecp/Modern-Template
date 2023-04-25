@@ -49,7 +49,7 @@
                                         <div><i class="fa fa-folder-o" aria-hidden="true"></i></div>
                                         <div style="float:right;margin-bottom:15px;width:80%;">
                                             <h4><strong><?php echo $cat["title"];?></strong> (<?php echo $cat["article_count"];?>)</h4>
-                                            <?php echo $cat["short_content"]; ?>
+                                            <?php echo strip_tags($cat["short_content"]); ?>
                                         </div>
                                     </div>
                                 </div>

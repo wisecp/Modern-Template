@@ -29,6 +29,141 @@
     <?php endif; ?>
 
 
+    <?php if($step == "requirements"): ?>
+        <div class="pakettitle" style="margin-top:0px;">
+            <h1><strong><?php echo __("website/osteps/necessary-information2"); ?></strong></h1>
+            <div class="line"></div>
+            <h2><?php echo __("website/osteps/necessary-information-note"); ?></h2>
+        </div>
+
+
+
+        <div class="siparisbilgileri">
+
+            <form action="<?php echo $links["step"]; ?>" method="post" id="StepForm1" enctype="multipart/form-data">
+                <?php echo Validation::get_csrf_token('order-steps'); ?>
+
+                <table width="100%" border="0" align="center">
+
+                    <?php
+                        if(isset($tlds) && $tlds)
+                        foreach($tlds AS $t)
+                        {
+                            if(isset($t['requirements']) && $t['requirements'])
+                            {
+                                ?>
+                                <tr>
+                                    <td colspan="2" bgcolor="#ebebeb"><strong><?php echo $t["domain"]; ?></strong> - <?php echo __("website/osteps/necessary-information3"); ?></td>
+                                </tr>
+                                <?php
+                                if(isset($t["tinfo"]["required_docs_info"]) && $t["tinfo"]["required_docs_info"])
+                                {
+                                    ?>
+                                    <tr>
+                                        <td colspan="2" style="border: none;">
+                                            <?php echo $t["tinfo"]["required_docs_info"]; ?>
+                                        </td>
+                                    </tr>
+                                    <?php
+                                }
+
+                                foreach($t["requirements"] AS $req_id => $requirement)
+                                {
+                                    ?>
+                                    <tr>
+                                        <td width="50%">
+                                            <?php if(isset($requirement["required"]) && $requirement["required"]){ ?><span class="zorunlu">*</span><?php } ?>
+
+                                            <label for="requirement-<?php echo $req_id; ?>">
+                                                <strong><?php echo $requirement["name"]; ?></strong>
+                                                <?php if(isset($requirement["description"]) && $requirement["description"]): ?>
+                                                    <br>
+                                                    <span style="font-size: 14px;"><?php echo nl2br($requirement["description"]); ?></span>
+                                                <?php endif; ?>
+                                            </label>
+
+                                        </td>
+                                        <td width="50%">
+
+                                            <?php
+                                                if($requirement["type"] == "text"){
+                                                    ?>
+                                                    <input type="text" name="requirements[<?php echo $t["tld"]; ?>][<?php echo $req_id; ?>]" id="requirement-<?php echo $t["tld"]; ?>-<?php echo $req_id; ?>">
+                                                    <?php
+                                                }
+                                                elseif($requirement["type"] == "file")
+                                                {
+                                                    ?>
+                                                    <input type="file" name="requirement-<?php echo $t["tld"]; ?>-<?php echo $req_id; ?>" id="requirement-<?php echo $t["tld"]; ?>-<?php echo $req_id; ?>">
+                                                    <?php
+                                                }
+                                                elseif($requirement["type"] == "select")
+                                                {
+                                                    ?>
+                                                    <select name="requirements[<?php echo $t["tld"]; ?>][<?php echo $req_id; ?>]" id="requirement-<?php echo $t["tld"]; ?>-<?php echo $req_id; ?>">
+                                                        <option value=""><?php echo __("website/osteps/select-your-option"); ?></option>
+                                                        <?php
+                                                            foreach ($requirement["options"] AS $k=>$v)
+                                                            {
+                                                                ?>
+                                                                <option value="<?php echo $k; ?>"><?php echo $v; ?></option>
+                                                                <?php
+                                                            }
+                                                        ?>
+                                                    </select>
+                                                    <?php
+                                                }
+                                            ?>
+
+                                        </td>
+                                    </tr>
+                                    <?php
+                                }
+
+                            }
+                        }
+                    ?>
+
+
+
+
+
+                    <tr>
+                        <td style="border:none;" align="center" colspan="2">
+                            <a href="javascript:void(0);" class="btn mio-ajax-submit" mio-ajax-options='{"result":"StepForm1_submit","waiting_text":"<?php echo addslashes(__("website/others/button1-pending")); ?>","progress_text":"<?php echo addslashes(__("website/others/button1-upload")); ?>"}'><strong><?php echo __("website/osteps/continue-button"); ?> <i class="ion-android-arrow-dropright"></i></strong></a>
+                        </td>
+                    </tr>
+                </table>
+            </form>
+            <script type="text/javascript">
+                function StepForm1_submit(result) {
+                    if(result != ''){
+                        var solve = getJson(result);
+                        if(solve !== false){
+                            if(solve.status == "error"){
+                                if(solve.for != undefined && solve.for != ''){
+                                    $("#StepForm1 "+solve.for).focus();
+                                    $("#StepForm1 "+solve.for).attr("style","border-bottom:2px solid red; color:red;");
+                                    $("#StepForm1 "+solve.for).change(function(){
+                                        $(this).removeAttr("style");
+                                    });
+                                }
+                                if(solve.message != undefined && solve.message != '')
+                                    alert_error(solve.message,{timer:3000});
+                            }else if(solve.status == "successful"){
+                                if(solve.redirect != undefined && solve.redirect != '') window.location.href = solve.redirect;
+                            }
+                        }else
+                            console.log(result);
+                    }
+                }
+            </script>
+
+
+
+        </div>
+    <?php endif; ?>
+
     <?php if($step == "hosting"): ?>
         <div class="pakettitle" style="margin-top:0px;">
             <h1><strong><?php echo __("website/osteps/identify-your-web-hosting"); ?></strong></h1>

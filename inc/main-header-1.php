@@ -717,7 +717,7 @@
                                             ?>
                                             <!-- LAYER NR. 17 -->
                                             <a class="tp-caption rev-btn  tp-resizeme"
-                                               href="<?php echo $slide['link']; ?>" target="_blank" id="slide-176-layer-7"
+                                               href="<?php echo $slide['link']; ?>" id="slide-176-layer-7"
                                                data-x="['center','center','center','center']" data-hoffset="['0','0','0','0']"
                                                data-y="['middle','middle','middle','middle']" data-voffset="['156','156','160','150']"
                                                data-width="250"
@@ -735,7 +735,7 @@
                                                data-paddingbottom="[0,0,0,0]"
                                                data-paddingleft="[50,50,50,50]"
 
-                                               style="z-index: 21; min-width: 250px; max-width: 250px; white-space: nowrap; font-size: 20px; line-height: 60px; font-weight: 300; color: #ffffff; letter-spacing: ;font-family:Raleway;background-color:rgba(87,202,133,0);border-color:rgb(255,255,255);border-style:solid;border-width:1px 1px 1px 1px;border-radius:30px 30px 30px 30px;outline:none;box-shadow:none;box-sizing:border-box;-moz-box-sizing:border-box;-webkit-box-sizing:border-box;cursor:pointer;text-decoration: none;"><?php echo __("website/index/slider-button-text"); ?></a>
+                                               style="z-index: 21; min-width: 250px; max-width: 250px; white-space: nowrap; font-size: 20px; line-height: 60px; font-weight: 300; color: #ffffff; letter-spacing: ;font-family:Raleway;background-color:rgba(87,202,133,0);border-color:rgb(255,255,255);border-style:solid;border-width:2px;border-radius:30px 30px 30px 30px;outline:none;box-shadow:none;box-sizing:border-box;-moz-box-sizing:border-box;-webkit-box-sizing:border-box;cursor:pointer;text-decoration: none;"><?php echo __("website/index/slider-button-text"); ?></a>
                                             <?php
                                         }
                                     ?>
@@ -1149,7 +1149,7 @@
                                             ?>
                                             <!-- LAYER NR. 34 -->
                                             <a class="tp-caption rev-btn  tp-resizeme"
-                                               href="<?php echo $slide['link']; ?>" target="_blank"          id="slide-179-layer-7"
+                                               href="<?php echo $slide['link']; ?>" id="slide-179-layer-7"
                                                data-x="['center','center','center','center']" data-hoffset="['0','0','0','0']"
                                                data-y="['middle','middle','middle','middle']" data-voffset="['156','156','160','120']"
                                                data-width="250"
@@ -1167,7 +1167,7 @@
                                                data-paddingbottom="[0,0,0,0]"
                                                data-paddingleft="[50,50,50,50]"
 
-                                               style="z-index: 21; min-width: 250px; max-width: 250px; white-space: nowrap; font-size: 18px; line-height: 60px; font-weight: 300; color: #ffffff; letter-spacing: ;font-family:Raleway;background-color:rgba(87,202,133,0);border-color:rgb(255,255,255);border-style:solid;border-width:1px 1px 1px 1px;border-radius:30px 30px 30px 30px;outline:none;box-shadow:none;box-sizing:border-box;-moz-box-sizing:border-box;-webkit-box-sizing:border-box;cursor:pointer;text-decoration: none;"><?php echo __("website/index/slider-button-text"); ?> </a>
+                                               style="z-index: 21; min-width: 250px; max-width: 250px; white-space: nowrap; font-size: 18px; line-height: 60px; font-weight: 300; color: #ffffff; letter-spacing: ;font-family:Raleway;background-color:rgba(87,202,133,0);border-color:rgb(255,255,255);border-style:solid;border-width:2px;border-radius:30px 30px 30px 30px;outline:none;box-shadow:none;box-sizing:border-box;-moz-box-sizing:border-box;-webkit-box-sizing:border-box;cursor:pointer;text-decoration: none;"><?php echo __("website/index/slider-button-text"); ?> </a>
                                             <?php
                                         }
                                     ?>

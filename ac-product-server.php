@@ -539,7 +539,7 @@
                 </div>
             <?php endif; ?>
 
-            <?php if(isset($options["assigned_ips"]) && strlen($options["assigned_ips"]) >= 5): ?>
+            <?php if(isset($options["assigned_ips"]) && $options["assigned_ips"]): ?>
                 <div class="hizmetblok" id="assigned_ips">
                     <table width="100%" border="0">
                         <tr>

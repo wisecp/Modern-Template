@@ -12,12 +12,15 @@
     $datepaid       = substr($invoice["datepaid"],0,4) == "1881" ? '' : DateManager::format(Config::get("options/date-format")." - H:i",$invoice["datepaid"]);
     $refunddate     = substr($invoice["refunddate"],0,4) == "1881" ? '' : DateManager::format(Config::get("options/date-format")." - H:i",$invoice["refunddate"]);
     $sharing        = isset($sharing) ? $sharing : false;
+    /*
     if($sharing) $censored = isset($udata) && $udata["id"] == $invoice["user_id"] ? false : true;
     else $censored       = false;
+    */
     if(isset($admin)) $censored = false;
     if(!($invoice["user_data"]["kind"] ?? '')) $invoice["user_data"]["kind"] = "individual";
 
-    $GLOBALS["censured"] = $censored;
+    $censored = false;
+    $GLOBALS["censured"] = false;
 
     if(!function_exists("censored"))
     {
@@ -88,7 +91,7 @@
 </style>
 <page backtop="10mm" backbottom="0mm" backleft="10mm" backright="12mm">
 
-    <table style="color: #345a6c;font-family: Helvetica;" width="100%" border="0" align="center" cellpadding="25" cellspacing="0">
+    <table style="color: #345a6c;" width="100%" border="0" align="center" cellpadding="25" cellspacing="0">
         <tr>
             <td valign="top" style="line-height:20px;font-size:12px;" width="300">
 
@@ -125,12 +128,19 @@
                 <?php
                     if(isset($invoice["user_data"]["address"]) && $invoice["user_data"]["address"]){
                         $adrs = $invoice["user_data"]["address"];
-                        #if(!$censored)
-                            echo $adrs["address"]." / ";
-                        echo isset($adrs["counti"]) && $adrs["counti"] ? $adrs["counti"]." / " : '';
-                        echo isset($adrs["city"]) && $adrs["city"] ? $adrs["city"]." / " : '';
-                        echo AddressManager::get_country_name($adrs["country_code"]);
-                        echo isset($adrs["zipcode"]) && $adrs["zipcode"] ? " / ".$adrs["zipcode"] : '';
+
+                        $address_info = $adrs["address"]." / ";
+
+                        $address_info .= isset($adrs["counti"]) && $adrs["counti"] ? $adrs["counti"]." / " : '';
+
+                        $address_info .= isset($adrs["city"]) && $adrs["city"] ? $adrs["city"]." / " : '';
+                        $address_info .= AddressManager::get_country_name($adrs["country_code"]);
+                        $address_info .= isset($adrs["zipcode"]) && $adrs["zipcode"] ? " / ".$adrs["zipcode"] : '';
+                        if($censored)
+                            echo Filter::censored($address_info);
+                        else
+                            echo $address_info;
+
                         echo "<br>";
                     }
 
@@ -153,6 +163,23 @@
                         echo $phone ? censored('phone',$phone)." - " : '';
                     }
                     echo censored('email',$invoice["user_data"]["email"]);
+
+                    if(isset($custom_fields) && $custom_fields)
+                    {
+                        echo '<br>';
+                        $custom_field_keys = array_keys($custom_fields);
+                        $end_f = end($custom_field_keys);
+                        foreach($custom_fields AS $f_id => $field)
+                        {
+                            echo '<span>'.$field["name"].'</span> : ';
+                            if($censored)
+                                echo Filter::censored($field["value"]);
+                            else
+                                echo $field["value"];
+                            if($f_id != $end_f)
+                                echo '<br>';
+                        }
+                    }
 
                 ?>
 
@@ -305,7 +332,7 @@
                 }
             }
 
-            if($invoice["tax"] > 0.00 && $invoice["taxrate"] > 0.00)
+            if(Config::get("options/taxation"))
             {
                 ?>
                 <tr>
@@ -319,6 +346,34 @@
             <td colspan="2" align="right" bgcolor="#EEE"><strong><?php echo __("website/account_invoices/total-amount"); ?></strong></td>
             <td align="center" bgcolor="#EEE"><strong><?php echo Money::formatter_symbol($invoice["total"],$invoice["currency"]); ?></strong></td>
         </tr>
+
+        <?php
+            $invoice_qr_codes = Hook::run("AddQRCodetoInvoiceDetailinClientArea",$invoice);
+            if($invoice_qr_codes){
+                foreach($invoice_qr_codes AS $qr_code)
+                {
+                    if($qr_code){
+                        $image      = $qr_code['image'] ?? '';
+                        $title      = $qr_code['title'] ?? '';
+                        $desc       = $qr_code['description'] ?? '';
+                        if(!$image) continue;
+                        ?>
+
+                        <tr>
+                            <td colspan="3" align="left" style="padding:20px 0px;">
+                                <img style="width:80px;float:left;margin-right:20px;" src="<?php echo $image; ?>">
+                                <?php if($desc): ?>
+                                    <strong><?php echo $title; ?></strong>
+                                    <p><?php echo $desc; ?></p>
+                                <?php endif; ?>
+                            </td>
+                        </tr>
+
+                        <?php
+                    }
+                }
+            }
+        ?>
 
         <tr>
             <td colspan="3" align="center" style="border:none;padding-top:50px;">
@@ -347,6 +402,9 @@
                
             </td>
         </tr>
+
+
+
         <?php if(Filter::html_clear(Config::get("options/invoice_special_note/".View::$init->ui_lang))): ?>
             <tr>
                 <td colspan="3" align="left" style="border-top: 2px solid #eee;border-bottom:none;">
@@ -364,8 +422,4 @@
         <?php endif; ?>
     </table>
 
-
-
 </page>
-
-
