@@ -162,9 +162,14 @@
                 $currency       = Money::getUCID();
                 $subtotal       = 0;
                 $tax            = 0;
+                $selected_ins   = Filter::REQUEST("invoices");
+                if(!$selected_ins) $selected_ins = [];
+                $selected_ins = $selected_ins ? explode(",",$selected_ins) : [];
+
+
                 if(isset($unpaid_invoices) && $unpaid_invoices){
                     foreach($unpaid_invoices AS $invoice){
-                        $selected   = isset($invoice["selected"]) ? $invoice["selected"] : true;
+                        $selected   = !$selected_ins ? true : ($selected_ins && in_array($invoice["id"],$selected_ins));
                         $us_data    = Utility::jdecode($invoice["user_data"],true);
                         $invoice["discounts"] = Utility::jdecode($invoice["discounts"],true);
 

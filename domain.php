@@ -4,6 +4,8 @@
         'jquery-ui',
     ];
 
+    if(Config::get("theme/only-panel")) $meta["robots"] = "NOINDEX,NOFOLLOW";
+
 
     $currency_symbols = [];
     foreach(Money::getCurrencies() AS $currency){
@@ -121,7 +123,7 @@
                     }
                     if(solve.message != undefined && solve.message != '')
                         alert_error(solve.message,{timer:5000});
-                    xbtn.html(xbtn_be);
+                    if(xbtn) xbtn.html(xbtn_be);
                 }else if(solve.status == "successful"){
                     if(solve.message != undefined) alert_success(solve.message,{timer:2000});
                     if(solve.redirect != undefined && solve.redirect != '')
@@ -836,6 +838,7 @@
             <h4><strong><?php echo __("website/others/faq"); ?></strong></h4>
             <div id="accordion">
                 <?php foreach($faq AS $f): ?>
+                    <?php if(!is_array($f)) continue; ?>
                     <h3><?php echo $f["title"]; ?></h3>
                     <div><?php echo $f["description"]; ?></div>
                 <?php endforeach; ?>

@@ -904,7 +904,7 @@
 
                                 <div class="line"></div>
 
-                                <?php if(method_exists($module_con,'resend_verification_mail')): ?>
+                                <?php if($module_con && method_exists($module_con,'resend_verification_mail')): ?>
                                     <div style="float: left;">
                                         <a href="javascript:void(0);" class="yesilbtn gonderbtn mio-ajax-submit" mio-ajax-options='{"action":"<?php echo $links["controller"];?>","method":"POST","data":{"operation":"domain_resend_verification_mail"},"type":"direct","result":"ResendVerificationMail","waiting_text":"<?php echo addslashes(__("website/others/button4-pending")); ?>"}'><i class="fa fa-paper-plane" aria-hidden="true"></i> <?php echo __("website/account_products/domain-resend-verification"); ?></a>
                                     </div>

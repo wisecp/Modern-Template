@@ -443,6 +443,10 @@
                             var limit = v.limit == "unlimited" ? unlimited_text : v.limit;
                             var quota = v.limit_mb == "unlimited" ? '' : v.limit_mb;
 
+                            var editBtnCon = '';
+
+                            <?php if($module_con && (method_exists($module_con,'setQuota') || method_exists($module_con,'setPassword'))): ?>editBtnCon = '<a href="javascript:editEmail('+k+');void 0;" title="<?php echo __("website/account_products/hosting-emails-table-manage"); ?>" class="incelebtn"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>';<?php endif; ?>
+
                             emails_table.row.add([
                                 k,
                                 v.email+
@@ -451,7 +455,7 @@
                                 '<input type="hidden" name="quota" value="'+quota+'" >'+
                                 '</div>',
                                 v.used+"  / "+limit,
-                                '<a href="javascript:editEmail('+k+');void 0;" title="<?php echo __("website/account_products/hosting-emails-table-manage"); ?>" class="incelebtn"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a> <a href="javascript:void 0;" onclick="deleteEmail(\''+v.email+'\');" style="margin-left:5px;" title="<?php echo __("website/account_products/hosting-emails-table-delete"); ?>" class="incelebtn"><i class="fa fa-trash" aria-hidden="true"></i></a>',
+                                editBtnCon+' <a href="javascript:void 0;" onclick="deleteEmail(\''+v.email+'\');" style="margin-left:5px;" title="<?php echo __("website/account_products/hosting-emails-table-delete"); ?>" class="incelebtn"><i class="fa fa-trash" aria-hidden="true"></i></a>',
                             ]).draw();
                         });
                     }
@@ -538,38 +542,47 @@
             <input type="hidden" name="operation" value="hosting_update_email">
             <input type="hidden" name="email" value="">
 
-            <div class="formcon">
-                <div class="yuzde30">
-                    <?php echo __("website/account_products/email-set-password"); ?>
-                </div>
 
-                <div class="yuzde70">
-                    <input name="password" onFocus="this.select()" type="text" placeholder="<?php echo __("website/account_products/hosting-add-new-email-password"); ?>" id="EmailManage_password" rel="aselect">
-
-                    <a style="margin-top:3px;" href="javascript:void(0);" onclick="$('#EmailManage_password').val(randString({characters:'A-Z,a-z,0-9,#'}));password_check('EmailManage_password');" class="incelebtn"><i class="fa fa-refresh"></i> <?php echo __("website/account_products/new-random-password"); ?></a>
-                    <div id="strength_EmailManage_password" class="yuzde50" style="margin-top:-3px;">
-                        <div id="weak" style="display:none;"><?php echo ___("needs/password-weak"); ?></div>
-                        <div id="good" style="display:none"><?php echo ___("needs/password-good"); ?></div>
-                        <div id="strong" style="display:none;"><?php echo ___("needs/password-strong"); ?></div>
+            <?php if($module_con && method_exists($module_con,'setPassword')): ?>
+                <div class="formcon">
+                    <div class="yuzde30">
+                        <?php echo __("website/account_products/email-set-password"); ?>
                     </div>
+
+                    <div class="yuzde70">
+                        <input name="password" onFocus="this.select()" type="text" placeholder="<?php echo __("website/account_products/hosting-add-new-email-password"); ?>" id="EmailManage_password" rel="aselect">
+
+                        <a style="margin-top:3px;" href="javascript:void(0);" onclick="$('#EmailManage_password').val(randString({characters:'A-Z,a-z,0-9,#'}));password_check('EmailManage_password');" class="incelebtn"><i class="fa fa-refresh"></i> <?php echo __("website/account_products/new-random-password"); ?></a>
+                        <div id="strength_EmailManage_password" class="yuzde50" style="margin-top:-3px;">
+                            <div id="weak" style="display:none;"><?php echo ___("needs/password-weak"); ?></div>
+                            <div id="good" style="display:none"><?php echo ___("needs/password-good"); ?></div>
+                            <div id="strong" style="display:none;"><?php echo ___("needs/password-strong"); ?></div>
+                        </div>
+                    </div>
+
                 </div>
+            <?php endif; ?>
 
-            </div>
 
-            <div class="formcon">
+            <?php if($module_con && method_exists($module_con,'setQuota')): ?>
+                <div class="formcon">
 
-                <div class="yuzde30">
-                    <?php echo __("website/account_products/email-set-quota"); ?>
+                    <div class="yuzde30">
+                        <?php echo __("website/account_products/email-set-quota"); ?>
+                    </div>
+
+                    <div class="yuzde70">
+                        <input name="quota" class="yuzde50" placeholder="<?php echo __("website/account_products/hosting-add-new-email-quota"); ?>" type="number" onkeydown="return FilterInput(event)" onpaste="handlePaste(event)" value="">
+
+                        <input id="edit_quota_unlimited" class="checkbox-custom" name="unlimited" value="1" type="checkbox">
+                        <label for="edit_quota_unlimited" class="checkbox-custom-label" style="<?php if(in_array("no-unlimited-email-account",$supported)) echo 'display:none;'; ?>"><?php echo __("website/account_products/email-quota-unlimited"); ?></label>
+                    </div>
+
                 </div>
+            <?php endif; ?>
 
-                <div class="yuzde70">
-                    <input name="quota" class="yuzde50" placeholder="<?php echo __("website/account_products/hosting-add-new-email-quota"); ?>" type="number" onkeydown="return FilterInput(event)" onpaste="handlePaste(event)" value="">
 
-                    <input id="edit_quota_unlimited" class="checkbox-custom" name="unlimited" value="1" type="checkbox">
-                    <label for="edit_quota_unlimited" class="checkbox-custom-label" style="<?php if(in_array("no-unlimited-email-account",$supported)) echo 'display:none;'; ?>"><?php echo __("website/account_products/email-quota-unlimited"); ?></label>
-                </div>
 
-            </div>
             <div class="clear"></div>
             <div class="mailyonbtn">
                 <a href="javascript:void(0);" id="EmailManage_submit" style="float:right;" class="yesilbtn gonderbtn"><?php echo __("website/account_products/email-update-button"); ?></a>
@@ -1924,9 +1937,14 @@
                                     <div id="strong" style="display:none;"><?php echo ___("needs/password-strong"); ?></div>
                                 </div>
                             </div>
+
+
                             <input name="quota" class="yuzde50inpt" placeholder="<?php echo __("website/account_products/hosting-add-new-email-quota"); ?>" type="number" onkeydown="return FilterInput(event)" onpaste="handlePaste(event)">
                             <input id="quota_unlimited" class="checkbox-custom" name="unlimited" value="1" type="checkbox" >
                             <label style="margin-top:7px;<?php if(in_array("no-unlimited-email-account",$supported)) echo 'display:none;'; ?>" for="quota_unlimited" class="checkbox-custom-label"><span class="checktext"><?php echo __("website/account_products/email-quota-unlimited"); ?></span></label>
+
+
+
                             <span style="    font-size: 14px;  display:none;  margin: 15px 0px;    float: left;"><?php echo __("website/account_products/hosting-add-new-email-password-warning"); ?></span>
                             <a href="javascript:void(0);" class="yesilbtn gonderbtn mio-ajax-submit" mio-ajax-options='{"result":"addNewEmail_submit","waiting_text":"<?php echo addslashes(__("website/others/button5-pending")); ?>"}'><?php echo __("website/account_products/hosting-add-new-email-button"); ?></a>
                             <div class="clear"></div>
