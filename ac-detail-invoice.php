@@ -472,7 +472,7 @@
                 <h4><strong><?php echo __("website/account_invoices/text1"); ?></strong></h4>
 
 
-                <?php if(!$sharing && $invoice["legal"]): ?>
+                <?php if(!$sharing && $invoice["legal"] && Config::get("options/invoice-formalization-status")): ?>
                     <br>
                     <h5><?php echo __("website/account_invoices/text2"); ?></h5>
                     <div class="yuzde30" style="margin-top:15px;">

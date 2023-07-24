@@ -653,7 +653,7 @@
                             </div>
                         <?php endif; ?>
 
-                        <?php if($udata["country"] == 227 && ($identity_status || $udata["identity"] != '')): ?>
+                        <?php if(($udata["country"] == 227 || $udata["force_identity"]) && ($identity_status || $udata["identity"] != '')): ?>
                             <div class="hesapbilgisi">
                                 <div class="yuzde25"><div class="hesapbilgititle"><?php echo __("website/sign/up-form-identity"); ?></div></div>
                                 <div class="yuzde75">

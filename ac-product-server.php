@@ -931,7 +931,7 @@
                             $amount_period  = "<strong>".$amount."</strong>";
                             if($period) $amount_period.= "<br>".$period."";
 
-                            if(stristr($row["option_name"],'x '))
+                            if(stristr($row["option_name"],' x '))
                             {
                                 $split = explode("x ",$row["option_name"]);
                                 $row["option_quantity"] = $split[0];

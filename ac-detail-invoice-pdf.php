@@ -230,7 +230,7 @@
                     $cid    = isset($item["currency"]) ? $item["currency"] : $item["cid"];
                     ?>
                     <tr>
-                        <td style="font-size:12px;" colspan="2"><?php echo implode("<br>- ",explode(EOL,$item["description"])); ?></td>
+                        <td style="font-size:12px;width:450px;" colspan="2"><?php echo implode("<br>- ",explode(EOL,$item["description"])); ?></td>
                         <td align="center"><?php echo Money::formatter_symbol($amount,$cid); ?></td>
                     </tr>
                     <?php
