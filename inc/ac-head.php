@@ -35,8 +35,8 @@
 <?php if(isset($hoptions) && in_array("jquery-ui",$hoptions)): ?>
 <link rel="stylesheet" href="<?php echo $sadress;?>assets/plugins/css/jquery-ui.css">
 <?php endif; ?>
-<?php if(isset($hoptions) && in_array("datatables",$hoptions)): ?><link rel="stylesheet" href="<?php echo $tadress;?>css/jquery.dataTables.min.css" />
-<link rel="stylesheet" href="<?php echo $tadress;?>css/dataTables.responsive.min.css" />
+<?php if(isset($hoptions) && in_array("datatables",$hoptions)): ?><link rel="stylesheet" href="<?php echo $sadress;?>assets/plugins/dataTables/css/jquery.dataTables.min.css" />
+<link rel="stylesheet" href="<?php echo $sadress;?>assets/plugins/dataTables/css/dataTables.responsive.min.css" />
 <?php endif; ?>
 <?php if(isset($hoptions) && in_array("iziModal",$hoptions)): ?><link rel="stylesheet" type="text/css" href="<?php echo $sadress; ?>assets/plugins/iziModal/css/iziModal.min.css?v=<?php echo License::get_version(); ?>">
 <?php endif; ?>
@@ -68,8 +68,8 @@
     <script src="<?php echo $sadress;?>assets/plugins/js/jquery.mask.min.js"></script>
 <?php endif; ?>
 <?php if(isset($hoptions) && in_array("datatables",$hoptions)): ?>
-<script src="<?php echo $tadress;?>js/jquery.dataTables.min.js" type="text/javascript"></script>
-<script src="<?php echo $tadress;?>js/dataTables.responsive.min.js" type="text/javascript"></script>
+<script src="<?php echo $sadress;?>assets/plugins/dataTables/js/jquery.dataTables.min.js" type="text/javascript"></script>
+<script src="<?php echo $sadress;?>assets/plugins/dataTables/js/dataTables.responsive.min.js" type="text/javascript"></script>
 <script type="text/javascript">
 $(document).ready(function() {
     $('.datatable').DataTable({

@@ -1530,54 +1530,6 @@
         <?php if($proanse["status"] == "active" && $proanse["period"] != "none"): ?>
             <div id="iptaltalebi" class="tabcontent">
                 <div class="tabcontentcon">
-                    <div class="red-info" style="margin-bottom:20px;">
-                        <div class="padding15">
-                            <i class="fa fa-meh-o" aria-hidden="true"></i>
-                            <p><?php echo __("website/account_products/canceled-desc"); ?></p>
-                        </div>
-                    </div>
-                    <form action="<?php echo $links["controller"]; ?>" method="post" id="CanceledProduct" style="<?php echo isset($p_cancellation) && $p_cancellation ? 'display:none;' : ''; ?>">
-                        <input type="hidden" name="operation" value="canceled_product">
-
-                        <textarea name="reason" cols="" rows="3" placeholder="<?php echo __("website/account_products/canceled-reason"); ?>"></textarea>
-                        <select name="urgency">
-                            <option value="now"><?php echo __("website/account_products/canceled-urgency-now"); ?></option>
-                            <option value="period-ending"><?php echo __("website/account_products/canceled-urgency-period-ending"); ?></option>
-                        </select>
-                        <a href="javascript:void(0);" class="redbtn gonderbtn mio-ajax-submit" mio-ajax-options='{"result":"CanceledProduct_submit","waiting_text":"<?php echo addslashes(__("website/others/button5-pending")); ?>"}'><?php echo __("website/account_products/canceled-button"); ?></a>
-                        <div class="clear"></div>
-                    </form>
-                    <div id="CanceledProduct_success" style="display: none;">
-                        <i class="fa fa-check-circle-o" aria-hidden="true"></i>
-                        <h4><?php echo __("website/account_products/canceled-sent"); ?></h4>
-                    </div>
-                    <script type="text/javascript">
-                        function CanceledProduct_submit(result) {
-                            if(result != ''){
-                                var solve = getJson(result);
-                                if(solve !== false){
-                                    if(solve.status == "error"){
-                                        if(solve.for != undefined && solve.for != ''){
-                                            $("#CanceledProduct "+solve.for).focus();
-                                            $("#CanceledProduct "+solve.for).attr("style","border-bottom:2px solid red; color:red;");
-                                            $("#CanceledProduct "+solve.for).change(function(){
-                                                $(this).removeAttr("style");
-                                            });
-                                        }
-                                        if(solve.message != undefined && solve.message != '')
-                                            alert_error(solve.message,{timer:3000});
-                                    }else if(solve.status == "successful"){
-                                        $("#CanceledProduct").fadeOut(400,function(){
-                                            $("#CanceledProduct_success").fadeIn(400);
-                                            $("html,body").animate({scrollTop:200},600);
-                                        });
-                                    }
-                                }else
-                                    console.log(result);
-                            }
-                        }
-                    </script>
-
                     <?php
                         if(isset($p_cancellation) && $p_cancellation)
                         {
@@ -1623,6 +1575,61 @@
                                     }
                                 ?>
                             </div>
+                        <?php
+                            }
+                            else
+                            {
+                        ?>
+                            <div class="red-info" style="margin-bottom:20px;">
+                                <div class="padding15">
+                                    <i class="fa fa-meh-o" aria-hidden="true"></i>
+                                    <p><?php echo __("website/account_products/canceled-desc"); ?></p>
+                                </div>
+                            </div>
+                            <form action="<?php echo $links["controller"]; ?>" method="post" id="CanceledProduct" style="<?php echo isset($p_cancellation) && $p_cancellation ? 'display:none;' : ''; ?>">
+                                <input type="hidden" name="operation" value="canceled_product">
+
+                                <textarea name="reason" cols="" rows="3" placeholder="<?php echo __("website/account_products/canceled-reason"); ?>"></textarea>
+                                <select name="urgency">
+                                    <option value="now"><?php echo __("website/account_products/canceled-urgency-now"); ?></option>
+                                    <option value="period-ending"><?php echo __("website/account_products/canceled-urgency-period-ending"); ?></option>
+                                </select>
+                                <a href="javascript:void(0);" class="redbtn gonderbtn mio-ajax-submit" mio-ajax-options='{"result":"CanceledProduct_submit","waiting_text":"<?php echo addslashes(__("website/others/button5-pending")); ?>"}'><?php echo __("website/account_products/canceled-button"); ?></a>
+                                <div class="clear"></div>
+                            </form>
+                            <div id="CanceledProduct_success" style="display: none;">
+                                <div style="margin-top:30px;margin-bottom:70px;text-align:center;">
+                                    <i style="font-size:80px;color:green;" class="fa fa-check"></i>
+                                    <h4><?php echo __("website/account_products/canceled-sent"); ?></h4>
+                                    <br>
+                                </div>
+                            </div>
+                            <script type="text/javascript">
+                                function CanceledProduct_submit(result) {
+                                    if(result != ''){
+                                        var solve = getJson(result);
+                                        if(solve !== false){
+                                            if(solve.status == "error"){
+                                                if(solve.for != undefined && solve.for != ''){
+                                                    $("#CanceledProduct "+solve.for).focus();
+                                                    $("#CanceledProduct "+solve.for).attr("style","border-bottom:2px solid red; color:red;");
+                                                    $("#CanceledProduct "+solve.for).change(function(){
+                                                        $(this).removeAttr("style");
+                                                    });
+                                                }
+                                                if(solve.message != undefined && solve.message != '')
+                                                    alert_error(solve.message,{timer:3000});
+                                            }else if(solve.status == "successful"){
+                                                $("#CanceledProduct").fadeOut(400,function(){
+                                                    $("#CanceledProduct_success").fadeIn(400);
+                                                    $("html,body").animate({scrollTop:200},600);
+                                                });
+                                            }
+                                        }else
+                                            console.log(result);
+                                    }
+                                }
+                            </script>
                             <?php
                         }
                     ?>

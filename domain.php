@@ -27,7 +27,7 @@
     situations['premium'] = '<?php echo __("website/domain/situations-premium"); ?>';
     situations['available'] = '<?php echo __("website/domain/situations-available"); ?>';
     situations['unavailable'] = '<?php echo __("website/domain/situations-unavailable"); ?>';
-    var contact_button            = '<a href="<?php echo $contact_link; ?>" class="incelebtn green" style="display: unset;"><?php echo __("website/domain/contact-us"); ?></a>';
+    var contact_button            = '<a href="<?php echo $contact_link; ?>" class="incelebtn green" style="display: unset;"><?php echo htmlentities(__("website/domain/contact-us"),ENT_QUOTES); ?></a>';
     var epp_code_support = <?php echo Utility::jencode($epp_code_support); ?>;
     var tlds             = <?php echo Utility::jencode($tlds); ?>;
     var xbtn             = false;
