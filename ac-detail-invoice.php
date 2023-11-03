@@ -467,9 +467,12 @@
 
         <div class="clear"></div>
 
-        <?php if($invoice["status"] == "paid"): ?>
+        <?php if($invoice["status"] == "paid" || strlen($invoice["taxed_file"]) > 3): ?>
             <div class="faturaodenmis">
-                <h4><strong><?php echo __("website/account_invoices/text1"); ?></strong></h4>
+
+                <?php if($invoice["status"] == "paid"): ?>
+                    <h4><strong><?php echo __("website/account_invoices/text1"); ?></strong></h4>
+                <?php endif; ?>
 
 
                 <?php if(!$sharing && $invoice["legal"] && Config::get("options/invoice-formalization-status")): ?>

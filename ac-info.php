@@ -665,7 +665,8 @@
                     </div>
 
                     <?php
-                        $other_info = $cfields ? true : false;
+                        $other_info = $udata["kind"] == "corporate";
+                        if($cfields) $other_info = true;
                         if(Config::get("options/sign/security-question/status")) $other_info = true;
                     ?>
                     <div class="digerbilgiler"<?php echo !$other_info ? ' style="display:none;"' : ''; ?>>

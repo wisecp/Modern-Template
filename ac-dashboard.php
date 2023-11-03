@@ -371,88 +371,90 @@
         </div>
     </div>
 
-    <div class="moderncliendblock mclientlastblocks">
-        <div class="mpanelrightcon">
+    <?php if(Config::get("options/ticket-system")): ?>
+        <div class="moderncliendblock mclientlastblocks">
+            <div class="mpanelrightcon">
 
-            <div class="mpaneltitle">
-                <h4><strong><i class="fa fa-clock-o" aria-hidden="true"></i> <?php echo __("website/account/text5"); ?></strong></h4>
-                <a href="<?php echo $links["create-ticket-request"]; ?>" class="sbtn"><?php echo __("website/account/text6"); ?></a>
-            </div>
+                <div class="mpaneltitle">
+                    <h4><strong><i class="fa fa-clock-o" aria-hidden="true"></i> <?php echo __("website/account/text5"); ?></strong></h4>
+                    <a href="<?php echo $links["create-ticket-request"]; ?>" class="sbtn"><?php echo __("website/account/text6"); ?></a>
+                </div>
 
-            <?php
-                if(isset($tickets) && $tickets){
-                    ?>
-                    <table width="100%" border="0" cellpadding="0" cellspacing="0" >
-                        <thead>
-                        <tr>
-                            <th align="left"><?php echo __("website/account/text9"); ?></th>
-                            <th align="center"><?php echo __("website/account/text10"); ?></th>
-                            <th align="center"><?php echo __("website/account/text11"); ?></th>
-                        </tr>
-                        </thead>
-
-                        <tbody>
-                        <?php
-                            Helper::Load("Tickets");
-                            $statuses   = Tickets::custom_statuses();
-                            foreach($tickets AS $row){
-                                $title  = $row["userunread"] ? $row["title"] : '<strong>'.$row["title"].'</strong>';
-
-                                $custom = $row["cstatus"] > 0 ? ($statuses[$row["cstatus"]] ?? []) : [];
-
-                                $status_str = $ticket_situations[$row["status"]] ?? '';
-
-                                if($custom)
-                                    $status_str = str_replace([
-                                        '{color}',
-                                        '{name}',
-                                    ], [
-                                        $custom["color"],
-                                        $custom["languages"][$ui_lang]["name"],
-                                    ],$ticket_situations["custom"]);
-
-                                ?>
-                                <tr>
-                                    <td align="left">
-                                        <strong><a href="<?php echo $row["detail_link"]; ?>"><?php echo $title; ?></a></strong>
-                                        <?php
-                                            if($row["service"]){
-                                                ?>
-                                                <br>
-                                                <span class="productinfo"><?php echo $row["service"]; ?></span>
-                                                <?php
-                                            }
-                                        ?>
-                                    </td>
-                                    <td align="center">
-                                        <?php echo $status_str; ?>
-                                    </td>
-                                    <td align="center">
-                                        <a href="<?php echo $row["detail_link"]; ?>" class="incelebtn"><i class="fa fa-search" aria-hidden="true"></i></a>
-                                    </td>
-                                </tr>
-                                <?php
-
-                            }
+                <?php
+                    if(isset($tickets) && $tickets){
                         ?>
-                        </tbody>
-                    </table>
-                    <?php
-                }
-                else
-                {
-                    ?>
-                    <div class="noentryblock">
-                        <i class="fa fa-smile-o" aria-hidden="true"></i>
-                        <h2><?php echo __("website/account/text7"); ?></h2>
-                        <h4><?php echo __("website/account/text8"); ?></h4>
-                    </div>
-                    <?php
-                }
-            ?>
-            <div class="clear"></div>
+                        <table width="100%" border="0" cellpadding="0" cellspacing="0" >
+                            <thead>
+                            <tr>
+                                <th align="left"><?php echo __("website/account/text9"); ?></th>
+                                <th align="center"><?php echo __("website/account/text10"); ?></th>
+                                <th align="center"><?php echo __("website/account/text11"); ?></th>
+                            </tr>
+                            </thead>
+
+                            <tbody>
+                            <?php
+                                Helper::Load("Tickets");
+                                $statuses   = Tickets::custom_statuses();
+                                foreach($tickets AS $row){
+                                    $title  = $row["userunread"] ? $row["title"] : '<strong>'.$row["title"].'</strong>';
+
+                                    $custom = $row["cstatus"] > 0 ? ($statuses[$row["cstatus"]] ?? []) : [];
+
+                                    $status_str = $ticket_situations[$row["status"]] ?? '';
+
+                                    if($custom)
+                                        $status_str = str_replace([
+                                            '{color}',
+                                            '{name}',
+                                        ], [
+                                            $custom["color"],
+                                            $custom["languages"][$ui_lang]["name"],
+                                        ],$ticket_situations["custom"]);
+
+                                    ?>
+                                    <tr>
+                                        <td align="left">
+                                            <strong><a href="<?php echo $row["detail_link"]; ?>"><?php echo $title; ?></a></strong>
+                                            <?php
+                                                if($row["service"]){
+                                                    ?>
+                                                    <br>
+                                                    <span class="productinfo"><?php echo $row["service"]; ?></span>
+                                                    <?php
+                                                }
+                                            ?>
+                                        </td>
+                                        <td align="center">
+                                            <?php echo $status_str; ?>
+                                        </td>
+                                        <td align="center">
+                                            <a href="<?php echo $row["detail_link"]; ?>" class="incelebtn"><i class="fa fa-search" aria-hidden="true"></i></a>
+                                        </td>
+                                    </tr>
+                                    <?php
+
+                                }
+                            ?>
+                            </tbody>
+                        </table>
+                        <?php
+                    }
+                    else
+                    {
+                        ?>
+                        <div class="noentryblock">
+                            <i class="fa fa-smile-o" aria-hidden="true"></i>
+                            <h2><?php echo __("website/account/text7"); ?></h2>
+                            <h4><?php echo __("website/account/text8"); ?></h4>
+                        </div>
+                        <?php
+                    }
+                ?>
+                <div class="clear"></div>
+            </div>
         </div>
-    </div>
+    <?php endif; ?>
 
 
     <?php if(isset($dashboard_activity) && is_array($dashboard_activity)): ?>

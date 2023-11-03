@@ -1724,7 +1724,7 @@ ul.tab li a{padding:14px 0;width:100%;font-size: 14px;    line-height: 25px;}
 .bankainfo h5 span{width:100%}
 .domainlookuplist{width:100%}
 .tldavailable h4{line-height:normal;font-size:22px}
-.tldhere{font-size:15px}
+.tldhere{font-size:15px;word-wrap: break-word;white-space: pre-line;}
 .lookcolum{font-size:14px}
 .tldlistfoot .lookcolum{width:50%}
 .sss #accordion h3{font-size:15px}

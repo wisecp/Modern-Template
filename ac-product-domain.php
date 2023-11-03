@@ -20,6 +20,8 @@
 
     $tab_verification       = isset($require_verification) && $require_verification;
 
+    if($product) $options["dns_manage"] = $product["dns_manage"];
+
 
     $allow_dns_cns          = (isset($module_con) && method_exists($module_con,'CNSList'));
     $allow_dns_records      = (isset($module_con) && method_exists($module_con,'getDnsRecords'));
