@@ -560,7 +560,13 @@
                                                 ?>
                                                 <input type="text" name="requirements[<?php echo $requirement["id"]; ?>]" id="requirement-<?php echo $requirement["id"]; ?>">
                                                 <?php
-                                            }elseif($requirement["type"] == "textarea"){
+                                            }
+                                            elseif($requirement["type"] == "password"){
+                                                ?>
+                                                <input type="password" name="requirements[<?php echo $requirement["id"]; ?>]" id="requirement-<?php echo $requirement["id"]; ?>">
+                                                <?php
+                                            }
+                                            elseif($requirement["type"] == "textarea"){
                                                 ?>
                                                 <textarea name="requirements[<?php echo $requirement["id"]; ?>]" id="requirement-<?php echo $requirement["id"]; ?>"></textarea>
                                                 <?php

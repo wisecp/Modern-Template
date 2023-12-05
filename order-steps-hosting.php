@@ -631,6 +631,11 @@
                                                 <input type="text" name="requirements[<?php echo $requirement["id"]; ?>]" id="requirement-<?php echo $requirement["id"]; ?>" placeholder="<?php echo isset($properties["placeholder"]) ? $properties["placeholder"] : ''; ?>">
                                                 <?php
                                             }
+                                            elseif($requirement["type"] == "password"){
+                                                ?>
+                                                <input type="password" name="requirements[<?php echo $requirement["id"]; ?>]" id="requirement-<?php echo $requirement["id"]; ?>" placeholder="<?php echo isset($properties["placeholder"]) ? $properties["placeholder"] : ''; ?>">
+                                                <?php
+                                            }
                                             elseif($requirement["type"] == "textarea"){
                                                 ?>
                                                 <textarea name="requirements[<?php echo $requirement["id"]; ?>]" id="requirement-<?php echo $requirement["id"]; ?>" placeholder="<?php echo isset($properties["placeholder"]) ? $properties["placeholder"] : ''; ?>"></textarea>

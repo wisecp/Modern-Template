@@ -91,6 +91,11 @@
                                                     <input type="text" name="requirements[<?php echo $t["tld"]; ?>][<?php echo $req_id; ?>]" id="requirement-<?php echo $t["tld"]; ?>-<?php echo $req_id; ?>">
                                                     <?php
                                                 }
+                                                elseif($requirement["type"] == "password"){
+                                                    ?>
+                                                    <input type="password" name="requirements[<?php echo $t["tld"]; ?>][<?php echo $req_id; ?>]" id="requirement-<?php echo $t["tld"]; ?>-<?php echo $req_id; ?>">
+                                                    <?php
+                                                }
                                                 elseif($requirement["type"] == "file")
                                                 {
                                                     ?>

@@ -212,7 +212,7 @@ $hoptions = ["datatables","iziModal","select2"];
 
         <div class="affiliate">
 
-            <div class="dashboardboxs">
+            <div class="dashboardboxs" style="<?php echo $aff["disabled"] ? 'filter: blur(.35rem);' : ''; ?>">
 
                 <div class="dashboardbox" id="turuncublok">
                     <div class="padding10">
@@ -288,11 +288,28 @@ $hoptions = ["datatables","iziModal","select2"];
                 </div>
             </div>
 
-            <div class="refererurl">
-                <h4><?php echo __("website/account/affiliate-tx33"); ?></h4>
-                <h5><?php echo __("website/account/affiliate-tx34"); ?></h5>
-                <h2><?php echo $links["tracking"]; ?></h2>
-            </div>
+            <?php if($aff["disabled"]): ?>
+                <div class="red-info" style="margin-top: 35px;margin-bottom: -10px;">
+                    <div class="padding15">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <div class="balanceinfo">
+                            <h5><strong><?php echo __("website/account/affiliate-tx75"); ?></strong></h5>
+                            ---<br>
+                            <p><?php echo __("website/account/affiliate-tx76"); ?></p>
+                            <?php if(Utility::strlen($aff["disabled_note"]) >= 2): ?>
+                                <p><strong><?php echo __("website/account/affiliate-tx77"); ?>:</strong> <?php echo $aff["disabled_note"] ?? ''; ?></p>
+                            <?php endif; ?>
+                            <?php echo __("website/account/affiliate-tx78"); ?>
+                        </div>
+                    </div>
+                </div>
+            <?php else: ?>
+                <div class="refererurl">
+                    <h4><?php echo __("website/account/affiliate-tx33"); ?></h4>
+                    <h5><?php echo __("website/account/affiliate-tx34"); ?></h5>
+                    <h2><?php echo $links["tracking"]; ?></h2>
+                </div>
+            <?php endif; ?>
 
             <script type="text/javascript">
                 $(document).ready(function(){
@@ -321,7 +338,7 @@ $hoptions = ["datatables","iziModal","select2"];
 
                 });
             </script>
-            <div id="tab-group" class="affilia-tablelist dataTables_wrapper no-footer">
+            <div id="tab-group" class="affilia-tablelist dataTables_wrapper no-footer" style="<?php echo $aff["disabled"] ? 'filter: blur(.35rem);' : ''; ?>">
 
                 <ul class="tab">
                     <li><a href="javascript:void(0)" class="tablinks" onclick="open_tab(this, 'transactions','group')" data-tab="transactions"><?php echo __("website/account/affiliate-tx35"); ?></a></li>
