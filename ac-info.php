@@ -1401,7 +1401,7 @@
                                         'email' => $udata["email"],
                                     ]);
                                 ?>
-                                <form action="<?php echo $operation_link; ?>" method="post" id="verifyEmail" onsubmit="verifyCodeCheckEmail(); return false;">
+                                <form action="<?php echo $operation_link; ?>" method="post" id="verifyEmail" onsubmit="return false;">
                                     <?php echo Validation::get_csrf_token('account'); ?>
                                     <input type="hidden" name="operation" value="verifyEmail">
                                     <input type="hidden" name="send" value="0">
@@ -1479,7 +1479,7 @@
                                         'phone' => $udata["gsm_cc"].$udata["gsm"],
                                     ]);
                                 ?>
-                                <form action="<?php echo $operation_link; ?>" method="post" id="verifyGSM" onsubmit="verifyCodeCheckGSM(); return false;">
+                                <form action="<?php echo $operation_link; ?>" method="post" id="verifyGSM" onsubmit="return false;">
                                     <?php echo Validation::get_csrf_token('account'); ?>
 
                                     <input type="hidden" name="operation" value="verifyGSM">
