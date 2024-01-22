@@ -14,7 +14,7 @@
     $GLOBALS["currency_symbols"] = $currency_symbols;
 
     $GLOBALS["tadress"]  = $tadress;
-    $products = function($cat=[],$list){
+    $products = function($cat=[],$list=[]){
         global $tadress,$currency_symbols;
         if($list){
             ?>

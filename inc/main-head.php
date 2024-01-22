@@ -40,7 +40,7 @@
 <?php
     View::main_style();
 ?>
-<link rel="stylesheet" href="<?php echo $tadress;?>css/wisecp.css?v=<?php echo License::get_version(); ?>"/>
+<link rel="stylesheet" href="<?php echo $_theme->get_css_url(); ?>"/>
 <link rel="stylesheet" href="<?php echo $tadress;?>css/font-awesome.min.css">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/v4-shims.css">

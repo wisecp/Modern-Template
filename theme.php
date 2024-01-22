@@ -95,6 +95,11 @@
             return $settings;
         }
 
+        public function get_css_url()
+        {
+            return Controllers::$init->CRLink("templates/website/".$this->name."/css/wisecp.css",false,"none")."?version=".License::get_version();
+        }
+
 
 
 

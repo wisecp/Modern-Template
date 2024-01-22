@@ -599,7 +599,7 @@
                     }
 
                     function countChar(elem) {
-                        var value = transliterate($(elem).val());
+                        var value = $(elem).val();
                         $(elem).val(value);
 
                         var len = $(elem).val().length;

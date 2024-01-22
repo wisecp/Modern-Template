@@ -211,7 +211,9 @@
                                 </strong>
                                 <br />
                                 <?php
-                                    foreach($items AS $item) echo implode("<br>",explode(EOL,$item["description"]));
+                                    $keys   = array_keys($items);
+                                    $end_k  = end($keys);
+                                    foreach($items AS $k => $item) echo implode("<br>",explode(EOL,$item["description"])).($k == $end_k ? '' : '<br>');
                                 ?>
                             </td>
                             <td align="center"><?php echo Money::formatter_symbol($invoice["total"],$invoice["currency"],true); ?></td>
