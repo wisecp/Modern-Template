@@ -1,2 +1,2 @@
-# Template-Website-Default
- WISECP default website template files
+# Modern Template
+ WISECP Modern template files
