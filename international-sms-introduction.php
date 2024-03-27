@@ -182,6 +182,7 @@
             <h4><strong><?php echo __("website/others/faq"); ?></strong></h4>
             <div id="accordion">
                 <?php foreach($faq AS $f): ?>
+                    <?php if(!is_array($f)) continue; ?>
                     <h3><?php echo $f["title"]; ?></h3>
                     <div><?php echo $f["description"]; ?></div>
                 <?php endforeach; ?>

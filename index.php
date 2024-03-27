@@ -189,11 +189,12 @@
                         $group_link = Controllers::$init->CRLink("products",[$group["id"]]);
                     }
 
+                    $background_picture = $background_picture ? ' style="background-image: url('.$background_picture.');"' : '';
 
                     ?>
                     <div class="clear"></div>
                     <div id="group_<?php echo $group["id"]; ?>">
-                        <div class="tablopaketler products_list">
+                        <div class="tablopaketler products_list"<?php echo $background_picture; ?>>
                             <div id="wrapper">
 
                                 <div class="pakettitle" data-aos="fade-up">
@@ -258,7 +259,7 @@
                                                                 ?>
                                                             <script type="text/javascript">
                                                                 $(document).ready(function() {
-                                                                    $('.horizontal-list').DataTable({
+                                                                    $('.horizontal-listxx').DataTable({
                                                                         paging:false,
                                                                         lengthChange: false,
                                                                         responsive: true,
@@ -271,17 +272,21 @@
                                                                 <?php
                                                             }
                                                             ?>
+                                                            <style>
+                                                                .horizontal-list thead th {padding:10px;}
+                                                                .horizontal-list tbody td {padding:10px;}
+                                                            </style>
                                                             <table class="horizontal-list" width="100%" border="0" data-order='[[6, "asc"]]'>
                                                                 <thead style="background:#ebebeb;">
                                                                 <tr>
-                                                                    <th data-orderable="false" align="center" bgcolor="#ebebeb"><strong><?php echo __("website/products/server-list-title"); ?></strong></td>
+                                                                    <th data-orderable="false" align="center" bgcolor="#ebebeb"><strong><?php echo __("website/products/server-list-title"); ?></strong></th>
                                                                     <th data-orderable="false" align="center" bgcolor="#ebebeb"><strong><?php echo __("website/products/server-list-processor"); ?></strong></th>
                                                                     <th data-orderable="false" align="center" bgcolor="#ebebeb"><strong><?php echo __("website/products/server-list-ram"); ?></strong></th>
                                                                     <th data-orderable="false" align="center" bgcolor="#ebebeb"><strong><?php echo __("website/products/server-list-disk"); ?></strong></th>
                                                                     <th data-orderable="false" align="center" bgcolor="#ebebeb"><strong><?php echo __("website/products/server-list-bandwidth"); ?></strong></th>
                                                                     <th data-orderable="false" align="center" bgcolor="#ebebeb"><strong><?php echo __("website/products/server-list-location"); ?></strong></th>
                                                                     <th align="center" bgcolor="#ebebeb"><strong><?php echo __("website/products/server-list-amount"); ?></strong></th>
-                                                                    <th data-orderable="false" align="center" bgcolor="#ebebeb"><strong><?php echo __("website/products/server-list-buy"); ?></strong></td>
+                                                                    <th data-orderable="false" align="center" bgcolor="#ebebeb"><strong><?php echo __("website/products/server-list-buy"); ?></strong></th>
                                                                 </tr>
                                                                 </thead>
 
@@ -486,7 +491,7 @@
                     </div>
                 </div>
             <?php endif; ?>
-            <div class="anascript">
+            <div class="anascript"<?php echo $background_picture; ?>>
                 <div id="wrapper">
 
                     <?php

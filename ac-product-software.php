@@ -11,8 +11,18 @@
 
 
 ?>
-<style type="text/css"></style>
 <script type="text/javascript">
+    $(document).ready(function(){
+
+        var tab = gGET("tab");
+        if(tab == '' || tab == undefined){
+            $(".tablinks:eq(0)").click();
+        }else{
+            $(".tablinks[data-tab='"+tab+"']").click();
+        }
+
+    });
+
     function openTab(evt, tabName) {
         var gtab,dtab,link,tab;
         $(".tabcontent").css("display","none");
@@ -29,16 +39,27 @@
         window.history.pushState("object or string", $("title").html(),link);
     }
 
-    $(document).ready(function(){
-
-        var tab = gGET("tab");
-        if(tab == '' || tab == undefined){
-            $(".tablinks:eq(0)").click();
-        }else{
-            $(".tablinks[data-tab='"+tab+"']").click();
+    function t_form_handle(result){
+        if(result !== ''){
+            var solve = getJson(result);
+            if(solve !== false){
+                if(solve.status === "error" && solve.message !== undefined)
+                    alert_error(solve.message,{timer:3000});
+                else if(solve.status === "successful" && solve.message !== undefined)
+                    alert_success(solve.message,{timer:3000});
+                if(solve.timeRedirect !== undefined){
+                    setTimeout(function(){
+                        window.location.href = solve.timeRedirect.url === undefined ? location.href : solve.timeRedirect.url;
+                    },solve.timeRedirect.duration);
+                }
+                else if(solve.redirect !== undefined){
+                    window.location.href = solve.redirect;
+                }
+                if(solve.javascript_code) eval(solve.javascript_code);
+            }else
+                console.log(result);
         }
-
-    });
+    }
 
 </script>
 <div class="mpanelrightcon">
@@ -85,7 +106,7 @@
             <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(this, 'transfer-service')" data-tab="transfer-service"><i class="fa fa-exchange" aria-hidden="true"></i> <?php echo __("website/account_products/transfer-service"); ?></a></li>
         <?php endif; ?>
 
-        <?php if($proanse["status"] == "active" && $proanse["period"] != "none"): ?>
+        <?php if($proanse["status"] != "cancelled"): ?>
             <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(this, 'iptaltalebi')" data-tab="cancellation"><i class="fa fa-ban" aria-hidden="true"></i> <?php echo __("website/account_products/cancellation-request"); ?></a></li>
         <?php endif; ?>
 
@@ -515,7 +536,7 @@
             if(isset($product_addons) && $product_addons)
             {
                 ?>
-                <div class="buyaddservice">
+                <div class="buyaddservice" style="<?php echo $proanse["status"] != "active" ? 'display:none;' : ''; ?>">
 
                     <h4 class="addservicetitle"><?php echo __("website/account_products/buy-service"); ?></h4>
 
@@ -1081,7 +1102,7 @@
         </div>
     <?php endif; ?>
 
-    <?php if($proanse["status"] == "active" && $proanse["period"] != "none"): ?>
+    <?php if($proanse["status"] != "cancelled"): ?>
         <div id="iptaltalebi" class="tabcontent">
             <div class="tabcontentcon">
                 <?php

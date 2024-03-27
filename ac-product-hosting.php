@@ -500,10 +500,10 @@
         if(result !== ''){
             var solve = getJson(result);
             if(solve !== false){
-                if(solve.status === "error"){
+                if(solve.status === "error" && solve.message !== undefined){
                     alert_error(solve.message,{timer:3000});
                 }
-                else if(solve.status === "successful"){
+                else if(solve.status === "successful" && solve.message !== undefined){
                     alert_success(solve.message,{timer:3000});
                 }
                 if(solve.timeRedirect !== undefined){
@@ -649,9 +649,10 @@
     $GLOBALS["product_situations"]  = isset($product_situations) ? $product_situations : false;
     $GLOBALS["stored_cards"]        = isset($stored_cards) ? $stored_cards : false;
     $GLOBALS["links"]               = isset($links) ? $links : false;
+    $GLOBALS["subscription"]        = isset($subscription) ? $subscription : NULL;
     function general_info_content()
     {
-        global $invoice,$options,$proanse,$proanse_amount,$product_situations,$stored_cards,$links;
+        global $invoice,$options,$proanse,$proanse_amount,$product_situations,$stored_cards,$links,$subscription;
         ?>
         <div class="hizmetblok" id="general-info">
             <table width="100%" border="0">
@@ -807,7 +808,7 @@
         <?php if($proanse["status"] == "active" && $ctoc_service_transfer): ?>
             <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(this, 'transfer-service')" data-tab="transfer-service"><i class="fa fa-exchange" aria-hidden="true"></i> <?php echo __("website/account_products/transfer-service"); ?></a></li>
         <?php endif; ?>
-        <?php if($proanse["status"] == "active" && $proanse["period"] != "none"): ?>
+        <?php if($proanse["status"] != "cancelled"): ?>
             <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(this, 'iptaltalebi')" data-tab="cancellation"><i class="fa fa-ban" aria-hidden="true"></i> <?php echo __("website/account_products/cancellation-request"); ?></a></li>
         <?php endif; ?>
 
@@ -1289,7 +1290,7 @@
             if(isset($product_addons) && $product_addons)
             {
                 ?>
-                <div class="buyaddservice">
+                <div class="buyaddservice" style="<?php echo $proanse["status"] != "active" ? 'display:none;' : ''; ?>">
 
                     <h4 class="addservicetitle"><?php echo __("website/account_products/buy-service"); ?></h4>
 
@@ -2448,7 +2449,7 @@
         </div>
     <?php endif; ?>
 
-    <?php if($proanse["status"] == "active" && $proanse["period"] != "none"): ?>
+    <?php if($proanse["status"] != "cancelled"): ?>
         <div id="iptaltalebi" class="tabcontent">
             <div class="tabcontentcon">
                 <?php

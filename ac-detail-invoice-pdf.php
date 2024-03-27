@@ -251,7 +251,7 @@
             {
                 ?>
                 <tr>
-                    <td style="font-size:12px;" colspan="2"><?php echo __("website/account_invoices/pmethod_commission",['{method}' => $pmethod_name]); ?> (%<?php echo $invoice["pmethod_commission_rate"]; ?>)</td>
+                    <td style="font-size:12px;" colspan="2"><?php echo __("website/account_invoices/pmethod_commission",['{method}' => $pmethod_name]); ?> (<?php echo $invoice["pmethod_commission_rate"]; ?>%)</td>
                     <td align="center"><?php echo Money::formatter_symbol($invoice["pmethod_commission"],$invoice["currency"]); ?></td>
                 </tr>
                 <?php
@@ -273,7 +273,10 @@
 
                     if(isset($items["coupon"]) && $items["coupon"]){
                         foreach($items["coupon"] AS $item){
-                            $name   = $item["name"]." - ".$item["dvalue"];
+                            $name   = $item["name"];
+                            $rate   = $item["rate"] ?? 0;
+                            if($rate > 0.00) $name .= " - ".$rate."%";
+
                             $total_discount_amount += $item["amountd"];
                             ?>
                             <tr>
@@ -286,7 +289,9 @@
 
                     if(isset($items["promotions"]) && $items["promotions"]){
                         foreach($items["promotions"] AS $item){
-                            $name   = $item["name"]." - ".$item["dvalue"];
+                            $name   = $item["name"];
+                            $rate   = $item["rate"] ?? 0;
+                            if($rate > 0.00) $name .= " - ".$rate."%";
                             $total_discount_amount += $item["amountd"];
 
                             ?>
@@ -300,8 +305,12 @@
 
 
                     if(isset($items["dealership"]) && $items["dealership"]){
-                        foreach($items["dealership"] AS $item){
-                            $name   = $item["name"]." - %".$item["rate"];
+                        foreach($items["dealership"] AS $item)
+                        {
+                            $name   = $item["name"];
+                            $rate = $item["rate"] ?? 0;
+                            if($rate > 0.00) $name .= " - ".$rate."%";
+
                             $total_discount_amount += $item["amountd"];
 
                             ?>

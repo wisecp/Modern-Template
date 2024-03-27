@@ -190,7 +190,7 @@
                 <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(this, 'transfer-service')" data-tab="transfer-service"><i class="fa fa-exchange" aria-hidden="true"></i> <?php echo __("website/account_products/transfer-service"); ?></a></li>
             <?php endif; ?>
 
-            <?php if($proanse["status"] == "active" && $proanse["period"] != "none"): ?>
+            <?php if($proanse["status"] != "cancelled"): ?>
                 <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(this, 'iptaltalebi')" data-tab="cancellation"><i class="fa fa-ban" aria-hidden="true"></i> <?php echo __("website/account_products/cancellation-request"); ?></a></li>
             <?php endif; ?>
 
@@ -628,7 +628,7 @@
                 if(isset($product_addons) && $product_addons)
                 {
                     ?>
-                    <div class="buyaddservice">
+                    <div class="buyaddservice" style="<?php echo $proanse["status"] != "active" ? 'display:none;' : ''; ?>">
 
                         <h4 class="addservicetitle"><?php echo __("website/account_products/buy-service"); ?></h4>
 
@@ -1254,14 +1254,14 @@
                                                         <table class="" width="100%" border="0" data-order='[[6, "asc"]]'>
                                                             <thead style="background:#ebebeb;">
                                                             <tr>
-                                                                <th data-orderable="false" align="center" bgcolor="#ebebeb"><strong><?php echo __("website/products/server-list-title"); ?></strong></td>
+                                                                <th data-orderable="false" align="center" bgcolor="#ebebeb"><strong><?php echo __("website/products/server-list-title"); ?></strong></th>
                                                                 <th data-orderable="false" align="center" bgcolor="#ebebeb"><strong><?php echo __("website/products/server-list-processor"); ?></strong></th>
                                                                 <th data-orderable="false" align="center" bgcolor="#ebebeb"><strong><?php echo __("website/products/server-list-ram"); ?></strong></th>
                                                                 <th data-orderable="false" align="center" bgcolor="#ebebeb"><strong><?php echo __("website/products/server-list-disk"); ?></strong></th>
                                                                 <th data-orderable="false" align="center" bgcolor="#ebebeb"><strong><?php echo __("website/products/server-list-bandwidth"); ?></strong></th>
                                                                 <th data-orderable="false" align="center" bgcolor="#ebebeb"><strong><?php echo __("website/products/server-list-location"); ?></strong></th>
                                                                 <th align="center" bgcolor="#ebebeb"><strong><?php echo __("website/products/server-list-amount"); ?></strong></th>
-                                                                <th data-orderable="false" align="center" bgcolor="#ebebeb"><strong><?php echo __("website/products/server-list-buy"); ?></strong></td>
+                                                                <th data-orderable="false" align="center" bgcolor="#ebebeb"><strong><?php echo __("website/products/server-list-buy"); ?></strong></th>
                                                             </tr>
                                                             </thead>
 
@@ -1527,7 +1527,7 @@
             </div>
         <?php endif; ?>
 
-        <?php if($proanse["status"] == "active" && $proanse["period"] != "none"): ?>
+        <?php if($proanse["status"] != "cancelled"): ?>
             <div id="iptaltalebi" class="tabcontent">
                 <div class="tabcontentcon">
                     <?php

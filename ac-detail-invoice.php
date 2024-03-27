@@ -355,7 +355,7 @@
                     if(isset($items) && $items){
                         foreach($items AS $item){
                             $amount = $item["total_amount"];
-                            $cid    = isset($item["currency"]) ? $item["currency"] : $item["cid"];
+                            $cid        = isset($item["currency"]) ? $item["currency"] : $item["cid"];
                             ?>
                             <div class="formcon" style="background:white;">
                                 <div class="yuzde70"><span class="padding10"><?php echo implode("<br>- ",explode(EOL,$item["description"])); ?></span></div>
@@ -374,7 +374,7 @@
                 </div>
 
                 <div id="pmethod_commission_wrap" class="formcon" style="background:white;<?php echo $invoice["pmethod_commission"] > 0.00 ? '' : 'display:none;'; ?>">
-                    <div class="yuzde70"><span id="pmethod_commission_label"><?php echo __("website/account_invoices/pmethod_commission",['{method}' => $pmethod_name]); ?> (%<?php echo $invoice["pmethod_commission_rate"]; ?>)</span></div>
+                    <div class="yuzde70"><span id="pmethod_commission_label"><?php echo __("website/account_invoices/pmethod_commission",['{method}' => $pmethod_name]); ?> (<?php echo $invoice["pmethod_commission_rate"]; ?>%)</span></div>
                     <div class="yuzde30"><span id="pmethod_commission_fee"><?php echo Money::formatter_symbol($invoice["pmethod_commission"],$invoice["currency"]); ?></span></div>
                 </div>
 
@@ -393,7 +393,10 @@
 
                             if(isset($items["coupon"]) && $items["coupon"]){
                                 foreach($items["coupon"] AS $item){
-                                    $name   = $item["name"]." - ".$item["dvalue"];
+                                    $name   = $item["name"];
+                                    $rate   = $item["rate"] ?? 0;
+                                    if($rate > 0.00) $name .= " - ".$rate."%";
+
                                     $total_discount_amount += $item["amountd"];
                                     ?>
                                     <div class="formcon" style="padding: 0px;">
@@ -406,7 +409,9 @@
 
                             if(isset($items["promotions"]) && $items["promotions"]){
                                 foreach($items["promotions"] AS $item){
-                                    $name   = $item["name"]." - ".$item["dvalue"];
+                                    $name   = $item["name"];
+                                    $rate   = $item["rate"] ?? 0;
+                                    if($rate > 0.00) $name .= " - ".$rate."%";
                                     $total_discount_amount += $item["amountd"];
                                     ?>
                                     <div class="formcon" style="padding: 0px;">
@@ -420,7 +425,9 @@
 
                             if(isset($items["dealership"]) && $items["dealership"]){
                                 foreach($items["dealership"] AS $item){
-                                    $name   = $item["name"]." - %".$item["rate"];
+                                    $name   = $item["name"];
+                                    $rate   = $item["rate"] ?? 0;
+                                    if($rate > 0.00) $name .= " - ".$rate."%";
                                     $total_discount_amount += $item["amountd"];
                                     ?>
                                     <div class="formcon" style="padding: 0px;">

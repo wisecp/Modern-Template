@@ -41,9 +41,6 @@
     View::main_style();
 ?>
 <link rel="stylesheet" href="<?php echo $_theme->get_css_url(); ?>"/>
-<link rel="stylesheet" href="<?php echo $tadress;?>css/font-awesome.min.css">
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/v4-shims.css">
 <link rel="stylesheet" href="<?php echo $tadress;?>css/ionicons.min.css"/>
 <link rel="stylesheet" href="<?php echo $tadress;?>css/animate.css" media="none" onload="if(media!='all')media='all'">
 <link rel="stylesheet" href="<?php echo $tadress;?>css/aos.css" />
@@ -75,7 +72,7 @@
     var template_address = "<?php echo $tadress;?>";
 </script>
 <script src="<?php echo $tadress;?>js/jquery-2.2.4.min.js"></script>
-
+<script src="https://kit.fontawesome.com/024b99bd53.js" crossorigin="anonymous"></script>
 <?php if(isset($hoptions["page"]) && $hoptions["page"] == "index"): ?>
 
     <script type="text/javascript">
