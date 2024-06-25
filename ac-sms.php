@@ -65,6 +65,8 @@
                                 $("#get_statistic_yesterday").html(solve.statistic_yesterday);
                             if(solve.statistic_month !== undefined)
                                 $("#get_statistic_month").html(solve.statistic_month);
+                            if(solve.statistic_last_month !== undefined)
+                                $("#get_statistic_last_month").html(solve.statistic_last_month);
                             if(solve.statistic_total !== undefined)
                                 $("#get_statistic_total").html(solve.statistic_total).counterUp({delay: 10,time:1000});
 
@@ -148,6 +150,16 @@
                         <td>
                             <?php
                                 $variable = "<strong id=\"get_statistic_month\"><img src=\"".$sadress."assets/images/loading.gif\" width=\"30\"></strong>";
+                                echo __("website/account_sms/statistic-sms-desc",['{quantity}' => $variable]);
+                            ?>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td><strong><?php echo __("admin/index/last-month-income"); ?></strong></td>
+                        <td>
+                            <?php
+                                $variable = "<strong id=\"get_statistic_last_month\"><img src=\"".$sadress."assets/images/loading.gif\" width=\"30\"></strong>";
                                 echo __("website/account_sms/statistic-sms-desc",['{quantity}' => $variable]);
                             ?>
                         </td>
@@ -1372,9 +1384,9 @@
         <table width="100%" border="0" align="center">
             <thead>
             <tr>
-                <th width="33%" align="center" bgcolor="#D6FE81" style="color:#4B7001"><strong><?php echo __("website/account_sms/report-delivered"); ?> ({delivered_count})</strong></td>
-                <th width="33%" align="center" bgcolor="#C6FFFF" style="color:#009393"><strong><?php echo __("website/account_sms/report-expect"); ?> ({expect_count})</strong></td>
-                <th width="33%" align="center" bgcolor="#FFCACA" style="color:#970000"><strong><?php echo __("website/account_sms/report-incorrect"); ?> ({incorrect_count})</strong></td>
+                <th width="33%" align="center" bgcolor="#D6FE81" style="color:#4B7001"><strong><?php echo __("website/account_sms/report-delivered"); ?> ({delivered_count})</strong></th>
+                <th width="33%" align="center" bgcolor="#C6FFFF" style="color:#009393"><strong><?php echo __("website/account_sms/report-expect"); ?> ({expect_count})</strong></th>
+                <th width="33%" align="center" bgcolor="#FFCACA" style="color:#970000"><strong><?php echo __("website/account_sms/report-incorrect"); ?> ({incorrect_count})</strong></th>
             </tr>
             </thead>
             <tbody>

@@ -238,9 +238,17 @@
                                     $("#payment_methods").append(content);
                                 });
                                 $("#payment_methods").fadeIn(100);
-                            }else{
+                            }
+                            else
+                            {
                                 $("#pmethods_loader").fadeOut(100);
                                 $("#no_address_selected").fadeIn(100);
+
+                                if(solve.status === "error" && solve.message !== undefined)
+                                {
+                                    $("#no_address_selected").html(solve.message);
+                                }
+
                             }
 
                             if(solve.pm_commission != undefined && solve.pm_commission != ''){
@@ -648,29 +656,27 @@
     </script>
 <?php endif; ?>
 <div id="BalanceWarning" style="display: none;" data-izimodal-title="<?php echo __("website/basket/pay-button"); ?>">
-        <div class="padding20">
-
-            <center>
-                <p></p>
-            </center>
-
-        </div>
+    <div class="padding20">
+        <center>
+            <p></p>
+        </center>
+    </div>
     <div class="modal-foot-btn">
         <a href="javascript:balance_warning('ok');void 0;" class="green lbtn"><?php echo __("website/basket/balance-warning-ok"); ?></a>
     </div>
-    </div>
+</div>
 <div id="InsufficientBalance" style="display: none;" data-izimodal-title="<?php echo __("website/basket/pay-button"); ?>">
-        <div class="padding20">
+    <div class="padding20">
 
-            <center>
-                <p><?php echo __("website/basket/insufficient-balance"); ?></p>
-                <div class="clear"></div>
-                <div class="line"></div>
-                <a href="<?php echo $links["balance-page"]; ?>" class="gonderbtn yesilbtn"><?php echo __("website/basket/button-balance-page"); ?></a>
-            </center>
+        <center>
+            <p><?php echo __("website/basket/insufficient-balance"); ?></p>
+        </center>
 
-        </div>
     </div>
+    <div class="modal-foot-btn">
+        <a href="<?php echo $links["balance-page"]; ?>" class="green lbtn"><?php echo __("website/basket/button-balance-page"); ?></a>
+    </div>
+</div>
 
 <div id="wrapper">
 

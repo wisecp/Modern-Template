@@ -170,7 +170,7 @@
                         <input type="hidden" name="type" value="<?php echo $r["type"]; ?>">
                         <input type="hidden" name="identity" value="<?php echo $r["identity"]; ?>">
                         <input type="hidden" name="name" value="<?php echo $r["name"]; ?>">
-                        <input type="hidden" name="value" value="<?php echo $r["value"]; ?>">
+                        <input type="hidden" name="value" value="<?php echo htmlentities($r["value"],ENT_QUOTES); ?>">
                         <td align="left" class="dns-record-type"><?php echo $r["type"]; ?></td>
                         <td align="left" class="dns-record-name">
                             <div class="edit-wrap" style="display: none"><input type="text" value=""></div>

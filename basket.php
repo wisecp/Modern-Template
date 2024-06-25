@@ -15,6 +15,8 @@
     var ns_details      = {};
     var whois_details   = {};
     var domain_names    = {};
+    var default_select_profile = 0;
+    var items_have_promos = false;
 
     function amount_divider(str){
         var visible_amount      = str;
@@ -103,6 +105,7 @@
                             var size = solve.data.length;
                             var rank = 0;
                             var selection_period = '';
+                            items_have_promos = false;
 
                             $(solve.data).each(function(key,item){
                                 rank++;
@@ -145,7 +148,10 @@
                                 if(item.reduced != undefined && item.reduced != 0)
                                     content += '<div class="row-label green-label"><?php echo __("website/basket/reduced"); ?></div>';
                                 if(item.promotion_applied != undefined)
+                                {
+                                    items_have_promos = true;
                                     content += '<div class="row-label green-label"><?php echo __("website/basket/promotion-applied"); ?></div>';
+                                }
                                 content += '<div class="sepetlistcon">';
                                 content += '<div class="uhinfo">';
                                 content += '<h5><strong>'+item.name+'</strong></h5>';
@@ -253,21 +259,24 @@
             if(result){
                 var solve = getJson(result);
                 if(solve){
-                    if(solve.status == "successful"){
-
+                    if(solve.status === "successful"){
+                        OrderSummary();
                         item.animate({backgroundColor:'#EEE',opacity:0}, 500,function () {
-                            item.remove();
-                            if($(".sepetlist").length==0){
-
+                            if($(".sepetlist").length === 1)
+                            {
+                                item.remove();
                                 $("#item_list").fadeOut(400).html('');
                                 $("#empty_list").fadeIn(400);
                                 $(".basket-count").html('0');
                                 $("#coupon_code").attr("disabled",true);
                             }
-                        });
+                            else if(items_have_promos)
+                                setTimeout(ItemList,100);
+                            else item.remove();
 
-                        OrderSummary();
-                    }else if(solve.status == "error"){
+                        });
+                    }
+                    else if(solve.status == "error"){
                         swal('<?php echo __("website/basket/modal-error"); ?>',solve.message,'error');
                     }
                 }else console.log("Result cannot resolved.");
@@ -791,11 +800,12 @@
                                             <select class="select-whois-profile" name="profile_id[<?php echo $k; ?>]">
                                                 <option data-information='<?php echo Utility::jencode($user_whois_info ?? []); ?>' value="0"><?php echo __("website/account_products/domain-whois-tx20"); ?></option>
                                                 <?php
+                                                    $s_pf = $whois[$k]["profile_id"] ?? 0;
                                                     if(isset($whois_profiles) && $whois_profiles)
                                                     {
                                                         foreach($whois_profiles AS $pf)
                                                         {
-                                                            $s_pf = $whois[$k]["profile_id"] ?? 0;
+                                                            $detouse = $pf["detouse"] ?? 0;
                                                             $pf_s = $s_pf == $pf["id"];
                                                             ?>
                                                             <option<?php echo $pf_s ? ' selected' : ''; ?> data-information='<?php echo $pf["information"]; ?>' value="<?php echo $pf["id"]; ?>"><?php echo $pf["name"].' - '.$pf["person_name"]." - ".$pf["person_email"]." - ".$pf["person_phone"];  ?></option>

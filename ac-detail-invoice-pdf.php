@@ -22,6 +22,13 @@
     $censored = false;
     $GLOBALS["censured"] = false;
 
+    $u_taxation = true;
+
+    if(strlen((string) $invoice["user_data"]["taxation"] ?? ""))
+    {
+        if($invoice["user_data"]["taxation"] == "0") $u_taxation = false;
+    }
+
     if(!function_exists("censored"))
     {
         function censored($type='',$data=''){
@@ -341,7 +348,7 @@
                 }
             }
 
-            if(Config::get("options/taxation"))
+            if(Config::get("options/taxation") && $u_taxation)
             {
                 ?>
                 <tr>

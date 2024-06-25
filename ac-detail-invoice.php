@@ -21,6 +21,14 @@
     $censored = false;
     $GLOBALS["censured"] = false;
 
+    $u_taxation = true;
+
+    if(strlen((string) $invoice["user_data"]["taxation"] ?? ""))
+    {
+        if($invoice["user_data"]["taxation"] == "0") $u_taxation = false;
+    }
+
+
     function censored($type='',$data=''){
         $data     = trim($data);
         $censored = $GLOBALS["censured"];
@@ -457,7 +465,7 @@
                     }
                 ?>
 
-                <div id="tax_wrap" class="formcon" style="<?php echo Config::get("options/taxation") ? '' : 'display:none;'; ?>">
+                <div id="tax_wrap" class="formcon" style="<?php echo Config::get("options/taxation") && $u_taxation ? '' : 'display:none;'; ?>">
                     <div class="yuzde70" style="text-align:right;"><span><?php echo __("website/account_invoices/tax-amount",['{rate}' => str_replace(".00","",$invoice["taxrate"]),'{rates}' => $tax_rates ?? '']); ?></span></div>
                     <div class="yuzde30"><span><strong id="tax_fee"><?php echo Money::formatter_symbol($invoice["tax"],$invoice["currency"]); ?></strong></span></div>
                 </div>
@@ -497,13 +505,12 @@
                 <?php endif; ?>
             </div>
         <?php endif; ?>
-
         <?php if($invoice["status"] == "unpaid"): ?>
 
             <script type="text/javascript">
                 var
                     selected_payment_method,
-                    taxation = <?php echo Config::get("options/taxation") == 1 ? "true" : "false"; ?>;
+                    taxation = <?php echo Config::get("options/taxation") == 1 && $u_taxation ? "true" : "false"; ?>;
                 $(function(){
 
                     $("#accordion").accordion({

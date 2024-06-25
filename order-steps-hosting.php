@@ -305,6 +305,45 @@
                             </tr>
                         </table>
                     </div>
+
+                    <?php if($product["subdomains"] ?? []): ?>
+                        <h3><strong><?php echo __("website/osteps/use-subdomain"); ?></strong></h3>
+                        <div>
+                            <table width="100%" border="0" align="center">
+                                <tr>
+                                    <td style="border:none;" colspan="2">
+                                        <script type="text/javascript">
+                                            $(document).ready(function(){
+                                                $("#hosting_subdomain").keydown(function(event){
+                                                    if(event.keyCode == 13){
+                                                        $("#button2").trigger("click");
+                                                    }
+                                                });
+                                            });
+                                        </script>
+                                        <div class="alanadisorgu">
+                                            <div class="order-stage-subdomain">
+                                                <input name="subdomain" id="hosting_subdomain" type="text" placeholder="example">
+                                                <select name="select_domain" id="hosting_select_domain">
+                                                    <?php
+                                                    $subdomains = explode("\n",$product["subdomains"]);
+                                                    foreach($subdomains AS $sd)
+                                                    {
+                                                        $sd = '.'.ltrim($sd,'.');
+                                                        ?><option value="<?php echo $sd; ?>"><?php echo $sd; ?></option><?php
+                                                    }
+                                                    ?>
+                                                </select>
+                                                <a href="javascript:void(0);" id="button2" onclick="GoStep('subdomain',false,this);" class="gonderbtn"><?php echo __("website/osteps/use-button"); ?></a>
+                                                <div class="clear"></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    <?php endif; ?>
+
                 </div>
             </div>
         </div>
@@ -312,10 +351,19 @@
             function GoStep(type,continuee,element){
                 if(continuee === false) continuee = '';
                 var buttonElement = $(element);
-                if(type == "registrar")
-                    var domain   = $("#DomainCheck input[name=domain]").val();
+
+                var s_domain,domain;
+
+                if(type === "registrar")
+                    domain   = $("#DomainCheck input[name=domain]").val();
+                else if(type === "subdomain")
+                {
+                    domain = $("#hosting_subdomain").val();
+                    s_domain = $("#hosting_select_domain").val();
+                    domain   = domain + s_domain;
+                }
                 else
-                    var domain   = $("#hosting_domain").val();
+                    domain   = $("#hosting_domain").val();
 
                 $("#result3").slideUp(300);
 

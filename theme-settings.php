@@ -76,6 +76,21 @@
 
         <div class="jscolorpicker">
 
+            <script type="text/javascript">
+                function use_dominant_colors()
+                {
+                    const colors = get_image_dominant_colors("header_logo_preview");
+                    if(colors[0] !== undefined)
+                        $("input[name=color1]").spectrum("set",colors[0]);
+                    if(colors[1] !== undefined)
+                        $("input[name=color2]").spectrum("set",colors[1]);
+                }
+            </script>
+
+            <a class="lbtn" href="javascript:use_dominant_colors();"><i class="fas fa-palette"></i> <?php echo $language["use-dominant-colors"] ?? "Use Logo Dominant Colors"; ?></a>
+
+            <div class="clear"></div>
+
             <div class="formcon"> <span><?php echo __("admin/settings/main-color1"); ?></span>
                 <input name="color1" class="jscolor" value="<?php echo $settings["color1"]; ?>">
             </div>
