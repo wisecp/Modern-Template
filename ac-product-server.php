@@ -133,8 +133,15 @@
                         else
                             $("#block_module_details_con").html(solve.panel);
                     }
-                }else
-                    console.log(result);
+                }
+                else
+                {
+                    $("#block_module_details_con").html('');
+                }
+            }
+            else
+            {
+                $("#block_module_details_con").html('');
             }
         });
     }
@@ -1599,7 +1606,7 @@
                             </form>
                             <div id="CanceledProduct_success" style="display: none;">
                                 <div style="margin-top:30px;margin-bottom:70px;text-align:center;">
-                                    <i style="font-size:80px;color:green;" class="fa fa-check"></i>
+                                    <i style="font-size:70px;" class="fa fa-check"></i>
                                     <h4><?php echo __("website/account_products/canceled-sent"); ?></h4>
                                     <br>
                                 </div>

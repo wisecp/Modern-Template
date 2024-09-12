@@ -9,10 +9,12 @@
 <!-- Meta Tags -->
 <?php View::main_meta(); ?>
 <title><?php echo $meta["title"]; ?></title>
+<meta name="keywords" content="<?php echo isset($meta["keywords"]) ? $meta["keywords"] : NULL;?>" />
+<meta name="description" content="<?php echo isset($meta["description"]) ? $meta["description"] : NULL;?>" />
+<meta name="robots" content="<?php echo $meta["robots"]; ?>" />
 <meta http-equiv="content-language" content="<?php echo ___("package/code");?>">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-<meta name="robots" content="NOINDEX,NOFOLLOW" />
 <link rel="canonical" href="<?php echo $canonical_link;?>" />
 <link rel="icon" type="image/x-icon" href="<?php echo $favicon_link;?>" />
 <meta name="theme-color" content="<?php echo $meta_color; ?>">

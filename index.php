@@ -126,7 +126,7 @@
 
         if($name == "about-us" && $item["status"]==1){
             ?>
-            <div class="anatanitim"<?php echo $background_video ? '' : 'style="background-image: url('.$background_picture.');"'; ?>>
+            <div class="anatanitim"<?php echo $background_picture ? ($background_video ? '' : 'style="background-image: url('.$background_picture.');"') : ''; ?>>
                 <?php
                     if($background_video){
                         ?>

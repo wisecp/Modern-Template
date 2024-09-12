@@ -1,6 +1,7 @@
 <?php defined('CORE_FOLDER') OR exit('You can not get in here!');
     $module_config  = isset($module_con) && $module_con ? $module_con->config : [];
     $supported      = isset($module_config["supported"]) ? $module_config["supported"] : [];
+    $p_options      = $product["options"] ?? [];
     $wide_content   = true;
     $proanse_amount = $amount;
     $panel_type     = isset($p_options["panel_type"]) ? $p_options["panel_type"] : (isset($options["panel_type"]) ? $options["panel_type"] : false);
@@ -483,6 +484,7 @@
                         $(".use-progressbar").removeAttr("id");
                         $("#general-info").remove();
                     }
+                    $("#block_module_details_con").html('');
                 }
             }
             else
@@ -493,6 +495,7 @@
                     $(".use-progressbar").removeAttr("id");
                     $("#general-info").remove();
                 }
+                $("#block_module_details_con").html('');
             }
         });
     }
@@ -839,8 +842,8 @@
                 </div>
                 <h5 id="detial_domain"><strong><?php echo $domain; ?></strong></h5>
                 <?php
-                    if(isset($options["server_features"]) && is_array($options["server_features"]) && $options["server_features"])
-                        echo '<h5 id="server_features" style="font-weight:normal;margin:0px;">('.implode(" + ",$options["server_features"]).')</h5><br>';
+                    if($server_features)
+                        echo '<h5 id="server_features" style="font-weight:normal;margin:0px;">('.implode(" + ",$server_features).')</h5><br>';
                 ?>
                 <div id="order-service-detail-btns">
                     <?php
@@ -2521,7 +2524,7 @@
                         </form>
                         <div id="CanceledProduct_success" style="display: none;">
                             <div style="margin-top:30px;margin-bottom:70px;text-align:center;">
-                                <i style="font-size:80px;color:green;" class="fa fa-check"></i>
+                                <i style="font-size:70px;" class="fa fa-check"></i>
                                 <h4><?php echo __("website/account_products/canceled-sent"); ?></h4>
                                 <br>
                             </div>
