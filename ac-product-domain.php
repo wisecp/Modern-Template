@@ -426,7 +426,7 @@
                 <li><a href="javascript:void(0)" class="tablinks" onclick="open_tab(this, 'summary','tab')" data-tab="summary"><i class="fa fa-info" aria-hidden="true"></i> <?php echo __("website/account_products/detail"); ?></a></li>
             <?php endif; ?>
 
-            <?php if($proanse["status"] == "active" && isset($options["whois_manage"]) && $options["whois_manage"]): ?>
+            <?php if($proanse["status"] == "active"): ?>
                 <li><a href="javascript:void(0)" class="tablinks" onclick="open_tab(this, 'whois','tab')" data-tab="whois"><i class="far fa-id-card" aria-hidden="true"></i> <?php echo __("website/account_products/whois-manager"); ?></a></li>
             <?php endif; ?>
 
@@ -689,7 +689,7 @@
             </div>
         <?php endif; ?>
 
-        <?php if($proanse["status"] == "active" && isset($options["whois_manage"]) && $options["whois_manage"]){ ?>
+        <?php if($proanse["status"] == "active"){ ?>
             <div id="tab-whois" class="tabcontent">
                 <div class="tabcontentcon">
 
@@ -893,7 +893,7 @@
                                                     <input name="info[<?php echo $k; ?>][Fax]" type="text" value="<?php echo $whois[$k]["Fax"] ?? ''; ?>" class="yuzde33 whois-<?php echo $k; ?>-Fax" placeholder="<?php echo __("website/account_products/whois-fax"); ?>">
                                                     <input name="info[<?php echo $k; ?>][City]" type="text" value="<?php echo $whois[$k]["City"] ?? ''; ?>" class="yuzde33 whois-<?php echo $k; ?>-City" placeholder="<?php echo __("website/account_products/whois-city"); ?>">
                                                     <input name="info[<?php echo $k; ?>][State]" type="text" value="<?php echo $whois[$k]["State"] ?? ''; ?>" class="yuzde33 whois-<?php echo $k; ?>-State" placeholder="<?php echo __("website/account_products/whois-state"); ?>">
-                                                    <input name="info[<?php echo $k; ?>][Address]" type="text" value="<?php echo $whois[$k]["Address"] ?? ''; ?>" class="yuzde33 whois-<?php echo $k; ?>-Address" placeholder="<?php echo __("website/account_products/whois-address"); ?>">
+                                                    <input name="info[<?php echo $k; ?>][Address]" type="text" value="<?php echo $whois[$k]["AddressLine1"] ?? 'unknown'; ?>" class="yuzde33 whois-<?php echo $k; ?>-Address" placeholder="<?php echo __("website/account_products/whois-address"); ?>">
                                                     <input name="info[<?php echo $k; ?>][Country]" type="text" value="<?php echo $whois[$k]["Country"] ?? ''; ?>" class="yuzde33 whois-<?php echo $k; ?>-Country" placeholder="<?php echo __("website/account_products/whois-CountryCode"); ?>">
                                                     <input name="info[<?php echo $k; ?>][ZipCode]" type="text" value="<?php echo $whois[$k]["ZipCode"] ?? ''; ?>" class="yuzde33 whois-<?php echo $k; ?>-ZipCode" placeholder="<?php echo __("website/account_products/whois-zipcode"); ?>">
                                                 </div>
@@ -2563,7 +2563,7 @@
 
                         <div id="TransferCode_success1" style="display: none;">
                             <div style="margin-top:30px;margin-bottom:70px;text-align:center;">
-                                <i style="font-size:80px;color:green;" class="fa fa-check"></i>
+                                <i style="font-size:70px;" class="fa fa-check"></i>
                                 <h2 style="color:green;font-weight:bold;"><?php echo __("website/account_products/transfer-code-sent1"); ?></h2>
                                 <br/>
                                 <h4><?php echo __("website/account_products/transfer-code-sent2"); ?></h4>

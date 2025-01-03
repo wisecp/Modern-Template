@@ -160,7 +160,8 @@
                         if(solve.taxation != undefined && solve.taxation){
                             $("#tax_content").fadeIn(1);
                             var see,see_text;
-                            see_text = '<?php echo __("website/basket/tax-amount"); ?>';
+                            see     = $("#tax-see");
+                            see_text = see.html();
                             see_text = see_text.replace('{rates}',solve.tax_rates ?? '');
                             see_text = see_text.replace('{rate}',solve.tax_rate);
                             see.html(see_text);
@@ -587,6 +588,16 @@
                                         <tbody>
 
                                         <?php if($kind_status): ?>
+
+                                            <tr>
+                                                <td width="30%" style="border-bottom: #ddd solid 1px;">
+                                                    <h5 style="margin-bottom: 10px;"><?php echo __("website/sign/up-form-kind"); ?></h5>
+                                                </td>
+                                                <td style="border-bottom: #ddd solid 1px; ">
+                                                </td>
+                                            </tr>
+
+
                                             <tr>
                                                 <td width="30%"><?php echo __("website/sign/up-form-kind"); ?></td>
                                                 <td>
@@ -600,6 +611,15 @@
                                                 </td>
                                             </tr>
                                         <?php endif; ?>
+
+
+                                        <tr>
+                                            <td width="30%" style="border-bottom: #ddd solid 1px;">
+                                                <h5 style="margin-bottom: 10px;"><?php echo __("website/account_info/personal-informations"); ?></h5>
+                                            </td>
+                                            <td style="border-bottom: #ddd solid 1px; ">
+                                            </td>
+                                        </tr>
 
                                         <tr>
                                             <td width="30%"><?php echo __("website/sign/up-form-full_name"); ?></td>
@@ -629,19 +649,109 @@
                                                 </td>
                                             </tr>
 
-                                            <tr class="kind-content kind_2" style="display:none;">
-                                                <td width="30%"><?php echo __("website/sign/up-form-ctaxno"); ?> / <?php echo __("website/sign/up-form-ctaxoff"); ?></td>
-                                                <td>
-                                                    <?php if(Config::get("options/sign/up/kind/corporate/company_tax_number")): ?>
-                                                        <div class="yuzde50"><input name="company_tax_number" type="text"></div>
-                                                    <?php endif; ?>
-                                                    <?php if(Config::get("options/sign/up/kind/corporate/company_tax_office")): ?>
-                                                        <div class="yuzde50"><input name="company_tax_office" type="text" id="vergi_dairesi"></div>
-                                                    <?php endif; ?>
-                                                </td>
-                                            </tr>
+                                            <?php if(Config::get("options/sign/up/kind/corporate/company_tax_number") || Config::get("options/sign/up/kind/corporate/company_tax_office")): ?>
+                                                <tr>
+                                                    <td width="30%">
+                                                        <?php
+                                                            if(Config::get("options/sign/up/kind/corporate/company_tax_number"))
+                                                                echo __("website/sign/up-form-ctaxno").(Config::get("options/sign/up/kind/corporate/company_tax_office") ? ' / ' : '');
+                                                            if(Config::get("options/sign/up/kind/corporate/company_tax_office"))
+                                                                echo __("website/sign/up-form-ctaxoff");
+                                                        ?>
+                                                    </td>
+                                                    <td>
+                                                        <?php if(Config::get("options/sign/up/kind/corporate/company_tax_number")): ?>
+                                                            <div class="yuzde50"><input name="company_tax_number" type="text"></div>
+                                                        <?php endif; ?>
+                                                        <?php if(Config::get("options/sign/up/kind/corporate/company_tax_office")): ?>
+                                                            <div class="yuzde50"><input name="company_tax_office" type="text"></div>
+                                                        <?php endif; ?>
+                                                    </td>
+                                                </tr>
+                                            <?php endif; ?>
                                         <?php endif; ?>
 
+
+                                        <?php
+                                            if(isset($custom_fields) && $custom_fields)
+                                            {
+                                                ?>
+                                                <tr>
+                                                    <td width="30%" style="border-bottom: #ddd solid 1px;">
+                                                        <h5 style="margin-bottom: 10px;"><?php echo __("website/account_info/other-informations"); ?></h5>
+                                                    </td>
+                                                    <td style="border-bottom: #ddd solid 1px; ">
+                                                    </td>
+                                                </tr>
+                                                <?php
+                                                foreach($custom_fields AS $field)
+                                                {
+                                                    ?>
+                                                    <tr>
+                                                        <td width="30%"><?php echo $field["name"]; ?></td>
+                                                        <td>
+
+                                                            <?php if($field["type"] == "text"): ?>
+                                                                <input name="cfields[<?php echo $field["id"]; ?>]" type="text" id="cfield_<?php echo $field["id"]; ?>">
+                                                            <?php elseif($field["type"] == "textarea"): ?>
+                                                                <textarea rows="3" id="cfield_<?php echo $field["id"]; ?>" name="cfields[<?php echo $field["id"]; ?>]"></textarea>
+                                                            <?php elseif($field["type"] == "select"): ?>
+                                                                <select id="cfield_<?php echo $field["id"]; ?>" name="cfields[<?php echo $field["id"]; ?>]">
+                                                                    <option value=""><?php echo ___("needs/select-your"); ?></option>
+                                                                    <?php
+                                                                        $parse = explode(",",$field["options"]);
+                                                                        foreach($parse AS $p){
+                                                                            ?>
+                                                                            <option><?php echo  $p; ?></option>
+                                                                            <?php
+                                                                        }
+                                                                    ?>
+                                                                </select>
+                                                            <?php elseif($field["type"] == "radio"):
+                                                                ?>
+                                                                <?php
+                                                                $parse = explode(",",$field["options"]);
+                                                                foreach($parse AS $k=>$p)
+                                                                {
+                                                                    ?>
+                                                                    <input
+                                                                            name="cfields[<?php echo $field["id"]; ?>]"
+                                                                            value="<?php echo $p; ?>"
+                                                                            class="radio-custom"
+                                                                            id="cfield_<?php echo $field["id"] . "_" . $k; ?>"
+                                                                            type="radio">
+                                                                    <label style="margin-right:15px;"
+                                                                           for="cfield_<?php echo $field["id"] . "_" . $k; ?>"
+                                                                           class="radio-custom-label"><?php echo $p; ?></label>
+                                                                    <?php
+                                                                }
+                                                            elseif($field["type"] == "checkbox"):
+                                                                ?>
+                                                                <?php
+                                                                $parse = explode(",",$field["options"]);
+                                                                foreach($parse AS $k=>$p)
+                                                                {
+                                                                    ?>
+                                                                    <input name="cfields[<?php echo $field["id"]; ?>][]" value="<?php echo $p;?>" class="checkbox-custom" id="cfield_<?php echo $field["id"]."_".$k; ?>" type="checkbox">
+                                                                    <label style="margin-right:15px;" for="cfield_<?php echo $field["id"]."_".$k; ?>" class="checkbox-custom-label"><?php echo $p; ?></label>
+                                                                    <?php
+                                                                }
+                                                            endif;
+                                                            ?>
+                                                        </td>
+                                                    </tr>
+                                                    <?php
+                                                }
+                                            }
+                                        ?>
+
+                                        <tr>
+                                            <td width="30%" style="border-bottom: #ddd solid 1px;">
+                                                <h5 style="margin-bottom: 10px;"><?php echo __("website/account_info/set-a-password"); ?></h5>
+                                            </td>
+                                            <td style="border-bottom: #ddd solid 1px; ">
+                                            </td>
+                                        </tr>
 
                                         <tr>
                                             <td width="30%"><?php echo __("website/sign/up-form-password"); ?></td>
@@ -659,12 +769,45 @@
                                         </tr>
 
                                         <tr>
-
-                                            <td colspan="2" style="border:none">
-                                                <input id="checkbox-5" class="checkbox-custom" name="contract" value="1" type="checkbox" required>
-                                                <label for="checkbox-5" class="checkbox-custom-label"><span class="checktext"><?php echo str_replace("<br>","",__("website/sign/up-form-contract")); ?></span></label>
+                                            <td width="30%" style="border-bottom: #ddd solid 1px;">
+                                                <h5 style="margin-bottom: 10px;"><?php echo __("admin/users/create-notification-permissions"); ?></h5>
+                                            </td>
+                                            <td style="border-bottom: #ddd solid 1px; ">
                                             </td>
                                         </tr>
+
+                                        <tr>
+
+                                            <td colspan="2" style="border:none">
+
+                                                <input id="email_notifications" class="checkbox-custom" name="email_notifications" value="1" type="checkbox">
+                                                <label for="email_notifications" class="checkbox-custom-label">
+                                                    <span class="checktext"><?php echo __("website/account_info/email-notifications"); ?></span></label>
+
+                                                <input id="sms_notifications" class="checkbox-custom" name="sms_notifications" value="1" type="checkbox">
+                                                <label for="sms_notifications" class="checkbox-custom-label"><span class="checktext"><?php echo __("website/account_info/sms-notifications"); ?></span></label>
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td width="30%" style="border-bottom: #ddd solid 1px;">
+                                                <h5 style="margin-bottom: 10px;"><?php echo __("website/basket/contracts"); ?></h5>
+                                            </td>
+                                            <td style="border-bottom: #ddd solid 1px; ">
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+
+                                            <td colspan="2" style="border:none">
+
+                                                <input id="checkbox-contract" class="checkbox-custom" name="contract" value="1" type="checkbox" required>
+                                                <label for="checkbox-contract" class="checkbox-custom-label"><span class="checktext"><?php echo __("website/sign/up-form-contract"); ?></span></label>
+                                            </td>
+                                        </tr>
+
+
+
                                         </tbody>
                                     </table>
                                 </div>

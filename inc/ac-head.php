@@ -28,6 +28,13 @@
     View::main_style();
 ?>
 <link rel="stylesheet" href="<?php echo $_theme->get_css_url(); ?>"/>
+<!-- Icon Fonts -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/fontawesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/solid.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/brands.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/v4-shims.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/regular.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link rel="stylesheet" href="<?php echo $tadress;?>css/ionicons.min.css"/>
 <link rel="stylesheet" href="<?php echo $tadress;?>css/animate.css" media="none" onload="if(media!='all')media='all'">
 <link rel="stylesheet" href="<?php echo $tadress;?>css/aos.css" />
@@ -53,8 +60,6 @@
     var template_address = "<?php echo $tadress;?>";
 </script>
 <script src="<?php echo $tadress;?>js/jquery-2.2.4.min.js"></script>
-
-<script src="https://kit.fontawesome.com/024b99bd53.js" crossorigin="anonymous"></script>
 
 <script src="<?php echo $tadress;?>js/jquery-stick<?php echo ($header_type==2) ? '-header2' : ''; ?>.js"></script>
 

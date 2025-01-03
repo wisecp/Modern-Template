@@ -679,7 +679,7 @@
                             </div>
 
                             <?php if(Config::get("options/sign/up/kind/corporate/company_tax_number")): ?>
-                                <div class="hesapbilgisi corporate-info" style="<?php echo $udata["kind"] != "corporate" ? 'display:none;' : ''; ?>">
+                                <div class="hesapbilgisi">
                                     <div class="yuzde25"><div class="hesapbilgititle"><?php echo __("website/sign/up-form-ctaxno"); ?></div></div>
                                     <div class="yuzde75">
                                         <input id="company_tax_number" name="company_tax_number" type="text" placeholder="<?php echo __("website/sign/up-form-ctaxno"); ?>" value="<?php echo (isset($udata["company_tax_number"])) ? $udata["company_tax_number"] : NULL; ?>">
@@ -688,7 +688,7 @@
                             <?php endif; ?>
 
                             <?php if(Config::get("options/sign/up/kind/corporate/company_tax_office")): ?>
-                                <div class="hesapbilgisi corporate-info" style="<?php echo $udata["kind"] != "corporate" ? 'display:none;' : ''; ?>">
+                                <div class="hesapbilgisi">
                                     <div class="yuzde25"><div class="hesapbilgititle"><?php echo __("website/sign/up-form-ctaxoff"); ?></div></div>
                                     <div class="yuzde75">
                                         <input id="company_tax_office" name="company_tax_office" type="text" placeholder="<?php echo __("website/sign/up-form-ctaxoff"); ?>" value="<?php echo (isset($udata["company_tax_office"])) ? $udata["company_tax_office"] : NULL; ?>">
@@ -960,7 +960,7 @@
                             </div>
 
                             <?php if(Config::get("options/sign/up/kind/corporate/company_tax_number")): ?>
-                                <div class="hesapbilgisi corporate-info" style="display: none;">
+                                <div class="hesapbilgisi">
                                     <div class="yuzde25"><div class="hesapbilgititle"><?php echo __("website/sign/up-form-ctaxno"); ?></div></div>
                                     <div class="yuzde75">
                                         <input name="company_tax_number" type="text" placeholder="<?php echo __("website/sign/up-form-ctaxno"); ?>" value="">
@@ -969,7 +969,7 @@
                             <?php endif; ?>
 
                             <?php if(Config::get("options/sign/up/kind/corporate/company_tax_office")): ?>
-                                <div class="hesapbilgisi corporate-info" style="display: none;">
+                                <div class="hesapbilgisi">
                                     <div class="yuzde25"><div class="hesapbilgititle"><?php echo __("website/sign/up-form-ctaxoff"); ?></div></div>
                                     <div class="yuzde75">
                                         <input name="company_tax_office" type="text" placeholder="<?php echo __("website/sign/up-form-ctaxoff"); ?>" value="">

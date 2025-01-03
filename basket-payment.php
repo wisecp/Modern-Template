@@ -71,7 +71,7 @@
                     if((int_balance==0 && total_payable !== 0) || total_payable < 0.00 || int_balance < total_payable){
                         open_modal("InsufficientBalance");
                     }else{
-                        var text = '<?php echo str_replace("'",'&apos;',__("website/basket/balance-warning-text",[EOL => '\n'])); ?>';
+                        var text = `<?php echo str_replace("'",'&apos;',__("website/basket/balance-warning-text",[EOL => '\n'])); ?>`;
                         text = text.replace(/{currenct_balance}/g,current_balance);
                         text = text.replace(/{changing_balance}/g,changing_balance);
 
