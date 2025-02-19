@@ -22,12 +22,7 @@
     $GLOBALS["censured"] = false;
 
     $u_taxation = true;
-
-    if(strlen((string) $invoice["user_data"]["taxation"] ?? ""))
-    {
-        if($invoice["user_data"]["taxation"] == "0") $u_taxation = false;
-    }
-
+    if(strlen((string) $invoice["user_data"]["taxation"] ?? "") && $invoice["user_data"]["taxation"] == "0") $u_taxation = false;
 
     function censored($type='',$data=''){
         $data     = trim($data);
@@ -187,6 +182,13 @@
                         <div class="yuzde50"><?php echo $duedate; ?></div>
                     </div>
 
+                    <?php if($invoice["status"] == "paid" && ($payment_transaction_id ?? false)): ?>
+                        <div class="formcon">
+                            <div class="yuzde50"><?php echo __("admin/invoices/detail-transaction-id"); ?>:</div>
+                            <div class="yuzde50"><?php echo $payment_transaction_id ?? 0; ?></div>
+                        </div>
+                    <?php endif; ?>
+
                 </div>
                 <div class="otherincoivebtns">
                     <?php if($permission_share): ?>
@@ -197,6 +199,7 @@
 
             <a href="javascript:dataPrint('pdf');" class="sbtn"><i class="fa fa-cloud-download" aria-hidden="true"></i> <?php echo __("website/account_invoices/download-pdf"); ?></a>
                 </div>
+                <div class="clear"></div>
             </div>
             <div class="invoice-detail-left">
                 <div class="custbillinfo">

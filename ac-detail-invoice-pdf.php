@@ -223,6 +223,9 @@
                 <br>
                 <?php echo __("website/account_invoices/creation-date"); ?>: <?php echo $cdate; ?><br>
                 <?php echo __("website/account_invoices/due-date"); ?>: <?php echo $duedate; ?>
+                <?php if($invoice["status"] == "paid" && ($payment_transaction_id ?? false)): ?>
+                    <br><?php echo __("admin/invoices/detail-transaction-id"); ?>:<?php echo $payment_transaction_id ?? 0; ?>
+                <?php endif; ?>
             </td>
         </tr>
         <tr>
@@ -399,7 +402,7 @@
                     <SPAN><?php echo __("website/account_invoices/due-date"); ?>: <?php echo $duedate; ?></SPAN>
                 <?php elseif($invoice["status"] == "paid"): ?>
                     <h1 style="font-size:70px;margin-top:25px;color:#add77c"><?php echo $status; ?></h1>
-                    <SPAN><?php echo $pmethod_name; ?> (<?php echo $datepaid; ?>)</SPAN><br><br>
+                    <SPAN><?php echo $pmethod_name ?? ''; ?> (<?php echo $datepaid; ?>)</SPAN><br><br>
                     <strong><?php echo __("website/account_invoices/text1"); ?></strong>
 
                 <?php elseif($invoice["status"] == "waiting"): ?>
