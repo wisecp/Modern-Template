@@ -1885,7 +1885,7 @@
                                                         }
                                                     ?>
                                                 </select>
-                                                <?php if($product["haveStock"]): ?>
+                                                <?php if($product["haveStock"] || $proanse["type"] == "hosting"): ?>
                                                     <a href="javascript:upgradeProduct(<?php echo $product["id"]; ?>);void 0;" class="gonderbtn" id="product_upgrade_<?php echo $product["id"]; ?>"><i class="fa fa-shopping-cart" aria-hidden="true"></i> <?php echo __("website/account_products/button-upgrade"); ?></a>
                                                 <?php else: ?>
                                                     <a id="sunucutukenbtn" class="gonderbtn"><i class="fa fa-ban" aria-hidden="true"></i> <?php echo __("website/products/out-of-stock2"); ?></a>
