@@ -717,12 +717,12 @@
 
                             <tr>
                                 <td width="30%"><span class="zorunlu">*</span> <strong><?php echo __("website/account_sms/sender-origin"); ?></strong> </td>
-                                <td><input class="notr" name="origin" type="text" placeholder="<?php echo __("website/account_sms/origin-max-character"); ?>" size="11" maxlength="11" style="text-transform:uppercase"></td>
+                                <td><input class="notr" name="origin" type="text" placeholder="<?php echo __("website/account_sms/origin-max-character"); ?>" size="11" maxlength="11"></td>
                             </tr>
 
                             <script type="text/javascript">
                                 $(".notr").on("ready load keyup keydown keypress change", function () {
-                                    var baslik = $(this).val().substr(0, 11).toUpperCase().replace(/Ö/g, "O").replace(/Ç/g, "C").replace(/Ş/g, "S").replace(/İ/g, "i").replace(/Ğ/g, "G").replace(/Ü/g, "U").replace(/([^a-zA-Z0-9 \.\-_])/g, "");
+                                    var baslik = $(this).val().substr(0, 11).replace(/Ö/g, "O").replace(/Ç/g, "C").replace(/Ş/g, "S").replace(/İ/g, "i").replace(/Ğ/g, "G").replace(/Ü/g, "U").replace(/([^a-zA-Z0-9 \.\-_])/g, "");
                                     $(this).val(baslik);
                                     if (baslik.length > 3) {
                                         $("li.baslikkarakter i").removeClass("fa-dot-circle-o").addClass("fa-check");

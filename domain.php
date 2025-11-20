@@ -6,7 +6,6 @@
 
     if(Config::get("theme/only-panel")) $meta["robots"] = "NOINDEX,NOFOLLOW";
 
-
     $currency_symbols = [];
     foreach(Money::getCurrencies() AS $currency){
         $symbol = $currency["prefix"] != '' ? trim($currency["prefix"]) : trim($currency["suffix"]);
@@ -16,7 +15,7 @@
 
     $epp_code_support   = [];
 
-    if(isset($tldList) && $tldList) foreach($tldList AS $t) $epp_code_support[$t["name"]] = $t["epp_code"] == 1;
+    if(isset($tldList) && $tldList) foreach($tldList AS $t) $epp_code_support[$t["name"]] = $t["epp_code"] > 0;
     $tlds               = $epp_code_support ? array_keys($epp_code_support) : [];
 
 ?>
